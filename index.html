@@ -12,6 +12,10 @@
 <meta property="og:image" content="https://mikeponces.github.io/claryo/assets/icon-512.png">
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<script>
+  // Motion only enhances: without this class every picture shows its landed state.
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion');
+</script>
 <style>
   @font-face { font-family: Figtree; font-weight: 400; font-display: swap; src: url("assets/fonts/Figtree-Regular.ttf") format("truetype"); }
   @font-face { font-family: Figtree; font-weight: 500; font-display: swap; src: url("assets/fonts/Figtree-Medium.ttf") format("truetype"); }
@@ -25,13 +29,18 @@
     --ground: #F5F2F8;
     --ink: #1B1830;
     --muted: #5E5A70;
+    --quiet: #6B6779;                    /* chart furniture, still AA on white */
     --line: rgba(27, 24, 48, 0.12);
+    --card: #FFFFFF;
+    --edge: rgba(122, 117, 127, 0.42);   /* elevatedPanelDecoration's outline */
+    --hair: rgba(122, 117, 127, 0.35);   /* sheetListHairline */
     --purple: #7B6BAE;
     --teal: #4DB6AC;
     --peri: #7986CB;
     --amber: #FFB74D;
+    --on-mark: #1A1A1A;                  /* kOnInstitutionMark */
+    --out: cubic-bezier(0.215, 0.61, 0.355, 1);   /* Curves.easeOutCubic */
     --gutter: 16px;
-    --radius: 22px;
   }
 
   * { box-sizing: border-box; }
@@ -47,6 +56,7 @@
   }
   a { color: inherit; }
   p { margin: 0; }
+  .sr { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 var(--gutter); }
   @media (min-width: 640px) { :root { --gutter: 32px; } }
@@ -60,8 +70,8 @@
   .top nav a:hover { color: var(--ink); }
 
   /* Hero */
-  .hero { display: grid; gap: 48px; padding: 48px 0 72px; align-items: center; }
-  @media (min-width: 880px) { .hero { grid-template-columns: 1.25fr 0.75fr; padding: 72px 0 104px; } }
+  .hero { display: grid; gap: 40px; padding: 48px 0 72px; align-items: center; }
+  @media (min-width: 880px) { .hero { grid-template-columns: 1.25fr 0.75fr; gap: 48px; padding: 72px 0 104px; } }
   .eyebrow { font-weight: 600; font-size: 0.9375rem; color: var(--muted); margin-bottom: 20px; }
   h1 {
     margin: 0 0 24px;
@@ -72,23 +82,10 @@
   }
   .lead { font-size: 1.1875rem; color: var(--muted); max-width: 36em; }
 
-  .stack { display: grid; gap: 8px; width: 100%; max-width: 240px; margin: 0 auto; }
-  .stack span { display: block; height: 44px; border-radius: 16px; }
-  @media (min-width: 880px) { .stack { gap: 10px; max-width: 360px; } .stack span { height: 76px; border-radius: var(--radius); } }
-  .stack span:nth-child(1) { background: var(--amber); }
-  .stack span:nth-child(2) { background: var(--peri); }
-  .stack span:nth-child(3) { background: var(--teal); }
-  .stack span:nth-child(4) { background: var(--purple); }
-
-  /* The stack builds bottom-up once on load: the order the page is about. */
-  @media (prefers-reduced-motion: no-preference) {
-    .stack span { animation: rise 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
-    .stack span:nth-child(4) { animation-delay: 80ms; }
-    .stack span:nth-child(3) { animation-delay: 180ms; }
-    .stack span:nth-child(2) { animation-delay: 280ms; }
-    .stack span:nth-child(1) { animation-delay: 380ms; }
-    @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
-  }
+  /* The logo story (lib/pages/auth_story.dart) and the closing logo. */
+  .story { width: 100%; max-width: 400px; margin: 0 auto; }
+  .story svg, .closing-logo svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .story .name { font-size: 12px; font-weight: 700; letter-spacing: 1.3px; fill: var(--ink); }
 
   /* Sections */
   section { border-top: 1px solid var(--line); padding: 64px 0; }
@@ -100,57 +97,128 @@
     line-height: 1.08;
     letter-spacing: -0.03em;
   }
-  h3 { margin: 0 0 8px; font-weight: 700; font-size: 1.25rem; letter-spacing: -0.015em; }
-  .intro { max-width: 40em; color: var(--muted); font-size: 1.125rem; }
-  .intro + * { margin-top: 40px; }
-
-  /* The right order */
-  .layers { display: grid; gap: 10px; }
-  .layer {
-    display: grid;
-    gap: 6px;
-    padding: 22px 24px;
-    border-radius: var(--radius);
-    color: var(--ink);
-  }
-  @media (min-width: 720px) { .layer { grid-template-columns: 220px 1fr; gap: 24px; align-items: baseline; padding: 26px 32px; } }
-  .layer b { font-weight: 800; font-size: 1.375rem; letter-spacing: -0.02em; }
-  .layer small { display: block; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.02em; opacity: 0.75; }
-  .layer.growth { background: var(--amber); }
-  .layer.protection { background: var(--peri); }
-  .layer.cashflow { background: var(--teal); }
-  .layer.base { background: var(--purple); color: #fff; }
-  .after { margin-top: 32px; max-width: 40em; color: var(--muted); }
-
-  /* Investment rate */
-  .rates { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px 24px; }
-  @media (min-width: 880px) { .rates { grid-template-columns: repeat(4, 1fr); } }
-  .rate { border-top: 1px solid var(--line); padding-top: 16px; }
-  .rate strong {
-    display: block;
-    font-weight: 800;
-    font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
-    line-height: 1;
-    letter-spacing: -0.04em;
-    margin-bottom: 10px;
-    font-variant-numeric: tabular-nums;
-  }
-  .rate span { color: var(--muted); font-size: 1rem; }
-  .pair { display: grid; gap: 40px; margin-top: 56px; }
-  @media (min-width: 880px) { .pair { grid-template-columns: 1fr 1fr; gap: 64px; } }
-  .pair p { color: var(--muted); }
-
-  /* Breadwinners */
+  .intro { max-width: 34em; color: var(--muted); font-size: 1.125rem; }
   .statement {
-    margin-top: 48px;
+    margin-top: 40px;
     font-weight: 800;
     font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.5rem);
     line-height: 1.1;
     letter-spacing: -0.03em;
   }
 
-  /* Price */
-  .price h2 { font-size: clamp(2.25rem, 1.4rem + 3.6vw, 3.75rem); }
+  /* A beat: its words, then the app instrument it ports. */
+  .beat { display: grid; gap: 40px; align-items: start; }
+  @media (min-width: 880px) { .beat { grid-template-columns: minmax(0, 1fr) minmax(0, 440px); gap: 64px; align-items: center; } }
+  .fig { margin: 0; width: 100%; max-width: 440px; justify-self: center; }
+  .fig.closing-logo { max-width: 220px; }
+  .tab { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9375rem; color: var(--muted); margin-bottom: 14px; }
+  .tab::before { content: ""; width: 22px; height: 6px; border-radius: 1.5px; background: var(--c); }
+
+  /* elevatedPanelDecoration: radius 26, the outline, two neutral shadows. */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--edge);
+    border-radius: 26px;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.11), 0 10px 33px rgba(0, 0, 0, 0.055);
+    overflow: hidden;
+  }
+  .hairline { height: 1px; background: var(--hair); }
+
+  /* ConceptRow / the paycheck actions' row: glyph in its hue, word in ink. */
+  .rows { list-style: none; margin: 0; padding: 0 0 8px; }
+  .row { position: relative; overflow: hidden; }
+  .row .wash { position: absolute; inset: 0; background: var(--hue); opacity: 0; transition: opacity 160ms ease-out; }
+  .rin { position: relative; display: flex; align-items: center; gap: 16px; padding: 16px 24px; }
+  .chip { flex: none; width: 36px; height: 36px; border-radius: 11.16px; background: var(--hue); display: grid; place-items: center; color: var(--on-mark); }
+  .chip svg { width: 18px; height: 18px; fill: currentColor; }
+  .words { flex: 1; min-width: 0; }
+  .words .t { display: block; font-weight: 700; font-size: 15px; line-height: 1.15; }
+  .words .g { display: block; margin-top: 2px; font-size: 13px; line-height: 1.3; --lh: 1.3em; color: var(--muted); }
+  .amt { flex: none; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+
+  /* Budget: one bar, five equal slices (ShareBar: 12 tall, pills, 2pt seams). */
+  .strip { padding: 16px 24px; }
+  .bar { position: relative; height: 12px; margin: 8px 0; border-radius: 6px; overflow: hidden; }
+  .bar .rem { position: absolute; inset: 0; border-radius: 6px; background: var(--purple); transform: translateX(calc(100% + 2px)); }
+  .bar .slot { position: absolute; top: 0; height: 12px; width: calc((100% - 8px) / 5); left: calc(var(--i) * ((100% - 8px) / 5 + 2px)); border-radius: 6px; overflow: hidden; }
+  .bar .slot i { display: block; height: 100%; border-radius: 6px; background: var(--hue); transition: opacity 150ms var(--out); }
+
+  /* Cash Flow: CashPurposeBars — a two-rule gutter, one bar per purpose. */
+  .cash { padding: 16px 24px 18px; }
+  .cbars { position: relative; display: flex; }
+  .crules { position: absolute; left: 40px; right: 0; top: 0; height: 120px; }
+  .crules i { position: absolute; left: 0; right: 0; height: 0.8px; background: rgba(27, 24, 48, 0.11); }
+  .cgut { position: relative; flex: none; width: 40px; height: 120px; }
+  .cgut span { position: absolute; right: 4px; transform: translateY(-50%); font-size: 9px; font-weight: 500; line-height: 1; color: var(--quiet); }
+  .ccol { flex: 1; min-width: 0; }
+  .band { position: relative; height: 120px; overflow: hidden; }
+  .vbar { position: absolute; bottom: 0; left: 50%; width: min(44px, calc(100% - 3px)); height: var(--h); border-radius: 5px 5px 0 0; background: var(--hue); transform: translateX(-50%); }
+  .clab { margin-top: 8px; display: flex; flex-direction: column; align-items: center; gap: 2px; }
+  .clab svg { width: 13px; height: 13px; fill: rgba(27, 24, 48, 0.55); }
+  .clab b { font-size: 12px; font-weight: 700; line-height: 1; letter-spacing: -0.2px; }
+
+  /* Protection: AnnuityDrawdownChart. */
+  .chartbox { padding: 18px 24px 16px; }
+  .chart { display: block; width: 100%; height: auto; overflow: visible; }
+  .chart text { font-family: Figtree, system-ui, sans-serif; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font-size: 12px; color: var(--quiet); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .sw { display: inline-block; width: 14px; height: 7px; border-radius: 2px; }
+  .sw.need { background: rgba(121, 134, 203, 0.275); box-shadow: inset 0 0 0 0.8px var(--peri); }
+  .sw.held { height: 1.2px; border-radius: 0; background: linear-gradient(90deg, rgba(27, 24, 48, 0.3) 0 5px, transparent 5px 9px, rgba(27, 24, 48, 0.3) 9px 14px); }
+  .sw.dry { background: rgba(198, 40, 40, 0.102); }
+
+  /* Growth: the Core & Satellite orrery (core_satellite_figure.dart). */
+  .orbitbox { padding: 16px 24px; }
+  .orrery { position: relative; height: 240px; }
+  .ring { position: absolute; left: 50%; top: 50%; width: calc(2 * min(50% - 30.88px, 154.24px)); height: 154.24px; border: 1px solid rgba(0, 0, 0, 0.102); border-radius: 50%; transform: translate(-50%, -50%); z-index: 2; }
+  .body { position: absolute; left: 50%; top: 50%; width: 0; height: 0; z-index: 4; }
+  .body.core { z-index: 3; --r: 40.24px; --fill: 219, 130, 0; }
+  .body.sat { --r: 24px; --fill: 255, 164, 31; }
+  .body.s0 { left: calc(50% + min(50% - 30.88px, 154.24px)); }
+  .body.s1 { left: calc(50% - min(50% - 30.88px, 154.24px)); }
+  .disc {
+    position: absolute;
+    left: calc(-1 * var(--r)); top: calc(-1 * var(--r));
+    width: calc(2 * var(--r)); height: calc(2 * var(--r));
+    border-radius: 50%;
+    display: grid; place-items: center;
+    background: rgba(var(--fill), 0.18);
+    border: 1.5px solid rgba(var(--fill), 0.59);
+    color: #B45309;
+  }
+  .disc svg { width: calc(var(--r) * 0.62); height: calc(var(--r) * 0.62); fill: currentColor; }
+  .lit .disc { background: rgba(var(--fill), 0.36); border: 2.5px solid rgb(var(--fill)); box-shadow: 0 0 17px 1.5px rgba(var(--fill), 0.31); transform: scale(1.12); }
+  .cap { position: absolute; width: 96px; left: -48px; top: calc(var(--r) + 6px); text-align: center; font-size: 11px; font-weight: 600; line-height: 1.15; color: rgba(27, 24, 48, 0.65); }
+  .body.above .cap { top: auto; bottom: calc(var(--r) + 6px); }
+  .lit .cap { font-weight: 700; color: var(--ink); }
+
+  /* The investment rate's four figures. */
+  .rates-block { margin-top: 64px; }
+  .ratelead { font-weight: 700; font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem); line-height: 1.25; letter-spacing: -0.02em; max-width: 30em; margin-bottom: 32px; }
+  .rates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px; }
+  @media (min-width: 880px) { .rates { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .rate { border-top: 1px solid var(--line); padding-top: 16px; }
+  .rate strong {
+    display: block;
+    font-weight: 800;
+    font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
+    line-height: 1;
+    --lh: 1em;
+    letter-spacing: -0.04em;
+    margin-bottom: 10px;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+  }
+  .rate .l { color: var(--muted); font-size: 1rem; }
+
+  /* Number reels (animated_number.dart): the laid-out text is the final figure. */
+  .reel { position: relative; display: inline-block; }
+  .reel .rg { visibility: hidden; }
+  /* The window is the digit's own height, so a neighbour never peeks in. */
+  .reel .rc { position: absolute; left: 0; right: 0; top: calc((var(--lh) - 1.1em) / 2); height: 1.1em; overflow: hidden; user-select: none; }
+  .reel .rs { display: block; margin-top: calc((1.1em - var(--lh)) / 2); }
+  .reel .rs b { display: block; height: var(--lh); line-height: var(--lh); font-weight: inherit; text-align: center; }
 
   /* Footer */
   footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--muted); font-size: 0.9375rem; }
@@ -159,9 +227,34 @@
   footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
   footer nav a { text-decoration: none; }
   footer nav a:hover { color: var(--ink); }
+
+  /* The stepped arrival (arrival_clock.dart): each beat fades and rises 12
+     over 440ms easeOutCubic, once, when its block first scrolls into view. */
+  @media (prefers-reduced-motion: no-preference) {
+    .motion [data-at] { opacity: 0; }
+    .motion [data-at].in { animation: arrive 440ms var(--out) both; }
+    .motion .story .blk, .motion .story .ground { opacity: 0; }
+  }
+  @keyframes arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 </style>
 </head>
 <body>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+<!-- Phosphor glyphs (MIT), the outlines the app draws; a duotone layer at 0.2, as PhosphorIcon draws it. -->
+<symbol id="g-save" viewBox="0 0 1024 1024"><path opacity=".2" d="M960 448L960 576Q960 603 941.5 621.5Q923 640 896 640L896 640L864 640L792 843Q788 852 780 858Q772 864 761 864Q761 864 761 864Q761 864 761 864L711 864Q711 864 711 864Q711 864 711 864Q700 864 692 858Q684 852 680 843L680 843L665 800L391 800L376 843Q372 852 364 858Q356 864 345 864Q345 864 345 864Q345 864 345 864L295 864Q295 864 295 864Q295 864 295 864Q284 864 276 858Q268 852 264 843L264 843L212 696Q173 654 150.5 598.5Q128 543 128 480Q128 480 128 480Q128 480 128 480L128 480Q128 414 153 355Q178 297 221.5 253.5Q265 210 323 185Q382 160 448 160L448 160L576 160Q576 160 576 160Q576 160 576 160Q625 160 670 174Q715 188 753 213.5Q791 239 821 274Q850 309 869 351L870 353Q872 359 875 366.5Q878 374 881 382L881 384L896 384Q923 384 941.5 402.5Q960 421 960 448L960 448L960 448Z"/><path d="M768 464Q768 484 754 498Q740 512 720 512Q700 512 686 498Q672 484 672 464Q672 444 686 430Q700 416 720 416L720 416Q740 416 754 430Q768 444 768 464L768 464ZM608 256L448 256Q435 256 425.5 265.5Q416 275 416 288Q416 301 425.5 310.5Q435 320 448 320L448 320L608 320Q621 320 630.5 310.5Q640 301 640 288Q640 275 630.5 265.5Q621 256 608 256L608 256ZM992 448L992 576Q992 616 964 644Q936 672 896 672L896 672L887 672L822 854Q815 872 798.5 884Q782 896 761 896Q761 896 761 896Q761 896 761 896L711 896Q711 896 711 896Q711 896 711 896Q690 896 673.5 884Q657 872 650 854L650 854L643 832L413 832L406 854Q399 872 382.5 884Q366 896 345 896Q345 896 345 896Q345 896 345 896L295 896Q295 896 295 896Q295 896 295 896Q274 896 257.5 884Q241 872 234 854L234 854L184 713Q149 674 127 625Q105 576 98 521L98 519Q83 528 73.5 543Q64 558 64 576L64 576Q64 589 54.5 598.5Q45 608 32 608Q19 608 9.5 598.5Q0 589 0 576L0 576Q0 531 27.5 497Q55 463 96 452L97 452Q103 384 132 325Q162 266 209 222Q256 178 317 153Q379 128 448 128L864 128Q877 128 886.5 137.5Q896 147 896 160Q896 173 886.5 182.5Q877 192 864 192L864 192L778 192Q818 220 848.5 257Q879 294 898 338L899 340Q900 343 901.5 346Q903 349 904 352Q941 355 966.5 382.5Q992 410 992 448Q992 448 992 448Q992 448 992 448L992 448ZM928 448Q928 435 918.5 425.5Q909 416 896 416L896 416L881 416Q881 416 881 416Q881 416 881 416Q871 416 862.5 409.5Q854 403 851 394L851 394Q837 349 810 312Q783 275 747.5 248.5Q712 222 668 207Q624 192 576 192Q576 192 576 192Q576 192 576 192L448 192Q448 192 448 192Q448 192 448 192Q388 192 336 215Q283 237 244 276Q205 315 183 368Q160 420 160 480Q160 536 180.5 586Q201 636 236 675L236 675Q238 677 239.5 679.5Q241 682 242 685L242 685L295 832L345 832L361 789Q364 780 372 774Q380 768 391 768L665 768Q676 768 684 774Q692 780 695 789L695 789L711 832L761 832L834 629Q837 620 845.5 614Q854 608 864 608L896 608Q909 608 918.5 598.5Q928 589 928 576L928 576L928 448Z"/></symbol>
+<symbol id="g-repay" viewBox="0 0 1024 1024"><path opacity=".2" d="M928 384L928 768Q928 781 918.5 790.5Q909 800 896 800L896 800L128 800Q115 800 105.5 790.5Q96 781 96 768L96 768L96 384L928 384Z"/><path d="M896 192L128 192Q101 192 82.5 210.5Q64 229 64 256L64 256L64 768Q64 795 82.5 813.5Q101 832 128 832L128 832L896 832Q923 832 941.5 813.5Q960 795 960 768L960 768L960 256Q960 229 941.5 210.5Q923 192 896 192L896 192ZM896 256L896 352L128 352L128 256L896 256ZM896 768L128 768L128 416L896 416L896 768ZM832 672Q832 685 822.5 694.5Q813 704 800 704L800 704L672 704Q659 704 649.5 694.5Q640 685 640 672Q640 659 649.5 649.5Q659 640 672 640L672 640L800 640Q813 640 822.5 649.5Q832 659 832 672L832 672ZM576 672Q576 685 566.5 694.5Q557 704 544 704L544 704L480 704Q467 704 457.5 694.5Q448 685 448 672Q448 659 457.5 649.5Q467 640 480 640L480 640L544 640Q557 640 566.5 649.5Q576 659 576 672L576 672Z"/></symbol>
+<symbol id="g-spend" viewBox="0 0 1024 1024"><path opacity=".2" d="M896 224L896 832L768 768L640 832L512 768L384 832L256 768L128 832L128 224Q128 211 137.5 201.5Q147 192 160 192L160 192L864 192Q877 192 886.5 201.5Q896 211 896 224L896 224Z"/><path d="M288 416Q288 403 297.5 393.5Q307 384 320 384L320 384L704 384Q717 384 726.5 393.5Q736 403 736 416Q736 429 726.5 438.5Q717 448 704 448L704 448L320 448Q307 448 297.5 438.5Q288 429 288 416L288 416ZM320 576L704 576Q717 576 726.5 566.5Q736 557 736 544Q736 531 726.5 521.5Q717 512 704 512L704 512L320 512Q307 512 297.5 521.5Q288 531 288 544Q288 557 297.5 566.5Q307 576 320 576L320 576ZM928 224L928 832Q928 845 918.5 854.5Q909 864 896 864Q892 864 888.5 863Q885 862 881 861L882 861L768 804L654 861Q651 862 647.5 863Q644 864 640 864Q636 864 632.5 863Q629 862 625 861L626 861L512 804L398 861Q395 862 391.5 863Q388 864 384 864Q380 864 376.5 863Q373 862 369 861L370 861L256 804L142 861Q139 862 135.5 863Q132 864 128 864Q115 864 105.5 854.5Q96 845 96 832L96 224Q96 197 114.5 178.5Q133 160 160 160L160 160L864 160Q891 160 909.5 178.5Q928 197 928 224L928 224ZM864 224L160 224L160 780L242 739Q245 738 248.5 737Q252 736 256 736Q260 736 263.5 737Q267 738 271 739L270 739L384 796L498 739Q501 738 504.5 737Q508 736 512 736Q516 736 519.5 737Q523 738 527 739L526 739L640 796L754 739Q757 738 760.5 737Q764 736 768 736Q772 736 775.5 737Q779 738 783 739L782 739L864 780L864 224Z"/></symbol>
+<symbol id="g-earmark" viewBox="0 0 1024 1024"><path opacity=".2" d="M768 192L768 896L512 736L256 896L256 192Q256 179 265.5 169.5Q275 160 288 160L288 160L736 160Q749 160 758.5 169.5Q768 179 768 192L768 192Z"/><path d="M736 128L288 128Q261 128 242.5 146.5Q224 165 224 192L224 192L224 896Q224 909 233.5 918.5Q243 928 256 928Q261 928 265 926.5Q269 925 273 923L273 923L512 774L751 923Q755 925 759 926.5Q763 928 768 928Q781 928 790.5 918.5Q800 909 800 896L800 192Q800 165 781.5 146.5Q763 128 736 128L736 128L736 128ZM736 838L529 709Q525 707 521 705.5Q517 704 512 704Q507 704 503 705.5Q499 707 495 709L495 709L288 838L288 192L736 192L736 838Z"/></symbol>
+<symbol id="g-invest" viewBox="0 0 1024 1024"><path opacity=".2" d="M928 224L928 480L672 224L928 224Z"/><path d="M928 192L672 192Q672 192 672 192Q672 192 672 192Q659 192 649.5 201.5Q640 211 640 224Q640 231 642.5 236.5Q645 242 649 247L755 352L544 563L407 425Q402 421 396.5 418.5Q391 416 384 416Q377 416 371.5 418.5Q366 421 361 425L361 425L73 713Q69 718 66.5 723.5Q64 729 64 736Q64 749 73.5 758.5Q83 768 96 768Q103 768 108.5 765.5Q114 763 119 759L119 759L384 493L521 631Q526 635 531.5 637.5Q537 640 544 640Q551 640 556.5 637.5Q562 635 567 631L567 631L800 397L905 503Q910 507 915.5 509.5Q921 512 928 512Q941 512 950.5 502.5Q960 493 960 480Q960 480 960 480Q960 480 960 480L960 480L960 224Q960 211 950.5 201.5Q941 192 928 192L928 192L928 192ZM896 403L749 256L896 256L896 403Z"/></symbol>
+<symbol id="g-sun" viewBox="0 0 1024 1024"><path d="M480 160L480 64Q480 51 489.5 41.5Q499 32 512 32Q525 32 534.5 41.5Q544 51 544 64L544 64L544 160Q544 173 534.5 182.5Q525 192 512 192Q499 192 489.5 182.5Q480 173 480 160L480 160ZM768 512Q768 565 748 612Q728 658 693 693Q658 728 612 748Q565 768 512 768Q459 768 412 748Q366 728 331 693Q296 658 276 612Q256 565 256 512Q256 459 276 412Q296 366 331 331Q366 296 412 276Q459 256 512 256L512 256Q565 256 612 276Q658 296 693 331Q728 366 748 412Q768 459 768 512L768 512ZM704 512Q704 432 648 376Q592 320 512 320Q432 320 376 376Q320 432 320 512Q320 592 376 648Q432 704 512 704L512 704Q591 704 647.5 647.5Q704 591 704 512L704 512L704 512ZM233 279Q238 283 243.5 285.5Q249 288 256 288Q269 288 278.5 278.5Q288 269 288 256Q288 249 285.5 243.5Q283 238 279 233L215 169Q210 165 204.5 162.5Q199 160 192 160Q179 160 169.5 169.5Q160 179 160 192Q160 199 162.5 204.5Q165 210 169 215L169 215L233 279ZM233 745L169 809Q165 814 162.5 819.5Q160 825 160 832Q160 845 169.5 854.5Q179 864 192 864Q199 864 204.5 861.5Q210 859 215 855L215 855L279 791Q283 786 285.5 780.5Q288 775 288 768Q288 755 278.5 745.5Q269 736 256 736Q249 736 243.5 738.5Q238 741 233 745L233 745ZM768 288Q768 288 768 288Q768 288 768 288Q775 288 780.5 285.5Q786 283 791 279L791 279L855 215Q859 210 861.5 204.5Q864 199 864 192Q864 179 854.5 169.5Q845 160 832 160Q825 160 819.5 162.5Q814 165 809 169L809 169L745 233Q741 238 738.5 243.5Q736 249 736 256Q736 269 745.5 278.5Q755 288 768 288Q768 288 768 288Q768 288 768 288L768 288L768 288ZM791 745Q786 741 780.5 738.5Q775 736 768 736Q755 736 745.5 745.5Q736 755 736 768Q736 775 738.5 780.5Q741 786 745 791L809 855Q814 859 819.5 861.5Q825 864 832 864Q845 864 854.5 854.5Q864 845 864 832Q864 825 861.5 819.5Q859 814 855 809L855 809L791 745ZM192 512Q192 499 182.5 489.5Q173 480 160 480L160 480L64 480Q51 480 41.5 489.5Q32 499 32 512Q32 525 41.5 534.5Q51 544 64 544L64 544L160 544Q173 544 182.5 534.5Q192 525 192 512L192 512ZM512 832Q499 832 489.5 841.5Q480 851 480 864L480 864L480 960Q480 973 489.5 982.5Q499 992 512 992Q525 992 534.5 982.5Q544 973 544 960L544 960L544 864Q544 851 534.5 841.5Q525 832 512 832L512 832ZM960 480L864 480Q851 480 841.5 489.5Q832 499 832 512Q832 525 841.5 534.5Q851 544 864 544L864 544L960 544Q973 544 982.5 534.5Q992 525 992 512Q992 499 982.5 489.5Q973 480 960 480L960 480Z"/></symbol>
+<symbol id="g-diamond" viewBox="0 0 1024 1024"><path d="M941 467L557 83Q548 74 536.5 69Q525 64 512 64Q499 64 487.5 69Q476 74 467 83L83 467Q74 476 69 487.5Q64 499 64 512Q64 525 69 536.5Q74 548 83 557L467 941Q476 950 487.5 955Q499 960 512 960Q525 960 537 955Q549 950 557 941L942 557Q950 548 955 536.5Q960 525 960 512Q960 499 955 487.5Q950 476 942 467L942 467L941 467ZM512 896L512 896L128 512L512 128L896 512L512 896Z"/></symbol>
+<symbol id="g-rocket" viewBox="0 0 1024 1024"><path d="M608 896Q608 909 598.5 918.5Q589 928 576 928L576 928L448 928Q435 928 425.5 918.5Q416 909 416 896Q416 883 425.5 873.5Q435 864 448 864L448 864L576 864Q589 864 598.5 873.5Q608 883 608 896L608 896ZM512 448Q532 448 546 434Q560 420 560 400Q560 380 546 366Q532 352 512 352Q492 352 478 366Q464 380 464 400L464 400Q464 420 478 434Q492 448 512 448L512 448ZM894 623L845 846Q840 868 822.5 882Q805 896 783 896Q771 896 761 892.5Q751 889 743 882L743 882L634 800L390 800L281 882Q273 889 263 892.5Q253 896 241 896Q219 896 201.5 882Q184 868 179 846L179 846L130 623Q129 620 128.5 616.5Q128 613 128 610Q128 598 132 587.5Q136 577 143 568L143 568L257 431Q260 391 269 353.5Q278 316 293 281L291 285Q311 236 336 197Q362 157 387.5 127Q413 97 436 77Q459 56 473 45Q481 39 491 35.5Q501 32 512 32Q523 32 533 35.5Q543 39 551 45L551 45Q565 56 588 77Q611 97 636.5 127Q662 157 688 197Q713 236 733 285Q746 317 755 354Q764 391 767 430L767 431L881 568Q888 577 892 587.5Q896 598 896 610Q896 613 895.5 616.5Q895 620 894 624L894 623L894 623ZM398 736L626 736Q658 680 677 625Q696 570 701.5 516Q707 462 700 411Q693 359 673 308Q638 220 584.5 165.5Q531 111 512 96Q492 111 439 165.5Q386 220 351 308Q331 359 324 411Q317 462 322.5 516Q328 570 347 625Q366 680 398 736ZM338 759Q273 642 259 529L192 609L241 832L242 831L338 759ZM832 609L765 529Q751 642 686 759L783 832L832 609Z"/></symbol>
+<symbol id="g-umbrella" viewBox="0 0 1024 1024"><path d="M960 507Q952 420 914 345Q876 270 816 214.5Q756 159 678 128Q600 96 512 96Q468 96 426 104Q384 112 345.5 127.5Q307 143 272 165Q237 187 207 215L207 215Q177 243 152 275Q128 308 109.5 344.5Q91 381 80 422Q68 462 64 505L64 507Q64 508 64 509.5Q64 511 64 512Q64 539 82.5 557.5Q101 576 128 576Q128 576 128 576Q128 576 128 576L480 576L480 800Q480 853 517.5 890.5Q555 928 608 928Q661 928 698.5 890.5Q736 853 736 800L736 800Q736 787 726.5 777.5Q717 768 704 768Q691 768 681.5 777.5Q672 787 672 800L672 800Q672 827 653.5 845.5Q635 864 608 864Q581 864 562.5 845.5Q544 827 544 800L544 800L544 576L896 576Q896 576 896 576Q896 576 896 576Q923 576 941.5 557.5Q960 539 960 512Q960 511 960 509.5Q960 508 960 506L960 507L960 507ZM128 512L128 512Q134 448 159 391Q184 335 224 289.5Q264 244 317 213Q369 182 430 169L433 168Q415 192 396 225Q378 258 362 301Q346 344 334 397Q323 449 321 512L128 512ZM385 512Q389 420 411.5 353.5Q434 287 458 247Q470 226 483.5 207.5Q497 189 512 172L512 173Q527 189 540.5 207Q554 225 565 245L566 247Q606 316 621.5 386Q637 456 639 512L385 512ZM703 512Q701 449 689 397Q678 344 662 301Q646 258 627 225Q609 192 591 168Q653 181 706 213Q760 244 800 289Q840 334 865 391Q890 447 896 511L896 512L703 512Z"/></symbol>
+<symbol id="g-cycle" viewBox="0 0 1024 1024"><path d="M896 192L896 384Q896 397 886.5 406.5Q877 416 864 416L864 416L672 416Q659 416 649.5 406.5Q640 397 640 384Q640 371 649.5 361.5Q659 352 672 352L672 352L787 352L728 293Q685 250 627.5 225Q570 200 504 200L502 200Q502 200 501.5 200Q501 200 501 200Q436 200 378.5 224.5Q321 249 278 291L278 291Q274 295 268.5 297Q263 299 257 299Q243 299 234 290Q225 281 225 267Q225 261 227 255Q229 249 234 245L234 245Q286 194 355 165Q424 136 502 136Q582 136 652 166Q722 196 774 248L774 248L832 307L832 192Q832 179 841.5 169.5Q851 160 864 160Q877 160 886.5 169.5Q896 179 896 192L896 192L896 192ZM746 733Q702 775 644.5 799.5Q587 824 522 824Q456 824 397.5 799Q339 774 296 731L237 672L352 672Q365 672 374.5 662.5Q384 653 384 640Q384 627 374.5 617.5Q365 608 352 608L352 608L160 608Q147 608 137.5 617.5Q128 627 128 640L128 640L128 832Q128 845 137.5 854.5Q147 864 160 864Q173 864 182.5 854.5Q192 845 192 832L192 832L192 717L251 776Q302 828 371.5 858Q441 888 520 888L522 888Q522 888 522.5 888Q523 888 523 888Q601 888 670 859Q739 830 790 779L790 779Q795 775 797.5 769Q800 763 800 757Q800 743 790.5 734Q781 725 768 725Q761 725 755.5 727Q750 729 746 733L746 733L746 733Z"/></symbol>
+<symbol id="g-target" viewBox="0 0 1024 1024"><path d="M887 333Q907 372 917.5 417.5Q928 463 928 512Q928 598 895 674Q863 750 806.5 806.5Q750 863 674 896Q598 929 512 929Q426 929 350 896Q274 863 217.5 806.5Q161 750 128 674Q95 598 95 512Q95 426 128 350Q161 274 217.5 217.5Q274 161 350 129Q426 96 512 96Q590 96 659.5 122.5Q729 149 783 196L783 196L873 105Q878 101 883.5 98.5Q889 96 896 96Q909 96 918.5 105.5Q928 115 928 128Q928 135 925.5 140.5Q923 146 919 151L919 151L535 535Q530 539 524.5 541.5Q519 544 512 544Q499 544 489.5 534.5Q480 525 480 512Q480 505 482.5 499.5Q485 494 489 489L600 378Q582 366 559.5 359Q537 352 512 352Q446 352 399 399Q352 446 352 512Q352 578 399 625Q446 672 512 672Q578 672 625 625Q672 578 672 512Q672 509 672 507Q672 505 672 502L672 503Q672 502 672 501.5Q672 501 672 501Q672 488 681 478.5Q690 469 704 469Q717 469 726 477.5Q735 486 736 499L736 499Q736 502 736 505.5Q736 509 736 512Q736 558 718 599Q701 640 670.5 670.5Q640 701 599 718Q558 736 512 736Q466 736 425 718Q384 701 353.5 670.5Q323 640 306 599Q288 558 288 512Q288 466 306 425Q323 384 353.5 353.5Q384 323 425 306Q466 288 512 288Q550 288 584.5 300Q619 312 647 333L646 333L737 242Q692 204 634.5 182Q577 160 513 160Q440 160 376 188Q312 216 264 263.5Q216 311 189 375Q161 439 161 512Q161 585 189 649Q216 713 264 760.5Q312 808 376 836Q440 864 513 864Q585 864 649 836Q714 808 761.5 760.5Q809 713 837 649Q864 585 864 512Q864 471 855 432Q846 393 829 358L830 360Q828 357 827.5 353.5Q827 350 827 346Q827 333 836 323.5Q845 314 859 314Q868 314 876 319Q884 324 887 332L887 333L887 333Z"/></symbol>
+<symbol id="g-wallet" viewBox="0 0 1024 1024"><path d="M864 256L224 256Q211 256 201.5 246.5Q192 237 192 224Q192 211 201.5 201.5Q211 192 224 192L224 192L768 192Q781 192 790.5 182.5Q800 173 800 160Q800 147 790.5 137.5Q781 128 768 128L768 128L224 128Q184 128 156 156Q128 184 128 224L128 224L128 736Q128 776 156 804Q184 832 224 832L224 832L864 832Q891 832 909.5 813.5Q928 795 928 768L928 768L928 320Q928 293 909.5 274.5Q891 256 864 256L864 256ZM864 768L224 768Q211 768 201.5 758.5Q192 749 192 736L192 736L192 315Q199 317 207 318.5Q215 320 224 320Q224 320 224 320Q224 320 224 320L864 320L864 768ZM672 528Q672 508 686 494Q700 480 720 480Q740 480 754 494Q768 508 768 528Q768 548 754 562Q740 576 720 576L720 576Q700 576 686 562Q672 548 672 528L672 528Z"/></symbol>
+</svg>
 
 <div class="wrap">
   <header class="top">
@@ -179,61 +272,218 @@
         <h1>Plan your paycheck. Secure your financial future — in the right order.</h1>
         <p class="lead">Most breadwinners don't have an income problem. They have a conversion problem: income arrives, expenses absorb it, and nothing builds. Claryo is the system that closes that gap, paycheck by paycheck.</p>
       </div>
-      <div class="stack" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+      <!-- The sign-in logo story (lib/pages/auth_story.dart): blocks set down
+           bottom-up and named, then gathered into the logo. Tile 160, centred. -->
+      <div class="story" role="img" aria-label="Four steps, built from the bottom up: plan your paycheck, build your cash, protect your household, then grow.">
+        <svg viewBox="0 0 340 200" aria-hidden="true" focusable="false">
+          <defs>
+            <filter id="lift" x="-25%" y="-25%" width="150%" height="150%">
+              <feDropShadow dx="0" dy="4" stdDeviation="9.74" flood-color="#1E1838" flood-opacity="0.078"/>
+              <feDropShadow dx="0" dy="1" stdDeviation="1.65" flood-color="#000" flood-opacity="0.051"/>
+            </filter>
+            <clipPath id="nc0"><rect class="nclip" x="0" y="36" width="230" height="32" transform="translate(106 0)"/></clipPath>
+            <clipPath id="nc1"><rect class="nclip" x="0" y="68" width="230" height="32" transform="translate(106 0)"/></clipPath>
+            <clipPath id="nc2"><rect class="nclip" x="0" y="100" width="230" height="32" transform="translate(106 0)"/></clipPath>
+            <clipPath id="nc3"><rect class="nclip" x="0" y="132" width="230" height="32" transform="translate(106 0)"/></clipPath>
+          </defs>
+          <rect class="ground" x="-80" y="-80" width="160" height="160" rx="45.76" fill="#F5F2FA" filter="url(#lift)" transform="translate(170 100)"/>
+          <rect class="blk" width="85.94" height="23.01" rx="5.63" fill="#FFB74D" transform="translate(127.02 50.94)"/>
+          <rect class="blk" width="85.94" height="23.01" rx="5.63" fill="#7986CB" transform="translate(127.02 75.98)"/>
+          <rect class="blk" width="85.94" height="23.01" rx="5.63" fill="#4DB6AC" transform="translate(127.02 101.02)"/>
+          <rect class="blk" width="85.94" height="23.01" rx="5.63" fill="#7B6BAE" transform="translate(127.02 126.06)"/>
+          <text class="name" x="106" y="52" dominant-baseline="central" clip-path="url(#nc0)" opacity="0">THEN GROW</text>
+          <text class="name" x="106" y="84" dominant-baseline="central" clip-path="url(#nc1)" opacity="0">PROTECT YOUR HOUSEHOLD</text>
+          <text class="name" x="106" y="116" dominant-baseline="central" clip-path="url(#nc2)" opacity="0">BUILD YOUR CASH</text>
+          <text class="name" x="106" y="148" dominant-baseline="central" clip-path="url(#nc3)" opacity="0">PLAN YOUR PAYCHECK</text>
+        </svg>
+      </div>
     </div>
 
-    <section aria-labelledby="order">
-      <h2 id="order">The right order</h2>
-      <p class="intro">Financial security has three layers, and the order matters. Each one rests on the one below it, and all three rest on the paycheck.</p>
-      <div class="layers">
-        <div class="layer growth"><b><small>Layer 3</small>Growth</b><p>Invest aggressively once the foundation holds. Your investment rate on target, your portfolio income building.</p></div>
-        <div class="layer protection"><b><small>Layer 2</small>Protection</b><p>Life and health cover that meets its benchmark, so the household is covered if something happens to you.</p></div>
-        <div class="layer cashflow"><b><small>Layer 1</small>Cash Flow</b><p>Debt moving down, expenses stable, cash reserves funded.</p></div>
-        <div class="layer base"><b><small>The base</small>Your paycheck</b><p>Planned before it arrives. Savings and investments are allocated first; expenses follow. Unallocated income is an incomplete plan, not a safety buffer.</p></div>
-      </div>
-      <p class="after">Most apps skip the foundation and go straight to investment tracking. Claryo follows the order: you can't responsibly chase your investment rate on empty reserves.</p>
+    <section aria-labelledby="who" data-clock>
+      <h2 id="who" data-at="0">Built for breadwinners</h2>
+      <p class="intro" data-at="80">You carry financial responsibility for a household, on one income or two. Claryo is for people who are ready to do the work.</p>
+      <p class="statement" data-at="160">No streaks. No badges. No cheerleading.</p>
     </section>
 
-    <section aria-labelledby="rate">
-      <h2 id="rate">Your investment rate</h2>
-      <p class="intro">What percentage of your income becomes assets that generate future cash flow? That number is the leading indicator of financial independence. Claryo tracks it against a target you set, every paycheck.</p>
-      <div class="rates">
-        <div class="rate"><strong>10%</strong><span>The floor</span></div>
-        <div class="rate"><strong>15%</strong><span>Covers retirement if you start early</span></div>
-        <div class="rate"><strong>25%</strong><span>Opens options before 65</span></div>
-        <div class="rate"><strong>40–50%</strong><span>Financial independence on an unconventional timeline</span></div>
-      </div>
-      <div class="pair">
+    <!-- Budget: the paycheck actions (paycheck_actions_beat.dart, split_reveal.dart,
+         concepts/card_tour.dart). BudgetChoice order, equal slices, no amounts. -->
+    <section aria-labelledby="b-budget" data-clock>
+      <div class="beat">
         <div>
-          <h3>You set the target</h3>
-          <p>The benchmarks come from established personal finance frameworks. Claryo tracks whether your paychecks are getting there.</p>
+          <p class="tab" style="--c: var(--purple)" data-at="0">Budget</p>
+          <h2 id="b-budget" data-at="0">Plan every paycheck</h2>
+          <p class="intro" data-at="80">Save, Repay, Spend, Earmark, Invest. You plan every paycheck before it arrives.</p>
         </div>
+        <figure class="fig" data-at="160" data-play="actions">
+          <div class="card actions">
+            <div class="strip" aria-hidden="true">
+              <div class="bar">
+                <span class="rem"></span>
+                <span class="slot" style="--i: 0"><i style="--hue: #4DB6AC"></i></span>
+                <span class="slot" style="--i: 1"><i style="--hue: #E07B54"></i></span>
+                <span class="slot" style="--i: 2"><i style="--hue: #E57373"></i></span>
+                <span class="slot" style="--i: 3"><i style="--hue: #81C784"></i></span>
+                <span class="slot" style="--i: 4"><i style="--hue: #7986CB"></i></span>
+              </div>
+            </div>
+            <div class="hairline"></div>
+            <ul class="rows">
+              <li class="row" style="--hue: #4DB6AC"><span class="wash"></span><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-save"/></svg></span><span class="words"><span class="t">Save</span><span class="g">Cash you keep for emergencies</span></span></div></li>
+              <li class="row" style="--hue: #E07B54"><span class="wash"></span><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-repay"/></svg></span><span class="words"><span class="t">Repay</span><span class="g">Credit cards and loans you pay down</span></span></div></li>
+              <li class="row" style="--hue: #E57373"><span class="wash"></span><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-spend"/></svg></span><span class="words"><span class="t">Spend</span><span class="g">Rent, food and everyday bills</span></span></div></li>
+              <li class="row" style="--hue: #81C784"><span class="wash"></span><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-earmark"/></svg></span><span class="words"><span class="t">Earmark</span><span class="g">For planned and recurring costs</span></span></div></li>
+              <li class="row" style="--hue: #7986CB"><span class="wash"></span><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-invest"/></svg></span><span class="words"><span class="t">Invest</span><span class="g">Assets that build future income</span></span></div></li>
+            </ul>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Cash Flow: Cash by Purpose (cash_purpose_bars.dart as staged in
+         concepts/cash_purpose_beats.dart). Ceiling niceAxisCeiling(337,500) =
+         500,000 on the 120 band; kind words from enums.dart recursLabel. -->
+    <section aria-labelledby="b-cash" data-clock>
+      <div class="beat">
         <div>
-          <h3>Portfolio income</h3>
-          <p>Your investment rate is the leading indicator. Portfolio income is the lagging one: what the rate becomes, compounded. Claryo shows your FI ratio, portfolio income as a share of monthly expenses. When it reaches 100%, work is optional.</p>
+          <p class="tab" style="--c: var(--teal)" data-at="0">Cash Flow</p>
+          <h2 id="b-cash" data-at="0">Cash has four jobs</h2>
+          <p class="intro" data-at="80">Your emergency fund, recurring expenses, one-off goals, and cash with no job yet. Only one of them is savings.</p>
+        </div>
+        <figure class="fig" data-at="160" data-play="cash">
+          <div class="card cashcard">
+            <div class="cash" aria-hidden="true">
+              <div class="cbars">
+                <div class="crules"><i style="top: 0"></i><i style="top: 60px"></i></div>
+                <div class="cgut"><span style="top: 0">₱500K</span><span style="top: 60px">₱250K</span></div>
+                <div class="ccol" style="--hue: #4DB6AC; --h: 81px"><div class="band"><span class="vbar"></span></div><div class="clab"><svg><use href="#g-umbrella"/></svg><b>45%</b></div></div>
+                <div class="ccol" style="--hue: #4FB553; --h: 36px"><div class="band"><span class="vbar"></span></div><div class="clab"><svg><use href="#g-cycle"/></svg><b>20%</b></div></div>
+                <div class="ccol" style="--hue: #81C784; --h: 45px"><div class="band"><span class="vbar"></span></div><div class="clab"><svg><use href="#g-target"/></svg><b>25%</b></div></div>
+                <div class="ccol" style="--hue: #B0BEC5; --h: 18px"><div class="band"><span class="vbar"></span></div><div class="clab"><svg><use href="#g-wallet"/></svg><b>10%</b></div></div>
+              </div>
+            </div>
+            <div class="hairline"></div>
+            <ul class="rows">
+              <li class="row" style="--hue: #4DB6AC"><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-umbrella"/></svg></span><span class="words"><span class="t">Emergency Fund</span><span class="g"><span class="months">4.5</span> months of expenses</span></span><span class="amt">₱337,500</span></div></li>
+              <li class="row" style="--hue: #4FB553"><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-cycle"/></svg></span><span class="words"><span class="t">Planned Expenses</span><span class="g">Recurring</span></span><span class="amt">₱150,000</span></div></li>
+              <li class="row" style="--hue: #81C784"><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-target"/></svg></span><span class="words"><span class="t">Savings Goals</span><span class="g">One-off</span></span><span class="amt">₱187,500</span></div></li>
+              <li class="row" style="--hue: #B0BEC5"><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-wallet"/></svg></span><span class="words"><span class="t">Unassigned</span><span class="g">No job yet</span></span><span class="amt">₱75,000</span></div></li>
+            </ul>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Protection: AnnuityDrawdownChart (concepts/coverage_method_beats.dart). -->
+    <section aria-labelledby="b-protect" data-clock>
+      <div class="beat">
+        <div>
+          <p class="tab" style="--c: var(--peri)" data-at="0">Protection</p>
+          <h2 id="b-protect" data-at="0">When ten times income runs out</h2>
+          <p class="intro" data-at="80">Ten times income, ₱12.0M, covers a ₱900K-a-year household for 16½ of 20 years. The red marks the years it doesn't reach.</p>
+        </div>
+        <figure class="fig" data-at="160" data-play="chart">
+          <div class="card chartbox">
+            <!-- Data: growingAnnuityDue + drawdownSeries (lib/core/life_coverage.dart)
+                 for need 900,000 a year, return 6%, inflation 3%, span 20, rule
+                 12,000,000: need 13,891,702 at year 0, the rule dry at year 17
+                 (16.5 years funded). Layout is StackedAreaPainter's: gutter 46, top 12. -->
+            <svg class="chart" viewBox="0 0 320 168" role="img" aria-label="Chart: twenty years of the household's need falls from ₱13.9M to zero; ₱12.0M runs out after 16½ years, leaving years 17 to 20 not funded." focusable="false">
+              <defs>
+                <clipPath id="sweep"><rect class="sweep" x="0" y="0" width="274" height="150" transform="translate(46 0)"/></clipPath>
+                <clipPath id="plot"><rect x="46" y="0" width="274" height="150"/></clipPath>
+              </defs>
+              <g stroke="rgba(27,24,48,0.11)" stroke-width="0.8">
+                <line x1="46" x2="320" y1="130.1" y2="130.1"/>
+                <line x1="46" x2="320" y1="110.3" y2="110.3"/>
+                <line x1="46" x2="320" y1="90.4" y2="90.4"/>
+                <line x1="46" x2="320" y1="70.5" y2="70.5"/>
+                <line x1="46" x2="320" y1="50.7" y2="50.7"/>
+                <line x1="46" x2="320" y1="30.8" y2="30.8"/>
+              </g>
+              <g font-size="9" font-weight="500" fill="#6B6779" text-anchor="end">
+                <text x="42" y="130.1" dominant-baseline="central">₱2M</text>
+                <text x="42" y="110.3" dominant-baseline="central">₱4M</text>
+                <text x="42" y="90.4" dominant-baseline="central">₱6M</text>
+                <text x="42" y="70.5" dominant-baseline="central">₱8M</text>
+                <text x="42" y="50.7" dominant-baseline="central">₱10M</text>
+                <text x="42" y="30.8" dominant-baseline="central">₱12M</text>
+              </g>
+              <g clip-path="url(#sweep)">
+                <path fill="#7986CB" fill-opacity="0.275" d="M46 150L46 12L59.7 13.2L73.4 14.8L87.1 16.7L100.8 19L114.5 21.9L128.2 25.2L141.9 29L155.6 33.4L169.3 38.4L183 44L196.7 50.4L210.4 57.6L224.1 65.5L237.8 74.4L251.5 84.2L265.2 95L278.9 106.9L292.6 120L306.3 134.3L320 150L320 150Z"/>
+                <path fill="none" stroke="#7986CB" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" d="M46 12L59.7 13.2L73.4 14.8L87.1 16.7L100.8 19L114.5 21.9L128.2 25.2L141.9 29L155.6 33.4L169.3 38.4L183 44L196.7 50.4L210.4 57.6L224.1 65.5L237.8 74.4L251.5 84.2L265.2 95L278.9 106.9L292.6 120L306.3 134.3L320 150"/>
+                <path fill="none" stroke="rgba(27,24,48,0.158)" stroke-width="1.2" stroke-linecap="round" stroke-dasharray="5 4" d="M46 30.8L59.7 33.1L73.4 35.9L87.1 39.1L100.8 42.8L114.5 47L128.2 51.8L141.9 57.2L155.6 63.3L169.3 70.1L183 77.7L196.7 86.1L210.4 95.4L224.1 105.6L237.8 116.9L251.5 129.2L265.2 142.7L278.9 150L292.6 150L306.3 150L320 150"/>
+                <g fill="#FFFFFF" stroke="#7986CB" stroke-width="1.2">
+                  <circle cx="46" cy="12" r="2.5"/>
+                  <circle cx="183" cy="44" r="2.5"/>
+                  <circle cx="320" cy="150" r="2.5"/>
+                </g>
+              </g>
+              <g clip-path="url(#plot)">
+                <rect class="dry" x="0" y="0" width="274" height="150" fill="#C62828" fill-opacity="0.102" transform="translate(278.9 0)"/>
+              </g>
+              <g font-size="10" fill="#6B6779">
+                <text x="46" y="161" dominant-baseline="central">Now</text>
+                <text x="114.5" y="161" dominant-baseline="central" text-anchor="middle">Yr 5</text>
+                <text x="183" y="161" dominant-baseline="central" text-anchor="middle">Yr 10</text>
+                <text x="251.5" y="161" dominant-baseline="central" text-anchor="middle">Yr 15</text>
+                <text x="320" y="161" dominant-baseline="central" text-anchor="end">Yr 20</text>
+              </g>
+            </svg>
+            <div class="legend" aria-hidden="true"><span><i class="sw need"></i>What it takes</span><span><i class="sw held"></i>What you hold</span><span><i class="sw dry"></i>Not funded</span></div>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- Growth: Core & Satellite (core_satellite_figure.dart) with the walk's
+         sample nodes (concepts/core_satellite_beats.dart), the first satellite lit. -->
+    <section aria-labelledby="b-growth" data-clock>
+      <div class="beat">
+        <div>
+          <p class="tab" style="--c: var(--amber)" data-at="0">Growth</p>
+          <h2 id="b-growth" data-at="0">Your portfolio, core and satellites</h2>
+          <p class="intro" data-at="80">The investments you track, drawn as a core with satellites around it.</p>
+        </div>
+        <figure class="fig" data-at="160" data-play="orrery">
+          <div class="card orbitbox">
+            <div class="orrery" role="img" aria-label="A core holding at the centre, with two satellites around it: Collectibles and Speculation.">
+              <div class="ring" aria-hidden="true"></div>
+              <div class="body core" aria-hidden="true"><span class="disc"><svg><use href="#g-sun"/></svg></span><span class="cap">Core</span></div>
+              <div class="body sat s0 lit" aria-hidden="true"><span class="disc"><svg><use href="#g-diamond"/></svg></span><span class="cap">Collectibles</span></div>
+              <div class="body sat s1" aria-hidden="true"><span class="disc"><svg><use href="#g-rocket"/></svg></span><span class="cap">Speculation</span></div>
+            </div>
+          </div>
+        </figure>
+      </div>
+
+      <div class="rates-block" data-clock>
+        <p class="ratelead" data-at="0">Your investment rate is the share of income that becomes assets.</p>
+        <div class="rates">
+          <div class="rate" data-at="160"><strong data-reel>10%</strong><span class="l">The floor</span></div>
+          <div class="rate" data-at="460"><strong data-reel>15%</strong><span class="l">Covers retirement if you start early</span></div>
+          <div class="rate" data-at="760"><strong data-reel>25%</strong><span class="l">Opens options before 65</span></div>
+          <div class="rate" data-at="1060"><strong data-reel>40–50%</strong><span class="l">Financial independence on an unconventional timeline</span></div>
         </div>
       </div>
     </section>
 
-    <section aria-labelledby="who">
-      <h2 id="who">Built for breadwinners</h2>
-      <p class="intro">Breadwinners carry financial responsibility for a household. They do this work because people depend on them getting it right. Claryo was built for them: the person managing one income or two, solo or with a partner, who needs to know the household is covered.</p>
-      <div class="pair">
+    <!-- The close: launch_story.dart's hidden tab — its block fades where it stands. -->
+    <section aria-labelledby="start" data-clock>
+      <div class="beat">
         <div>
-          <h3>For people who are ready</h3>
-          <p>Claryo requires engagement. The paycheck planning is real work, and the signals demand honest input. There is no automated version of this.</p>
+          <h2 id="start" data-at="0">Start where you need to</h2>
+          <p class="intro" data-at="80">Claryo is comprehensive by design. Cash Flow, Protection and Growth can each be switched off, and your paycheck stays on. Pick your starting point on first run, build the habit there, then add the next tab in Settings whenever you're ready. Nothing is locked.</p>
         </div>
-        <div>
-          <h3>A different kind of tool</h3>
-          <p>If you've tried other budget planners and found them shallow, gamified or patronizing, this is not that. A clear system and the data to make good decisions.</p>
-        </div>
+        <figure class="fig closing-logo" data-at="160" data-play="close" role="img" aria-label="The Claryo logo with only the paycheck block left.">
+          <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
+            <rect x="-80" y="-80" width="160" height="160" rx="45.76" fill="#F5F2FA" filter="url(#lift)" transform="translate(100 100)"/>
+            <rect class="cblk" width="85.94" height="23.01" rx="5.63" fill="#FFB74D" transform="translate(57.02 50.94)" style="opacity: 0"/>
+            <rect class="cblk" width="85.94" height="23.01" rx="5.63" fill="#7986CB" transform="translate(57.02 75.98)" style="opacity: 0"/>
+            <rect class="cblk" width="85.94" height="23.01" rx="5.63" fill="#4DB6AC" transform="translate(57.02 101.02)" style="opacity: 0"/>
+            <rect width="85.94" height="23.01" rx="5.63" fill="#7B6BAE" transform="translate(57.02 126.06)"/>
+          </svg>
+        </figure>
       </div>
-      <p class="statement">No streaks. No badges. No cheerleading.</p>
-    </section>
-
-    <section class="price" aria-labelledby="price">
-      <h2 id="price">One price. Every feature.</h2>
-      <p class="intro">Claryo is a paid app. No subscription, no in-app purchases, no paywall. You buy it once and everything's included. The price is a filter: it selects for people ready to do the work.</p>
     </section>
   </main>
 </div>
@@ -249,5 +499,307 @@
   </div>
 </footer>
 
+<script>
+(() => {
+  // Reduce motion (no class) leaves every picture in its landed state.
+  if (!document.documentElement.classList.contains('motion')) return;
+
+  // Flutter's curves, exactly (tech-website §3), solved by bisection as Cubic is.
+  const cubic = (x1, y1, x2, y2) => {
+    const at = (a, b, m) => 3 * a * (1 - m) * (1 - m) * m + 3 * b * (1 - m) * m * m + m * m * m;
+    return t => {
+      if (t <= 0) return 0;
+      if (t >= 1) return 1;
+      let lo = 0, hi = 1, m = 0.5;
+      for (let i = 0; i < 30; i++) { m = (lo + hi) / 2; if (at(x1, x2, m) < t) lo = m; else hi = m; }
+      return at(y1, y2, m);
+    };
+  };
+  const easeOutCubic = cubic(0.215, 0.61, 0.355, 1);
+  const easeInOutCubic = cubic(0.645, 0.045, 0.355, 1);
+  const easeOutQuart = cubic(0.165, 0.84, 0.44, 1);
+  const easeOutBack = cubic(0.175, 0.885, 0.32, 1.275);
+  const span = (t, start, len) => Math.min(1, Math.max(0, (t - start) / len));
+  const lerp = (a, b, t) => a + (b - a) * t;
+
+  // One timeline: frame(ms) on each animation frame up to ms, then done().
+  const run = (ms, frame, done) => {
+    const t0 = performance.now();
+    const tick = now => {
+      const t = Math.min(now - t0, ms);
+      frame(t);
+      if (t < ms) requestAnimationFrame(tick); else if (done) done();
+    };
+    requestAnimationFrame(tick);
+  };
+
+  // ── Number reels (animated_number.dart) ──────────────────────────────────
+  // Each digit is a reel: columns leave 30/950 of the run apart and turn for
+  // 780/950 of it on easeOutCubic; the low places spin a turn further.
+  const reels = el => {
+    const text = el.textContent;
+    const cols = [];
+    const sr = document.createElement('span');
+    sr.className = 'sr';
+    sr.textContent = text;
+    const shown = document.createElement('span');
+    shown.setAttribute('aria-hidden', 'true');
+    for (const tok of text.match(/\d+(?:\.\d+)?|[^\d]+/g)) {
+      if (!/\d/.test(tok)) { shown.append(tok); continue; }
+      const digits = tok.replace('.', '');
+      const decimals = tok.includes('.') ? tok.length - tok.indexOf('.') - 1 : 0;
+      const value = parseInt(digits, 10);
+      const n = digits.length;
+      const startPlaces = Math.max(1, decimals + 1);
+      const pitch = n > 1 ? Math.min(30 / 950, (1 - 780 / 950) / (n - 1)) : 0;
+      let d = 0;
+      for (const ch of tok) {
+        if (ch === '.') { shown.append('.'); continue; }
+        const place = n - 1 - d;
+        const steps = Number(ch) + (Math.floor(value / 10 ** (place + 1)) > 0 ? 10 : 0);
+        const reel = document.createElement('span');
+        reel.className = 'reel';
+        const ghost = document.createElement('span');
+        ghost.className = 'rg';
+        ghost.textContent = ch;
+        const clip = document.createElement('span');
+        clip.className = 'rc';
+        const strip = document.createElement('span');
+        strip.className = 'rs';
+        for (let k = 0; k <= steps; k++) {
+          const b = document.createElement('b');
+          b.textContent = k % 10;
+          strip.append(b);
+        }
+        clip.append(strip);
+        reel.append(ghost, clip);
+        shown.append(reel);
+        cols.push({ reel, strip, steps, fromLeft: d, pitch, vis0: place < startPlaces ? 1 : 0 });
+        d++;
+      }
+    }
+    el.replaceChildren(sr, shown);
+    const frame = t => {
+      for (const c of cols) {
+        const e = easeOutCubic((t - c.fromLeft * c.pitch) / (780 / 950));
+        c.strip.style.transform = `translateY(calc(${-c.steps * e} * var(--lh)))`;
+        c.reel.style.opacity = c.vis0 + (1 - c.vis0) * e;
+      }
+    };
+    frame(0);
+    return ms => run(ms, t => frame(t / ms));
+  };
+
+  const players = {};
+
+  // ── Hero: the logo story (auth_story.dart) ───────────────────────────────
+  const story = document.querySelector('.story svg');
+  if (story) {
+    const blocks = [...story.querySelectorAll('.blk')];      // Growth at the top
+    const names = [...story.querySelectorAll('.name')];
+    const clips = [...story.querySelectorAll('.nclip')];
+    const ground = story.querySelector('.ground');
+    const T = 160, CX = 170, CY = 100;
+    const logo = i => ({ x: CX - T / 2 + T * 0.2314, y: CY - T / 2 + T * (0.1934 + i * (0.1438 + 0.0127)), w: T * 0.5371, h: T * 0.1438 });
+    const frame = ms => {
+      const s = ms / 1000;
+      const fold = easeInOutCubic(span(s, 3.0, 0.99));
+      const grown = easeOutCubic(span(fold, 0.45, 0.55));
+      ground.style.opacity = grown;
+      ground.setAttribute('transform', `translate(${CX} ${CY}) scale(${lerp(0.86, 1, grown)})`);
+      const namesOut = span(s, 2.9, 0.25);
+      blocks.forEach((b, i) => {
+        const fromBottom = 3 - i;
+        const start = 0.2 + fromBottom * 0.36;
+        const land = easeOutQuart(span(s, start, 0.42));
+        const gather = easeInOutCubic(span(s, 3.0 + fromBottom * 0.08, 0.75));
+        const to = logo(i);
+        const x = lerp(20, to.x, gather);
+        const y = lerp(40 + 32 * i - (1 - land) * 22, to.y, gather);
+        b.style.opacity = span(s, start, 0.42 * 0.35);
+        b.setAttribute('transform', `translate(${x} ${y}) scale(${lerp(72, to.w, gather) / to.w} ${lerp(24, to.h, gather) / to.h})`);
+        const named = easeOutCubic(span(s, start + 0.3, 0.4));
+        names[i].style.opacity = Math.min(1, named * 3) * (1 - namesOut);
+        clips[i].setAttribute('transform', `translate(106 0) scale(${Math.max(named, 0.0001)} 1)`);
+      });
+    };
+    frame(0);
+    const go = () => {
+      names.forEach((n, i) => clips[i].setAttribute('width', n.getComputedTextLength() + 2));
+      run(3990, frame);
+    };
+    // The names are measured in Figtree; the story never waits past 1s for it.
+    const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
+    Promise.race([fonts, new Promise(r => setTimeout(r, 1000))]).then(go);
+  }
+
+  // ── Budget: the split, then the tour (paycheck_actions_beat.dart) ───────
+  const actions = document.querySelector('.actions');
+  if (actions) {
+    const bar = actions.querySelector('.bar');
+    const rem = actions.querySelector('.rem');
+    const slices = [...actions.querySelectorAll('.slot i')];
+    const rows = [...actions.querySelectorAll('.row')];
+    const rins = rows.map(r => r.querySelector('.rin'));
+    const washes = rows.map(r => r.querySelector('.wash'));
+    let touched = false, stopTour = null, lit = null;
+    const light = i => {
+      if (i === lit) return;
+      lit = i;
+      slices.forEach((s, j) => { s.style.opacity = i === null || j === i ? 1 : 130 / 255; });
+      washes.forEach((w, j) => { w.style.opacity = j === i ? 22 / 255 : 0; });
+    };
+    // Any touch on the card ends the tour for good (card_tour.dart).
+    actions.addEventListener('pointerdown', () => { touched = true; if (stopTour) stopTour(); light(null); }, { passive: true });
+    const frame = ms => {
+      const seam = 2, W = bar.clientWidth, slotW = (W - 4 * seam) / 5;
+      let edge = 0;
+      slices.forEach((el, i) => {
+        const p = easeOutCubic(span(ms, 160 + 300 * i, 440));
+        el.style.transform = `translateX(${(p - 1) * 100}%)`;
+        if (p > 0) edge = i * (slotW + seam) + p * slotW + seam;
+        rins[i].style.opacity = p;
+        rins[i].style.transform = `translateY(${(p - 1) * 100}%)`;
+      });
+      rem.style.transform = `translateX(${edge}px)`;
+    };
+    // A pitch after the carve, each action holds the light for 900ms, then rest.
+    const tour = () => {
+      if (touched) return;
+      let stopped = false;
+      stopTour = () => { stopped = true; };
+      const t0 = performance.now();
+      const tick = now => {
+        if (stopped) return;
+        const ms = now - t0;
+        const i = Math.floor((ms - 300) / 900);
+        light(i >= 0 && i < 5 ? i : null);
+        if (ms < 300 + 900 * 5) requestAnimationFrame(tick); else light(null);
+      };
+      requestAnimationFrame(tick);
+    };
+    frame(0);
+    players.actions = () => run(1800, frame, tour);
+  }
+
+  // ── Cash Flow: the purpose bars climb with their rows ───────────────────
+  const cash = document.querySelector('.cashcard');
+  if (cash) {
+    const bars = [...cash.querySelectorAll('.vbar')];
+    const labs = [...cash.querySelectorAll('.clab')];
+    const rins = [...cash.querySelectorAll('.rin')];
+    const heights = [...cash.querySelectorAll('.ccol')].map(c => parseFloat(c.style.getPropertyValue('--h')));
+    const months = reels(cash.querySelector('.months'));
+    const frame = ms => {
+      bars.forEach((b, i) => {
+        const p = easeOutCubic(span(ms, 160 + 300 * i, 440));
+        b.style.transform = `translate(-50%, ${(1 - p) * heights[i]}px)`;
+        labs[i].style.opacity = p;
+        rins[i].style.opacity = p;
+        rins[i].style.transform = `translateY(${6 * (1 - p)}px)`;
+      });
+    };
+    frame(0);
+    players.cash = () => { run(1500, frame); setTimeout(() => months(800), 160); };
+  }
+
+  // ── Protection: the drawdown sweeps, the shortfall settles red ──────────
+  const chart = document.querySelector('.chart');
+  if (chart) {
+    const sweep = chart.querySelector('.sweep');
+    const dry = chart.querySelector('.dry');
+    const frame = ms => {
+      const p = easeOutCubic(ms / 900);        // the tween's curve
+      const e = easeOutCubic(p);               // StackedAreaPainter eases again
+      sweep.setAttribute('transform', `translate(46 0) scale(${Math.max(e, 0.0001)} 1)`);
+      dry.setAttribute('transform', `translate(${46 + (278.9 - 46) * p} 0)`);
+      dry.style.opacity = p;
+    };
+    frame(0);
+    players.chart = () => run(900, frame);
+  }
+
+  // ── Growth: the orrery's entrance, then its 90s drift ───────────────────
+  const orrery = document.querySelector('.orrery');
+  if (orrery) {
+    const ring = orrery.querySelector('.ring');
+    const core = orrery.querySelector('.core');
+    const sats = [...orrery.querySelectorAll('.sat')];
+    const seats = [0, Math.PI];                 // nodeSeatAngle for two satellites
+    const RY = 77.12;                           // orreryRadii in a 240 box
+    let rx = 0, ent = 0, drift = 0, running = false, started = false, seen = false, raf = 0, last = 0;
+    const measure = () => { rx = Math.min(orrery.clientWidth / 2 - 30.88, 154.24); };
+    sats.forEach(s => { s.style.left = '50%'; });
+    const pop = (e, start, len) => easeOutBack(span(e, start, len));
+    const place = (body, popv, scale) => {
+      body.style.opacity = popv > 0 ? 1 : 0;
+      body.querySelector('.disc').style.transform = `scale(${(0.4 + 0.6 * Math.min(popv, 1.2)) * scale})`;
+    };
+    const frame = () => {
+      const e = Math.min(1, ent / 1600);
+      const t = easeOutCubic(span(e, 0.05, 0.45));
+      ring.style.opacity = t > 0 ? 1 : 0;
+      ring.style.transform = `translate(-50%, -50%) scale(${t})`;
+      place(core, pop(e, 0, 0.3), 1);
+      sats.forEach((s, i) => {
+        const angle = seats[i] + (drift / 90000) * 2 * Math.PI;
+        const far = Math.sin(angle) < 0;
+        s.style.transform = `translate(${rx * Math.cos(angle)}px, ${RY * Math.sin(angle)}px)`;
+        s.style.zIndex = far ? 1 : 4;
+        s.classList.toggle('above', far);
+        place(s, pop(e, Math.min(0.42 + i * 0.06, 0.62), 0.38), (s.classList.contains('lit') ? 1.12 : 1) * (far ? 0.86 : 1));
+      });
+    };
+    const tick = now => {
+      const dt = Math.min(now - last, 100);
+      last = now;
+      ent += dt;
+      drift += dt;
+      frame();
+      raf = requestAnimationFrame(tick);
+    };
+    const resume = () => { if (running || !started || !seen) return; running = true; last = performance.now(); raf = requestAnimationFrame(tick); };
+    const pause = () => { running = false; cancelAnimationFrame(raf); };
+    // The drift is the page's one idle loop, and it stops whenever the figure is off screen.
+    new IntersectionObserver(es => { seen = es[es.length - 1].isIntersecting; if (seen) resume(); else pause(); }).observe(orrery);
+    addEventListener('resize', () => { measure(); if (!running) frame(); });
+    measure();
+    frame();
+    players.orrery = () => { started = true; resume(); };
+  }
+
+  // ── The close: the pillar blocks fade where they stand (launch_story.dart) ─
+  const closing = document.querySelector('.closing-logo');
+  if (closing) {
+    const blocks = [...closing.querySelectorAll('.cblk')];   // Growth, Protection, Cash Flow
+    const frame = ms => blocks.forEach((b, k) => { b.style.opacity = 1 - easeOutCubic(span(ms, 600 + 300 * k, 440)); });
+    frame(0);
+    players.close = () => run(1640, frame);
+  }
+
+  // ── The stepped arrival (arrival_clock.dart) ─────────────────────────────
+  // A block's clock starts when its first beat scrolls into view; a beat that
+  // scrolls in later starts when it is seen. Its instrument starts a pitch on.
+  const clocks = new Map();
+  const io = new IntersectionObserver(entries => {
+    const now = performance.now();
+    for (const en of entries) {
+      if (!en.isIntersecting) continue;
+      const el = en.target;
+      io.unobserve(el);
+      const owner = el.closest('[data-clock]');
+      if (!clocks.has(owner)) clocks.set(owner, now);
+      const delay = Math.max(0, clocks.get(owner) + Number(el.dataset.at) - now);
+      el.style.animationDelay = `${delay}ms`;
+      el.classList.add('in');
+      const play = players[el.dataset.play];
+      if (play) setTimeout(play, delay + 300);
+      const figure = el.querySelector('[data-reel]');
+      if (figure) { const roll = reels(figure); setTimeout(() => roll(800), delay); }
+    }
+  }, { rootMargin: '0px 0px -12% 0px' });
+  document.querySelectorAll('[data-at]').forEach(el => io.observe(el));
+})();
+</script>
 </body>
 </html>
