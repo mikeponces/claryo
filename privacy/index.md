@@ -2,7 +2,7 @@
 
 # Privacy Policy
 
-Effective 7 November 2026
+Effective 10 November 2026
 
 Claryo is operated by Michael Lorenzo Ponce Sanchez, an individual developer. This policy states what Claryo stores, where, who receives it, and how deletion works.
 
@@ -69,7 +69,9 @@ Each user's rows are protected by database row-level security: a signed-in accou
 
 Settings › Delete Account deletes your login record and every row of your data at once. Nothing is kept and nothing is soft-deleted.
 
-Crash reports already in Sentry age out on Sentry's schedule. Data stored only on your phone goes when you remove the app.
+**Without the app:** email claryoapp@gmail.com from the address you sign in with, with the subject "Delete my account". Your account and all its data are deleted the same way within 30 days, and you get a reply when it is done.
+
+Crash reports already sent to Sentry are kept for up to 90 days, then deleted. Data stored only on your phone goes when you remove the app.
 
 ## Your rights
 
