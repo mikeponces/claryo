@@ -1,0 +1,253 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Claryo: Paycheck System</title>
+<meta name="description" content="Plan your paycheck. Secure your financial future — in the right order.">
+<meta name="color-scheme" content="light">
+<meta name="theme-color" content="#F5F2F8">
+<meta property="og:title" content="Claryo: Paycheck System">
+<meta property="og:description" content="Plan your paycheck. Secure your financial future — in the right order.">
+<meta property="og:image" content="https://mikeponces.github.io/claryo/assets/icon-512.png">
+<link rel="icon" type="image/png" href="assets/favicon.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<style>
+  @font-face { font-family: Figtree; font-weight: 400; font-display: swap; src: url("assets/fonts/Figtree-Regular.ttf") format("truetype"); }
+  @font-face { font-family: Figtree; font-weight: 500; font-display: swap; src: url("assets/fonts/Figtree-Medium.ttf") format("truetype"); }
+  @font-face { font-family: Figtree; font-weight: 600; font-display: swap; src: url("assets/fonts/Figtree-SemiBold.ttf") format("truetype"); }
+  @font-face { font-family: Figtree; font-weight: 700; font-display: swap; src: url("assets/fonts/Figtree-Bold.ttf") format("truetype"); }
+  @font-face { font-family: Figtree; font-weight: 800; font-display: swap; src: url("assets/fonts/Figtree-ExtraBold.ttf") format("truetype"); }
+
+  /* The app icon's ground and its four bars. White ink only on purple: it is
+     the one fill where white clears AA (4.6:1); the other three take dark ink. */
+  :root {
+    --ground: #F5F2F8;
+    --ink: #1B1830;
+    --muted: #5E5A70;
+    --line: rgba(27, 24, 48, 0.12);
+    --purple: #7B6BAE;
+    --teal: #4DB6AC;
+    --peri: #7986CB;
+    --amber: #FFB74D;
+    --gutter: 16px;
+    --radius: 22px;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--ground);
+    color: var(--ink);
+    font-family: Figtree, system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+  a { color: inherit; }
+  p { margin: 0; }
+
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 var(--gutter); }
+  @media (min-width: 640px) { :root { --gutter: 32px; } }
+
+  /* Header */
+  .top { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.125rem; letter-spacing: -0.01em; text-decoration: none; }
+  .brand img { width: 32px; height: 32px; border-radius: 8px; }
+  .top nav { display: flex; gap: 20px; font-size: 0.9375rem; color: var(--muted); }
+  .top nav a { text-decoration: none; }
+  .top nav a:hover { color: var(--ink); }
+
+  /* Hero */
+  .hero { display: grid; gap: 48px; padding: 48px 0 72px; align-items: center; }
+  @media (min-width: 880px) { .hero { grid-template-columns: 1.25fr 0.75fr; padding: 72px 0 104px; } }
+  .eyebrow { font-weight: 600; font-size: 0.9375rem; color: var(--muted); margin-bottom: 20px; }
+  h1 {
+    margin: 0 0 24px;
+    font-weight: 800;
+    font-size: clamp(2.375rem, 1.5rem + 4vw, 4.25rem);
+    line-height: 1.02;
+    letter-spacing: -0.035em;
+  }
+  .lead { font-size: 1.1875rem; color: var(--muted); max-width: 36em; }
+
+  .stack { display: grid; gap: 8px; width: 100%; max-width: 240px; margin: 0 auto; }
+  .stack span { display: block; height: 44px; border-radius: 16px; }
+  @media (min-width: 880px) { .stack { gap: 10px; max-width: 360px; } .stack span { height: 76px; border-radius: var(--radius); } }
+  .stack span:nth-child(1) { background: var(--amber); }
+  .stack span:nth-child(2) { background: var(--peri); }
+  .stack span:nth-child(3) { background: var(--teal); }
+  .stack span:nth-child(4) { background: var(--purple); }
+
+  /* The stack builds bottom-up once on load: the order the page is about. */
+  @media (prefers-reduced-motion: no-preference) {
+    .stack span { animation: rise 520ms cubic-bezier(0.2, 0.8, 0.2, 1) both; }
+    .stack span:nth-child(4) { animation-delay: 80ms; }
+    .stack span:nth-child(3) { animation-delay: 180ms; }
+    .stack span:nth-child(2) { animation-delay: 280ms; }
+    .stack span:nth-child(1) { animation-delay: 380ms; }
+    @keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+  }
+
+  /* Sections */
+  section { border-top: 1px solid var(--line); padding: 64px 0; }
+  @media (min-width: 880px) { section { padding: 96px 0; } }
+  h2 {
+    margin: 0 0 16px;
+    font-weight: 800;
+    font-size: clamp(1.875rem, 1.3rem + 2.2vw, 2.75rem);
+    line-height: 1.08;
+    letter-spacing: -0.03em;
+  }
+  h3 { margin: 0 0 8px; font-weight: 700; font-size: 1.25rem; letter-spacing: -0.015em; }
+  .intro { max-width: 40em; color: var(--muted); font-size: 1.125rem; }
+  .intro + * { margin-top: 40px; }
+
+  /* The right order */
+  .layers { display: grid; gap: 10px; }
+  .layer {
+    display: grid;
+    gap: 6px;
+    padding: 22px 24px;
+    border-radius: var(--radius);
+    color: var(--ink);
+  }
+  @media (min-width: 720px) { .layer { grid-template-columns: 220px 1fr; gap: 24px; align-items: baseline; padding: 26px 32px; } }
+  .layer b { font-weight: 800; font-size: 1.375rem; letter-spacing: -0.02em; }
+  .layer small { display: block; font-size: 0.8125rem; font-weight: 600; letter-spacing: 0.02em; opacity: 0.75; }
+  .layer.growth { background: var(--amber); }
+  .layer.protection { background: var(--peri); }
+  .layer.cashflow { background: var(--teal); }
+  .layer.base { background: var(--purple); color: #fff; }
+  .after { margin-top: 32px; max-width: 40em; color: var(--muted); }
+
+  /* Investment rate */
+  .rates { display: grid; grid-template-columns: repeat(2, 1fr); gap: 32px 24px; }
+  @media (min-width: 880px) { .rates { grid-template-columns: repeat(4, 1fr); } }
+  .rate { border-top: 1px solid var(--line); padding-top: 16px; }
+  .rate strong {
+    display: block;
+    font-weight: 800;
+    font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
+    line-height: 1;
+    letter-spacing: -0.04em;
+    margin-bottom: 10px;
+    font-variant-numeric: tabular-nums;
+  }
+  .rate span { color: var(--muted); font-size: 1rem; }
+  .pair { display: grid; gap: 40px; margin-top: 56px; }
+  @media (min-width: 880px) { .pair { grid-template-columns: 1fr 1fr; gap: 64px; } }
+  .pair p { color: var(--muted); }
+
+  /* Breadwinners */
+  .statement {
+    margin-top: 48px;
+    font-weight: 800;
+    font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+
+  /* Price */
+  .price h2 { font-size: clamp(2.25rem, 1.4rem + 3.6vw, 3.75rem); }
+
+  /* Footer */
+  footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--muted); font-size: 0.9375rem; }
+  footer .wrap { display: grid; gap: 16px; }
+  @media (min-width: 720px) { footer .wrap { grid-template-columns: 1fr auto; align-items: center; } }
+  footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
+  footer nav a { text-decoration: none; }
+  footer nav a:hover { color: var(--ink); }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="./"><img src="assets/apple-touch-icon.png" alt="">Claryo</a>
+    <nav aria-label="Legal">
+      <a href="privacy/">Privacy</a>
+      <a href="terms/">Terms</a>
+    </nav>
+  </header>
+
+  <main>
+    <div class="hero">
+      <div>
+        <p class="eyebrow">Claryo: Paycheck System</p>
+        <h1>Plan your paycheck. Secure your financial future — in the right order.</h1>
+        <p class="lead">Most breadwinners don't have an income problem. They have a conversion problem: income arrives, expenses absorb it, and nothing builds. Claryo is the system that closes that gap, paycheck by paycheck.</p>
+      </div>
+      <div class="stack" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
+    </div>
+
+    <section aria-labelledby="order">
+      <h2 id="order">The right order</h2>
+      <p class="intro">Financial security has three layers, and the order matters. Each one rests on the one below it, and all three rest on the paycheck.</p>
+      <div class="layers">
+        <div class="layer growth"><b><small>Layer 3</small>Growth</b><p>Invest aggressively once the foundation holds. Your investment rate on target, your portfolio income building.</p></div>
+        <div class="layer protection"><b><small>Layer 2</small>Protection</b><p>Life and health cover that meets its benchmark, so the household is covered if something happens to you.</p></div>
+        <div class="layer cashflow"><b><small>Layer 1</small>Cash Flow</b><p>Debt moving down, expenses stable, cash reserves funded.</p></div>
+        <div class="layer base"><b><small>The base</small>Your paycheck</b><p>Planned before it arrives. Savings and investments are allocated first; expenses follow. Unallocated income is an incomplete plan, not a safety buffer.</p></div>
+      </div>
+      <p class="after">Most apps skip the foundation and go straight to investment tracking. Claryo follows the order: you can't responsibly chase your investment rate on empty reserves.</p>
+    </section>
+
+    <section aria-labelledby="rate">
+      <h2 id="rate">Your investment rate</h2>
+      <p class="intro">What percentage of your income becomes assets that generate future cash flow? That number is the leading indicator of financial independence. Claryo tracks it against a target you set, every paycheck.</p>
+      <div class="rates">
+        <div class="rate"><strong>10%</strong><span>The floor</span></div>
+        <div class="rate"><strong>15%</strong><span>Covers retirement if you start early</span></div>
+        <div class="rate"><strong>25%</strong><span>Opens options before 65</span></div>
+        <div class="rate"><strong>40–50%</strong><span>Financial independence on an unconventional timeline</span></div>
+      </div>
+      <div class="pair">
+        <div>
+          <h3>You set the target</h3>
+          <p>The benchmarks come from established personal finance frameworks. Claryo tracks whether your paychecks are getting there.</p>
+        </div>
+        <div>
+          <h3>Portfolio income</h3>
+          <p>Your investment rate is the leading indicator. Portfolio income is the lagging one: what the rate becomes, compounded. Claryo shows your FI ratio, portfolio income as a share of monthly expenses. When it reaches 100%, work is optional.</p>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="who">
+      <h2 id="who">Built for breadwinners</h2>
+      <p class="intro">Breadwinners carry financial responsibility for a household. They do this work because people depend on them getting it right. Claryo was built for them: the person managing one income or two, solo or with a partner, who needs to know the household is covered.</p>
+      <div class="pair">
+        <div>
+          <h3>For people who are ready</h3>
+          <p>Claryo requires engagement. The paycheck planning is real work, and the signals demand honest input. There is no automated version of this.</p>
+        </div>
+        <div>
+          <h3>A different kind of tool</h3>
+          <p>If you've tried other budget planners and found them shallow, gamified or patronizing, this is not that. A clear system and the data to make good decisions.</p>
+        </div>
+      </div>
+      <p class="statement">No streaks. No badges. No cheerleading.</p>
+    </section>
+
+    <section class="price" aria-labelledby="price">
+      <h2 id="price">One price. Every feature.</h2>
+      <p class="intro">Claryo is a paid app. No subscription, no in-app purchases, no paywall. You buy it once and everything's included. The price is a filter: it selects for people ready to do the work.</p>
+    </section>
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <span>© 2026 Michael Lorenzo Ponce Sanchez</span>
+    <nav aria-label="Footer">
+      <a href="privacy/">Privacy Policy</a>
+      <a href="terms/">Terms of Use</a>
+      <a href="mailto:claryoapp@gmail.com">claryoapp@gmail.com</a>
+    </nav>
+  </div>
+</footer>
+
+</body>
+</html>
