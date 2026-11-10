@@ -83,9 +83,17 @@
   .lead { font-size: 1.1875rem; color: var(--muted); max-width: 36em; }
 
   /* The logo story (lib/pages/auth_story.dart) and the closing logo. */
-  .story { width: 100%; max-width: 400px; margin: 0 auto; }
+  .story { position: relative; width: 100%; max-width: 400px; margin: 0 auto; }
   .story svg, .closing-logo svg { display: block; width: 100%; height: auto; overflow: visible; }
   .story .name { font-size: 12px; font-weight: 700; letter-spacing: 1.3px; fill: var(--ink); }
+  /* The replay control sits on the landed tile: 160 square, centred in 340×200, corner 45.76. */
+  .replay {
+    position: absolute; left: 26.47%; top: 10%; width: 47.06%; height: 80%;
+    margin: 0; padding: 0; border: 0; border-radius: 28.6%;
+    background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .replay:focus { outline: none; }
+  .replay:focus-visible { outline: 2px solid var(--muted); outline-offset: 4px; }
 
   /* Sections */
   section { border-top: 1px solid var(--line); padding: 64px 0; }
@@ -98,13 +106,6 @@
     letter-spacing: -0.03em;
   }
   .intro { max-width: 34em; color: var(--muted); font-size: 1.125rem; }
-  .statement {
-    margin-top: 40px;
-    font-weight: 800;
-    font-size: clamp(1.75rem, 1.2rem + 2.2vw, 2.5rem);
-    line-height: 1.1;
-    letter-spacing: -0.03em;
-  }
 
   /* A beat: its words, then the app instrument it ports. */
   .beat { display: grid; gap: 40px; align-items: start; }
@@ -193,25 +194,6 @@
   .body.above .cap { top: auto; bottom: calc(var(--r) + 6px); }
   .lit .cap { font-weight: 700; color: var(--ink); }
 
-  /* The investment rate's four figures. */
-  .rates-block { margin-top: 64px; }
-  .ratelead { font-weight: 700; font-size: clamp(1.25rem, 1.1rem + 0.6vw, 1.5rem); line-height: 1.25; letter-spacing: -0.02em; max-width: 30em; margin-bottom: 32px; }
-  .rates { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px; }
-  @media (min-width: 880px) { .rates { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
-  .rate { border-top: 1px solid var(--line); padding-top: 16px; }
-  .rate strong {
-    display: block;
-    font-weight: 800;
-    font-size: clamp(2.25rem, 1.6rem + 2.4vw, 3.25rem);
-    line-height: 1;
-    --lh: 1em;
-    letter-spacing: -0.04em;
-    margin-bottom: 10px;
-    font-variant-numeric: tabular-nums;
-    white-space: nowrap;
-  }
-  .rate .l { color: var(--muted); font-size: 1rem; }
-
   /* Number reels (animated_number.dart): the laid-out text is the final figure. */
   .reel { position: relative; display: inline-block; }
   .reel .rg { visibility: hidden; }
@@ -234,6 +216,7 @@
     .motion [data-at] { opacity: 0; }
     .motion [data-at].in { animation: arrive 440ms var(--out) both; }
     .motion .story .blk, .motion .story .ground { opacity: 0; }
+    .motion .closing-logo .cblk { opacity: 0; }
   }
   @keyframes arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
 </style>
@@ -270,12 +253,13 @@
       <div>
         <p class="eyebrow">Claryo: Paycheck System</p>
         <h1>Plan your paycheck. Secure your financial future — in the right order.</h1>
-        <p class="lead">Most breadwinners don't have an income problem. They have a conversion problem: income arrives, expenses absorb it, and nothing builds. Claryo is the system that closes that gap, paycheck by paycheck.</p>
+        <p class="lead">Income arrives, expenses take it, and nothing builds. In Claryo you plan each paycheck before it arrives: cash first, then protection, then growth.</p>
       </div>
       <!-- The sign-in logo story (lib/pages/auth_story.dart): blocks set down
-           bottom-up and named, then gathered into the logo. Tile 160, centred. -->
-      <div class="story" role="img" aria-label="Four steps, built from the bottom up: plan your paycheck, build your cash, protect your household, then grow.">
-        <svg viewBox="0 0 340 200" aria-hidden="true" focusable="false">
+           bottom-up and named, then gathered into the logo. Tile 160, centred.
+           The image role sits on the svg so the script's replay button stays outside it. -->
+      <div class="story">
+        <svg viewBox="0 0 340 200" role="img" aria-label="Four steps, built from the bottom up: plan your paycheck, build your cash, protect your household, then grow." focusable="false">
           <defs>
             <filter id="lift" x="-25%" y="-25%" width="150%" height="150%">
               <feDropShadow dx="0" dy="4" stdDeviation="9.74" flood-color="#1E1838" flood-opacity="0.078"/>
@@ -302,7 +286,6 @@
     <section aria-labelledby="who" data-clock>
       <h2 id="who" data-at="0">Built for breadwinners</h2>
       <p class="intro" data-at="80">You carry financial responsibility for a household, on one income or two. Claryo is for people who are ready to do the work.</p>
-      <p class="statement" data-at="160">No streaks. No badges. No cheerleading.</p>
     </section>
 
     <!-- Budget: the paycheck actions (paycheck_actions_beat.dart, split_reveal.dart,
@@ -311,8 +294,8 @@
       <div class="beat">
         <div>
           <p class="tab" style="--c: var(--purple)" data-at="0">Budget</p>
-          <h2 id="b-budget" data-at="0">Plan every paycheck</h2>
-          <p class="intro" data-at="80">Save, Repay, Spend, Earmark, Invest. You plan every paycheck before it arrives.</p>
+          <h2 id="b-budget" data-at="0">Split every paycheck</h2>
+          <p class="intro" data-at="80">Each paycheck goes to five uses until nothing is left unplanned: Save, Repay, Spend, Earmark, Invest.</p>
         </div>
         <figure class="fig" data-at="160" data-play="actions">
           <div class="card actions">
@@ -331,7 +314,7 @@
               <li class="row" style="--hue: #4DB6AC"><span class="wash"></span><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-save"/></svg></span><span class="words"><span class="t">Save</span><span class="g">Cash you keep for emergencies</span></span></div></li>
               <li class="row" style="--hue: #E07B54"><span class="wash"></span><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-repay"/></svg></span><span class="words"><span class="t">Repay</span><span class="g">Credit cards and loans you pay down</span></span></div></li>
               <li class="row" style="--hue: #E57373"><span class="wash"></span><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-spend"/></svg></span><span class="words"><span class="t">Spend</span><span class="g">Rent, food and everyday bills</span></span></div></li>
-              <li class="row" style="--hue: #81C784"><span class="wash"></span><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-earmark"/></svg></span><span class="words"><span class="t">Earmark</span><span class="g">For planned and recurring costs</span></span></div></li>
+              <li class="row" style="--hue: #81C784"><span class="wash"></span><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-earmark"/></svg></span><span class="words"><span class="t">Earmark</span><span class="g">Set aside for a cost you know is coming</span></span></div></li>
               <li class="row" style="--hue: #7986CB"><span class="wash"></span><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-invest"/></svg></span><span class="words"><span class="t">Invest</span><span class="g">Assets that build future income</span></span></div></li>
             </ul>
           </div>
@@ -346,8 +329,8 @@
       <div class="beat">
         <div>
           <p class="tab" style="--c: var(--teal)" data-at="0">Cash Flow</p>
-          <h2 id="b-cash" data-at="0">Cash has four jobs</h2>
-          <p class="intro" data-at="80">Your emergency fund, recurring expenses, one-off goals, and cash with no job yet. Only one of them is savings.</p>
+          <h2 id="b-cash" data-at="0">Know what your cash is for</h2>
+          <p class="intro" data-at="80">Every cash account sits in one of four purposes: your emergency fund, recurring expenses, one-off goals, or cash with no purpose yet.</p>
         </div>
         <figure class="fig" data-at="160" data-play="cash">
           <div class="card cashcard">
@@ -366,7 +349,7 @@
               <li class="row" style="--hue: #4DB6AC"><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-umbrella"/></svg></span><span class="words"><span class="t">Emergency Fund</span><span class="g"><span class="months">4.5</span> months of expenses</span></span><span class="amt">₱337,500</span></div></li>
               <li class="row" style="--hue: #4FB553"><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-cycle"/></svg></span><span class="words"><span class="t">Planned Expenses</span><span class="g">Recurring</span></span><span class="amt">₱150,000</span></div></li>
               <li class="row" style="--hue: #81C784"><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-target"/></svg></span><span class="words"><span class="t">Savings Goals</span><span class="g">One-off</span></span><span class="amt">₱187,500</span></div></li>
-              <li class="row" style="--hue: #B0BEC5"><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-wallet"/></svg></span><span class="words"><span class="t">Unassigned</span><span class="g">No job yet</span></span><span class="amt">₱75,000</span></div></li>
+              <li class="row" style="--hue: #B0BEC5"><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-wallet"/></svg></span><span class="words"><span class="t">Unassigned</span><span class="g">No purpose yet</span></span><span class="amt">₱75,000</span></div></li>
             </ul>
           </div>
         </figure>
@@ -378,8 +361,8 @@
       <div class="beat">
         <div>
           <p class="tab" style="--c: var(--peri)" data-at="0">Protection</p>
-          <h2 id="b-protect" data-at="0">When ten times income runs out</h2>
-          <p class="intro" data-at="80">Ten times income, ₱12.0M, covers a ₱900K-a-year household for 16½ of 20 years. The red marks the years it doesn't reach.</p>
+          <h2 id="b-protect" data-at="0">How long your cover lasts</h2>
+          <p class="intro" data-at="80">A household spending ₱900K a year for 20 years needs ₱13.9M of cover in today's money. Ten times income, ₱12.0M, covers 16½ of those years; red marks the rest.</p>
         </div>
         <figure class="fig" data-at="160" data-play="chart">
           <div class="card chartbox">
@@ -429,7 +412,7 @@
                 <text x="320" y="161" dominant-baseline="central" text-anchor="end">Yr 20</text>
               </g>
             </svg>
-            <div class="legend" aria-hidden="true"><span><i class="sw need"></i>What it takes</span><span><i class="sw held"></i>What you hold</span><span><i class="sw dry"></i>Not funded</span></div>
+            <div class="legend" aria-hidden="true"><span><i class="sw need"></i>Household need</span><span><i class="sw held"></i>Your cover</span><span><i class="sw dry"></i>Not funded</span></div>
           </div>
         </figure>
       </div>
@@ -441,12 +424,12 @@
       <div class="beat">
         <div>
           <p class="tab" style="--c: var(--amber)" data-at="0">Growth</p>
-          <h2 id="b-growth" data-at="0">Your portfolio, core and satellites</h2>
-          <p class="intro" data-at="80">The investments you track, drawn as a core with satellites around it.</p>
+          <h2 id="b-growth" data-at="0">Your portfolio, by role</h2>
+          <p class="intro" data-at="80">Your holdings sit in the core. Move the ones you treat differently, such as collectibles or speculation, into satellites around it.</p>
         </div>
         <figure class="fig" data-at="160" data-play="orrery">
           <div class="card orbitbox">
-            <div class="orrery" role="img" aria-label="A core holding at the centre, with two satellites around it: Collectibles and Speculation.">
+            <div class="orrery" role="img" aria-label="A core holding at the center, with two satellites around it: Collectibles and Speculation.">
               <div class="ring" aria-hidden="true"></div>
               <div class="body core" aria-hidden="true"><span class="disc"><svg><use href="#g-sun"/></svg></span><span class="cap">Core</span></div>
               <div class="body sat s0 lit" aria-hidden="true"><span class="disc"><svg><use href="#g-diamond"/></svg></span><span class="cap">Collectibles</span></div>
@@ -455,31 +438,21 @@
           </div>
         </figure>
       </div>
-
-      <div class="rates-block" data-clock>
-        <p class="ratelead" data-at="0">Your investment rate is the share of income that becomes assets.</p>
-        <div class="rates">
-          <div class="rate" data-at="160"><strong data-reel>10%</strong><span class="l">The floor</span></div>
-          <div class="rate" data-at="460"><strong data-reel>15%</strong><span class="l">Covers retirement if you start early</span></div>
-          <div class="rate" data-at="760"><strong data-reel>25%</strong><span class="l">Opens options before 65</span></div>
-          <div class="rate" data-at="1060"><strong data-reel>40–50%</strong><span class="l">Financial independence on an unconventional timeline</span></div>
-        </div>
-      </div>
     </section>
 
-    <!-- The close: launch_story.dart's hidden tab — its block fades where it stands. -->
+    <!-- The close: Budget alone, then the pillars laid in bottom-up (launch_story.dart's Laid motion). -->
     <section aria-labelledby="start" data-clock>
       <div class="beat">
         <div>
           <h2 id="start" data-at="0">Start where you need to</h2>
-          <p class="intro" data-at="80">Claryo is comprehensive by design. Cash Flow, Protection and Growth can each be switched off, and your paycheck stays on. Pick your starting point on first run, build the habit there, then add the next tab in Settings whenever you're ready. Nothing is locked.</p>
+          <p class="intro" data-at="80">Budget is always on. Cash Flow, Protection and Growth can each be switched off. Pick the tabs you need on first run, and add the rest in Settings when you're ready.</p>
         </div>
-        <figure class="fig closing-logo" data-at="160" data-play="close" role="img" aria-label="The Claryo logo with only the paycheck block left.">
+        <figure class="fig closing-logo" data-at="160" data-play="close" role="img" aria-label="The Claryo logo, built up from the paycheck block.">
           <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
             <rect x="-80" y="-80" width="160" height="160" rx="45.76" fill="#F5F2FA" filter="url(#lift)" transform="translate(100 100)"/>
-            <rect class="cblk" width="85.94" height="23.01" rx="5.63" fill="#FFB74D" transform="translate(57.02 50.94)" style="opacity: 0"/>
-            <rect class="cblk" width="85.94" height="23.01" rx="5.63" fill="#7986CB" transform="translate(57.02 75.98)" style="opacity: 0"/>
-            <rect class="cblk" width="85.94" height="23.01" rx="5.63" fill="#4DB6AC" transform="translate(57.02 101.02)" style="opacity: 0"/>
+            <rect class="cblk" width="85.94" height="23.01" rx="5.63" fill="#FFB74D" transform="translate(57.02 50.94)"/>
+            <rect class="cblk" width="85.94" height="23.01" rx="5.63" fill="#7986CB" transform="translate(57.02 75.98)"/>
+            <rect class="cblk" width="85.94" height="23.01" rx="5.63" fill="#4DB6AC" transform="translate(57.02 101.02)"/>
             <rect width="85.94" height="23.01" rx="5.63" fill="#7B6BAE" transform="translate(57.02 126.06)"/>
           </svg>
         </figure>
@@ -624,13 +597,41 @@
       });
     };
     frame(0);
-    const go = () => {
-      names.forEach((n, i) => clips[i].setAttribute('width', n.getComputedTextLength() + 2));
-      run(3990, frame);
+    // Each clip spans its name's inked width, so the reveal keeps the app's tempo.
+    // WebKit's measure leaves the 1.3 letter-spacing out: measuring again with it
+    // off tells whether this engine counted it, and it is added back where it didn't.
+    const inked = n => {
+      const w = n.getBBox().width;
+      n.style.letterSpacing = '0';
+      const bare = n.getBBox().width;
+      n.style.letterSpacing = '';
+      return w - bare > 1 ? w : w + 1.3 * n.textContent.length;
     };
-    // The names are measured in Figtree; the story never waits past 1s for it.
-    const fonts = document.fonts ? document.fonts.ready : Promise.resolve();
-    Promise.race([fonts, new Promise(r => setTimeout(r, 1000))]).then(go);
+    const measure = () => names.forEach((n, i) => clips[i].setAttribute('width', inked(n) + 3));
+    let playing = true;                         // until the story first starts, a tap does nothing
+    const play = () => { playing = true; run(3990, frame, () => { playing = false; }); };
+    // The story never waits past 1s for Figtree, and the names are re-measured
+    // once it lands; load() asks for their face outright, as ready alone may not.
+    const fonts = document.fonts ? document.fonts.load('700 12px Figtree').then(() => document.fonts.ready) : Promise.resolve();
+    fonts.then(measure);
+    Promise.race([fonts, new Promise(r => setTimeout(r, 1000))]).then(() => { measure(); play(); });
+
+    // A tap on the landed tile tells the story again (auth_story.dart _replay):
+    // ignored mid-story, the picture fades over _kCloseUp (450ms), then restarts.
+    const replay = document.createElement('button');
+    replay.type = 'button';
+    replay.className = 'replay';
+    replay.setAttribute('aria-label', 'Replay the logo story');
+    story.parentElement.append(replay);
+    replay.addEventListener('click', () => {
+      if (playing) return;
+      playing = true;
+      run(450, ms => { story.style.opacity = 1 - easeInOutCubic(ms / 450); }, () => {
+        frame(0);
+        story.style.opacity = '';
+        play();
+      });
+    });
   }
 
   // ── Budget: the split, then the tour (paycheck_actions_beat.dart) ───────
@@ -768,13 +769,22 @@
     players.orrery = () => { started = true; resume(); };
   }
 
-  // ── The close: the pillar blocks fade where they stand (launch_story.dart) ─
+  // ── The close: Budget alone, then the pillars laid in bottom-up ─────────
+  // launch_story.dart's Laid motion: set down from 18 above on easeOutQuart
+  // over 320ms (_kLayFor), alpha over its first 35%, no bounce.
   const closing = document.querySelector('.closing-logo');
   if (closing) {
-    const blocks = [...closing.querySelectorAll('.cblk')];   // Growth, Protection, Cash Flow
-    const frame = ms => blocks.forEach((b, k) => { b.style.opacity = 1 - easeOutCubic(span(ms, 600 + 300 * k, 440)); });
+    const blocks = [...closing.querySelectorAll('.cblk')].reverse();   // Cash Flow, Protection, Growth
+    const seats = blocks.map(b => b.getAttribute('transform').match(/[\d.]+/g).map(Number));
+    const PITCH = 360;                          // each block is set (320) before the next leaves
+    const frame = ms => blocks.forEach((b, k) => {
+      const at = 600 + PITCH * k;
+      const set = easeOutQuart(span(ms, at, 320));
+      b.style.opacity = span(ms, at, 320 * 0.35);
+      b.setAttribute('transform', `translate(${seats[k][0]} ${seats[k][1] - (1 - set) * 18})`);
+    });
     frame(0);
-    players.close = () => run(1640, frame);
+    players.close = () => run(600 + 2 * PITCH + 320, frame);
   }
 
   // ── The stepped arrival (arrival_clock.dart) ─────────────────────────────
@@ -794,8 +804,6 @@
       el.classList.add('in');
       const play = players[el.dataset.play];
       if (play) setTimeout(play, delay + 300);
-      const figure = el.querySelector('[data-reel]');
-      if (figure) { const roll = reels(figure); setTimeout(() => roll(800), delay); }
     }
   }, { rootMargin: '0px 0px -12% 0px' });
   document.querySelectorAll('[data-at]').forEach(el => io.observe(el));
