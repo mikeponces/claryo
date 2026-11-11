@@ -61,15 +61,20 @@
   .wrap { max-width: 1080px; margin: 0 auto; padding: 0 var(--gutter); }
   @media (min-width: 640px) { :root { --gutter: 32px; } }
 
-  /* Header */
+  /* ── Header ── */
   .top { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
   .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.125rem; letter-spacing: -0.01em; text-decoration: none; }
   .brand img { width: 32px; height: 32px; border-radius: 8px; }
   .top nav { display: flex; gap: 20px; font-size: 0.9375rem; color: var(--muted); }
   .top nav a { text-decoration: none; }
   .top nav a:hover { color: var(--ink); }
+  /* On a phone every link is a 44-point target: padding out, margin back, so nothing moves. */
+  @media (max-width: 879px) {
+    .brand { padding: 6px 0; margin: -6px 0; }
+    .top nav a { padding: 10px; margin: -10px; }
+  }
 
-  /* Hero */
+  /* ── Hero ── */
   .hero { display: grid; gap: 40px; padding: 48px 0 72px; align-items: center; }
   @media (min-width: 880px) { .hero { grid-template-columns: minmax(0, 1fr) auto; gap: 64px; padding: 24px 0 80px; } }
   .eyebrow { font-weight: 600; font-size: 0.9375rem; color: var(--muted); margin-bottom: 20px; }
@@ -81,6 +86,14 @@
     letter-spacing: -0.035em;
   }
   .lead { font-size: 1.1875rem; color: var(--muted); max-width: 36em; }
+  /* The stores' official badges, unmodified, at 40 tall; Google's PNG carries 41 of transparent
+     padding round a 564x168 badge, so it draws at 59.5 and the padding is pulled back. */
+  .stores { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 22px; margin-top: 28px; }
+  .stores img { display: block; width: auto; height: 40px; }
+  .stores .play { height: 59.52px; margin: -9.76px; }
+  /* Below 375 the headline keeps two lines and the lead its three, the pillars on their own line. */
+  @media (max-width: 374px) { h1 { font-size: clamp(2rem, 11vw - 3px, 2.375rem); } }
+  @media (max-width: 359px) { .lead { font-size: 1.125rem; } }
 
   /* A phone: an iPhone 16 screen (393 × 852 points). Its content is laid out
      in points on a stage and shrunk as one picture, so it reads the same at
@@ -105,7 +118,7 @@
     overflow: hidden; clip-path: inset(0 round calc(55px * var(--k)));
     background: #F2F2F7;
   }
-  /* The island is hardware, so it sits over a screenshot too. */
+  /* The island is hardware, drawn over the screen. */
   .screen::after {
     content: ""; position: absolute; z-index: 2;
     left: calc(133.5px * var(--k)); top: calc(11px * var(--k));
@@ -122,87 +135,66 @@
   .homebar { left: 129.5px; top: 839px; width: 134px; height: 5px; border-radius: 2.5px; background: rgba(0, 0, 0, 0.85); }
   .lt-top .sbar { color: #fff; }
   .lt-foot .homebar { background: rgba(255, 255, 255, 0.85); }
-  .shot { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: cover; }
 
-  /* The bands (tab_band_palette.dart BandPalette.of): the deep shade under
-     white ink, fading into the pillar's own light shade. */
-  .p-budget  { --band: #5B4B9E; --foot: #9575CD; --brgb: 91 75 158; }
-  .p-cash    { --band: #00796B; --foot: #4DB6AC; --brgb: 0 121 107;  --prgb: 77 182 172; }
-  .p-protect { --band: #3446FF; --foot: #7986CB; --brgb: 52 70 255;  --prgb: 121 134 203; }
-  .p-growth  { --band: #C2410C; --foot: #FFB74D; --brgb: 194 65 12;  --prgb: 255 183 77; }
-  .bandbg { left: 0; top: 0; width: 393px; height: var(--bh); background: linear-gradient(var(--band) 0, var(--band) var(--split), var(--foot) 100%); }
-  /* The wallpaper (band_wallpaper.dart): a cool base and four fixed blooms,
-     radius a fraction of the shortest side, stops 0 / .5 / 1 at a, .4a, 0. */
-  .wall {
-    inset: 0;
-    background:
-      radial-gradient(circle 373.35px at 373.35px 852px, rgb(185 166 242 / 0.45), rgb(185 166 242 / 0.18) 186.68px, rgb(185 166 242 / 0) 373.35px),
-      radial-gradient(circle 334.05px at 19.65px 745.5px, rgb(244 163 190 / 0.38), rgb(244 163 190 / 0.152) 167.03px, rgb(244 163 190 / 0) 334.05px),
-      radial-gradient(circle 334.05px at 393px 468.6px, rgb(125 185 242 / 0.35), rgb(125 185 242 / 0.14) 167.03px, rgb(125 185 242 / 0) 334.05px),
-      radial-gradient(circle 353.7px at 0 340.8px, rgb(var(--brgb) / 0.4), rgb(var(--brgb) / 0.16) 176.85px, rgb(var(--brgb) / 0) 353.7px),
-      #EEF4FB;
-  }
-
-  /* A signal page at rest (signal_page_scaffold.dart): the name at 34 on the
-     band, the first card riding 28 up over its foot. Safe top 59, bar 56. */
-  .sp .bandbg { --bh: 209px; --split: 76.56%; }
-  .bar-g { left: 0; top: 59px; width: 393px; height: 56px; color: #fff; }
-  .pname { left: 24px; top: 119px; font-weight: 700; font-size: 34px; line-height: 41px; letter-spacing: -1px; color: #fff; white-space: nowrap; }
-  .sp .card { left: 16px; top: 181px; width: 361px; }
-  /* elevatedPanelDecoration(pillarFramed): the pillar hue at 180, its halo at 40. */
-  .card.framed { border: 0.75px solid rgb(var(--prgb) / 0.706); box-shadow: 0 2px 15px rgb(var(--prgb) / 0.157), 0 3px 12px rgba(0, 0, 0, 0.11), 0 10px 33px rgba(0, 0, 0, 0.055); }
-
-  /* The Budget tutorial's beat (paycheck_actions_beat.dart in NarrativeBeat),
-     as design-refs/great-animation.png captured it. */
-  .tut-g { left: 0; top: 59px; width: 393px; height: 48px; color: #1B1830; }
-  .bh { left: 24px; top: 139px; width: 345px; font-weight: 700; font-size: 36px; line-height: 1.1; letter-spacing: -0.8px; }
-  .bh span { color: #64558A; }
-  .tut .card { left: 24px; top: 242px; width: 345px; }
-  .cta { font-style: normal; left: 24px; top: 744px; width: 345px; height: 48px; border-radius: 24px; background: #64558A; color: #fff; font-weight: 500; font-size: 16px; line-height: 48px; text-align: center; }
-  .mark { left: 188.5px; top: 806px; width: 16px; height: 4px; border-radius: 2px; background: #8E8D92; }
-
-  /* A tab's head on its band (tab_band.dart): white title and promise, the
-     band solid to the chrome's foot and reaching 96 past it. */
-  .tb .bandbg { --bh: 236px; --split: 59.3%; }
-  .tname { left: 24px; top: 71px; font-weight: 800; font-size: 34px; line-height: 1.1; letter-spacing: -0.8px; color: #fff; }
-  .tname.budget { font-size: 28px; }
-  .tline { left: 24px; top: 116px; width: 345px; font-size: 14px; line-height: 20px; color: rgb(255 255 255 / 0.941); }
-
-  /* The hero: the sign-in screen's band head (auth_page.dart, auth_story.dart),
-     the band from top to foot with its sheen, the telling over it. */
+  /* The hero: the sign-in screen's band and sheen (auth_page.dart, auth_story.dart).
+     The deep shade holds to 80%, not 55%, so the rows' lines keep AA white ink all the way down. */
   .hero-screen {
     background:
       radial-gradient(circle 510.9px at 19.65px 0, rgb(148 138 192 / 0.6), rgb(148 138 192 / 0) 510.9px),
-      linear-gradient(#5B4B9E 0, #5B4B9E 55%, #9575CD 100%);
+      linear-gradient(#5B4B9E 0, #5B4B9E 80%, #9575CD 100%);
   }
   .story .tell { left: 0; top: 0; width: 393px; height: 852px; overflow: visible; }
   .story .name { font-size: 12px; font-weight: 700; letter-spacing: 1.3px; fill: #fff; fill-opacity: 0.941; }
   .sw-words { left: 24px; top: 380px; width: 245px; color: #fff; }
   .sw-words b { display: block; font-weight: 800; font-size: 34px; line-height: 1.1; letter-spacing: -0.8px; }
   .sw-words span { display: block; margin-top: 6px; font-size: 16px; line-height: 24px; letter-spacing: 0.5px; color: rgb(255 255 255 / 0.941); }
-  /* The replay control sits on the landed tile: 84 square, corner 24. */
+  .story .sw-words { opacity: 0; }
+  /* The hero's phone is the page's largest, so its rows stay legible. */
+  .hero .phone { --sw: 276px; --k: 0.702290; }
+  @media (min-width: 360px) { .hero .phone { --sw: 316px; --k: 0.804071; } }
+  @media (min-width: 400px) { .hero .phone { --sw: 340px; --k: 0.865140; } }
+  @media (min-width: 880px) { .hero .phone { --sw: 320px; --k: 0.814249; } }
+  @media (min-width: 880px) and (max-height: 860px) { .hero .phone { --sw: 280px; --k: 0.712468; } }
+  @media (min-width: 880px) and (max-height: 740px) { .hero .phone { --sw: 236px; --k: 0.600509; } }
+
+  /* The orrery (pillar_strata_beat.dart) in its iPhone 16 box, 344 × 359.5,
+     icons only. Each pillar's hue is lightened until it holds on the purple,
+     and a lit disc takes dark ink. */
+  .orr { left: 24.5px; top: 92px; width: 344px; height: 359.5px; }
+  .orr .rings { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+  .oring path { fill: none; stroke: rgb(var(--t)); stroke-linecap: round; }
+  .o-glow { stroke-width: 12.6; stroke-opacity: 0.2; filter: url(#oblur); }
+  .o-rest { stroke-width: 1.3; }
+  .o-lit { stroke-width: 2.6; }
+  .haze { fill: #fff; fill-opacity: 0.14; filter: url(#ohaze); }
+  .nd { position: absolute; left: 0; top: 0; width: 36px; height: 36px; transform-origin: 18px 18px; will-change: transform; }
+  .nd > span { position: absolute; inset: 0; border-radius: 50%; display: grid; place-items: center; }
+  .nd .q { background: rgb(var(--t) / 0.22); border: 1.5px solid rgb(var(--t) / 0.59); color: rgb(var(--t)); }
+  .nd .l { background: rgb(var(--t)); box-shadow: 0 0 14px 2px rgb(var(--t) / 0.35); color: #1E1838; }
+  .nd svg { width: 15.12px; height: 15.12px; fill: currentColor; }
+
+  /* The lit pillar, then its three signals in ConceptRow's shape: the glyph in
+     its pillar's chip, the name in white, one line under it. One slot of fixed
+     rows, so a pillar change never moves anything. */
+  .sigs { left: 24px; top: 466px; width: 345px; color: #fff; }
+  .pg { position: absolute; left: 0; top: 0; width: 100%; }
+  .pg + .pg { opacity: 0; }
+  .ph { font-weight: 800; font-size: 26px; line-height: 32px; letter-spacing: -0.6px; margin-bottom: 6px; }
+  .sigs ul { list-style: none; margin: 0; padding: 0; }
+  .sigs li { display: flex; align-items: center; gap: 16px; height: 82px; }
+  .sigs .chip { --hue: rgb(var(--t)); color: var(--ink); }
+  .sigs .words .t { font-size: 17px; line-height: 20px; color: #fff; }
+  .sigs .words .g { margin-top: 3px; font-size: 15.5px; line-height: 20px; letter-spacing: 0.15px; color: rgb(255 255 255 / 0.9); text-wrap: pretty; }
+  /* The replay control sits on the core. */
   .replay {
-    left: 285px; top: 383.7px; width: 84px; height: 84px;
-    padding: 0; border: 0; border-radius: 24px;
+    left: 164.5px; top: 239.75px; width: 64px; height: 64px;
+    padding: 0; border: 0; border-radius: 18px;
     background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
   .replay:focus { outline: none; }
-  .replay:focus-visible { outline: 3px solid #fff; outline-offset: 5px; }
-  .closing-logo svg { display: block; width: 100%; height: auto; overflow: visible; }
+  .replay:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
 
-  /* The gallery: the four tabs in order, two by two on a phone. */
-  .gal-row { display: grid; grid-template-columns: repeat(2, auto); justify-content: center; gap: 24px 16px; }
-  @media (min-width: 640px) { .gal-row { gap: 32px 24px; } }
-  @media (min-width: 880px) { .gal-row { grid-template-columns: repeat(4, auto); } }
-  .gslot { margin: 0; }
-  .gal .phone { --rim: 4px; --sw: 124px; --k: 0.315522; }
-  @media (min-width: 360px) { .gal .phone { --sw: 140px; --k: 0.356234; } }
-  @media (min-width: 400px) { .gal .phone { --sw: 160px; --k: 0.407125; } }
-  @media (min-width: 640px) { .gal .phone { --sw: 220px; --k: 0.559796; } }
-  @media (min-width: 880px) { .gal .phone { --sw: 176px; --k: 0.447837; } }
-  @media (min-width: 1080px) { .gal .phone { --sw: 216px; --k: 0.549618; } }
-
-  /* Sections */
+  /* ── Sections ── */
   section { border-top: 1px solid var(--line); padding: 64px 0; }
   @media (min-width: 880px) { section { padding: 96px 0; } }
   h2 {
@@ -213,15 +205,42 @@
     letter-spacing: -0.03em;
   }
   .intro { max-width: 34em; color: var(--muted); font-size: 1.125rem; }
+  /* Built for breadwinners: a centred pause between the hero and the pillars. */
+  .interlude { text-align: center; }
+  .interlude .intro { margin: 0 auto; max-width: 32em; text-wrap: pretty; }
 
-  /* A beat: its words, then the app instrument it ports. */
+  /* ── Pillar strips ── */
+  /* A pillar strip: the words with the tab's instrument card under them, the tab in a phone beside
+     them, the sides alternating. Narrow, it stacks words, card, phone; wide, the words and card share
+     one measure and the pair sits on the page's axis, so a strip mirrors the last. */
   .beat { display: grid; gap: 40px; align-items: start; }
-  @media (min-width: 880px) { .beat { grid-template-columns: minmax(0, 1fr) minmax(0, 440px); gap: 64px; align-items: center; } }
-  .fig { margin: 0; width: 100%; max-width: 440px; justify-self: center; }
-  .fig.closing-logo { max-width: 220px; }
   .tab { display: flex; align-items: center; gap: 10px; font-weight: 600; font-size: 0.9375rem; color: var(--muted); margin-bottom: 14px; }
   .tab::before { content: ""; width: 22px; height: 6px; border-radius: 1.5px; background: var(--c); }
+  .copy h2 { text-wrap: balance; }
+  .copy .intro { text-wrap: pretty; }
+  .phonefig { margin: 0; justify-self: center; }
+  /* Cards at the phone's width + 5%, laid out at 360 and zoomed whole (founder, 2026-11-12): --cz = phone x 1.05 / 360. */
+  :root { --cz: 0.805; }
+  @media (max-width: 359px) { :root { --cz: 0.78; } }
+  @media (min-width: 400px) { :root { --cz: 0.875; } }
+  @media (min-width: 880px) { :root { --cz: 0.91; } }
+  @media (min-width: 880px) and (max-height: 860px) { :root { --cz: 0.7933; } }
+  @media (min-width: 880px) and (max-height: 740px) { :root { --cz: 0.6883; } }
+  .copy .fig { width: fit-content; margin: 32px auto 0; }
+  .copy .fig .card { width: 360px; zoom: var(--cz); }
+  /* Beside the phone, three cards draw larger than the actions card (founder, 2026-11-12); stacked, all keep the phone's width. */
+  .copy .fig[data-play="cash"] { --cm: 1.15; }
+  .copy .fig[data-play="chart"] { --cm: 1.4; }
+  .copy .fig[data-play="orrery"] { --cm: 1.15; }
+  @media (min-width: 880px) { .copy .fig .card { zoom: calc(var(--cz) * var(--cm, 1)); } }
+  @media (min-width: 880px) {
+    .beat { grid-template-columns: minmax(0, 480px) auto; justify-content: center; gap: 64px clamp(48px, 6vw, 96px); align-items: center; }
+    .beat.flip { grid-template-columns: auto minmax(0, 480px); }
+    .flip .phonefig { grid-column: 1; grid-row: 1; }
+    .copy .fig { margin-left: 0; }
+  }
 
+  /* ── Cards ── */
   /* elevatedPanelDecoration: radius 26, the outline, two neutral shadows. */
   .card {
     background: var(--card);
@@ -244,14 +263,107 @@
   .words .g { display: block; margin-top: 2px; font-size: 13px; line-height: 1.3; --lh: 1.3em; color: var(--muted); }
   .amt { flex: none; font-weight: 700; font-size: 15px; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
 
-  /* Budget: one bar, five equal slices (ShareBar: 12 tall, pills, 2pt seams). */
+  /* ── The tabs, each in its phone ── */
+  /* A tab as it opens, in points (tab_band.dart): ink, shadows and recesses take the band's own hue.
+     The bands (tab_band_palette.dart BandPalette.of): the deep shade under white ink, fading into the
+     pillar's own light shade. --lift is a panel's two shadows, in the band's hue. */
+  .dash { --bh: 233px; --split: 58.8%; --lift: 0 3px 12.5px rgb(var(--brgb) / 0.11), 0 10px 33.3px rgb(var(--brgb) / 0.055); line-height: 1.2; color: rgb(var(--irgb)); }
+  .dash p { white-space: nowrap; }
+  .dash svg { fill: currentColor; }
+  .p-budget  { --band: #5B4B9E; --foot: #9575CD; --brgb: 91 75 158; --lrgb: 148 138 192; --irgb: 30 24 56; --bh: 322px; --split: 70.2%; }
+  .p-cash    { --band: #00796B; --foot: #4DB6AC; --brgb: 0 121 107; --lrgb: 89 167 159; --irgb: 14 42 39; }
+  .p-protect { --band: #3446FF; --foot: #7986CB; --brgb: 52 70 255; --lrgb: 123 135 255; --irgb: 22 27 61; --bh: 293px; --split: 67.2%; }
+  .p-growth  { --band: #C2410C; --foot: #FFB74D; --brgb: 194 65 12; --lrgb: 215 132 97; --irgb: 42 28 12; --bh: 236px; --split: 59.3%; }
+  /* The band, lit from the upper left (BandPalette.sheen): radius 1.3 of its shortest side. */
+  .bandbg { left: 0; top: 0; width: 393px; height: var(--bh); background: radial-gradient(circle calc(1.3 * var(--bh)) at 19.65px 0, rgb(var(--lrgb) / 0.6), rgb(var(--lrgb) / 0)), linear-gradient(var(--band) 0, var(--band) var(--split), var(--foot) 100%); }
+  /* The wallpaper (band_wallpaper.dart): a cool base and four fixed blooms, each centred at a fraction
+     of the screen, radius a fraction of the shortest side, stops 0 / .5 / 1 at a, .4a, 0. */
+  .wall {
+    inset: 0;
+    background:
+      radial-gradient(circle 373.35px at 95% 100%, rgb(185 166 242 / 0.45), rgb(185 166 242 / 0.18) 186.68px, rgb(185 166 242 / 0) 373.35px),
+      radial-gradient(circle 334.05px at 5% 87.5%, rgb(244 163 190 / 0.38), rgb(244 163 190 / 0.152) 167.03px, rgb(244 163 190 / 0) 334.05px),
+      radial-gradient(circle 334.05px at 100% 55%, rgb(125 185 242 / 0.35), rgb(125 185 242 / 0.14) 167.03px, rgb(125 185 242 / 0) 334.05px),
+      radial-gradient(circle 353.7px at 0 40%, rgb(var(--brgb) / 0.4), rgb(var(--brgb) / 0.16) 176.85px, rgb(var(--brgb) / 0) 353.7px),
+      #EEF4FB;
+  }
+  .k-ink { color: rgb(var(--irgb)); font-weight: 700; }
+  .k-sec { color: rgb(var(--irgb) / 0.647); }
+  .k-muted { color: rgb(var(--irgb) / 0.549); }
+  .k-faint { color: rgb(var(--irgb) / 0.353); }
+  .k-var { color: #49454E; }
+
+  /* The head (pillar_header.dart, dashboard_header.dart). */
+  .d-title { left: 24px; top: 73.7px; display: flex; align-items: center; font-weight: 800; font-size: 34px; letter-spacing: -0.8px; color: #fff; }
+  .d-title svg, .d-name svg { flex: none; width: 20px; height: 20px; margin-left: 6px; color: rgb(255 255 255 / 0.941); }
+  .d-prom { left: 24px; top: 115.25px; font-size: 11px; color: rgb(255 255 255 / 0.941); }
+  .d-glyph { width: 22px; height: 22px; color: rgb(255 255 255 / 0.941); }
+  .d-eye { left: 24px; top: 74.7px; font-size: 12px; color: rgb(255 255 255 / 0.941); }
+  .d-name { left: 24px; top: 88.3px; display: flex; align-items: center; font-weight: 700; font-size: 28px; letter-spacing: -0.8px; color: #fff; }
+
+  /* A panel (elevatedPanelDecoration on the band): the outline, two hue shadows. */
+  .dc { left: 24px; width: 345px; background: #fff; border: 0.75px solid #7A757F; border-radius: 26px; overflow: hidden; box-shadow: var(--lift); }
+  .dc > *, .dc .proof > *, .dc .mchart > * { position: absolute; margin: 0; }
+  .dc .proof, .dc .mchart { inset: 0; }
+  /* PanelLabel on the band: the soft chip, the name at 14 medium, a door's caret. */
+  .dl { left: 24px; right: 24px; top: 16px; height: 24px; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 500; letter-spacing: -0.1px; }
+  .dl > i { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: rgb(var(--brgb) / 0.12); color: var(--band); }
+  .dl > i svg { width: 14px; height: 14px; }
+  .dl .car { margin-left: auto; }
+  .dl .inf { width: 16px; height: 16px; margin-left: -4px; color: rgb(var(--irgb) / 0.431); }
+  .car { flex: none; width: 14px; height: 14px; color: rgb(var(--irgb) / 0.353); }
+  .h-num { font-weight: 700; font-variant-numeric: tabular-nums; }
+  .dash [data-reel] { --lh: 1.2em; }
+  /* The shared hero recipes (AppFonts.heroDecimal, heroUnit, the magnitude at 0.72). */
+  .dec { font-size: 0.62em; font-weight: 500; letter-spacing: -0.3px; }
+  .mag { font-size: 0.72em; }
+  .unit { font-weight: 500; letter-spacing: 0; color: rgb(var(--irgb) / 0.706); }
+
+  /* The floating bar (app_shell.dart, shell_nav_bar.dart) on the scaffold's grey. */
+  .nav { left: 0; top: 748px; width: 393px; height: 104px; background: #F2F2F7; }
+  .nav .pill { position: absolute; left: 20px; top: 8px; width: 353px; height: 50px; border-radius: 20px; background: #fff; overflow: hidden; box-shadow: 0 6px 28.7px rgb(0 0 0 / 0.196); }
+  .nav .drop { position: absolute; top: 7px; height: 36px; border-radius: 18px; }
+  .nav .tf { position: absolute; top: 0; height: 50px; display: flex; align-items: center; justify-content: center; gap: 8px; font-size: 12.5px; font-weight: 600; color: #49454E; }
+  .nav .tf svg { width: 24px; height: 24px; }
+  .nav .lit { color: #fff; }
+  .nav .fab { position: absolute; left: 323px; top: 8px; width: 50px; height: 50px; border-radius: 18px; display: grid; place-items: center; background: #7B6BAE; color: #fff; box-shadow: 0 6px 28.7px rgb(0 0 0 / 0.196); }
+  .nav .fab svg { width: 22px; height: 22px; }
+
+  /* ── Budget ── */
+  /* The actions card: one bar, five equal slices (ShareBar: 12 tall, pills, 2pt seams). */
   .strip { padding: 16px 24px; }
   .bar { position: relative; height: 12px; margin: 8px 0; border-radius: 6px; overflow: hidden; }
   .bar .rem { position: absolute; inset: 0; border-radius: 6px; background: var(--purple); transform: translateX(calc(100% + 2px)); }
   .bar .slot { position: absolute; top: 0; height: 12px; width: calc((100% - 8px) / 5); left: calc(var(--i) * ((100% - 8px) / 5 + 2px)); border-radius: 6px; overflow: hidden; }
   .bar .slot i { display: block; height: 100%; border-radius: 6px; background: var(--hue); transition: opacity 150ms var(--out); }
 
-  /* Cash Flow: CashPurposeBars — a two-rule gutter, one bar per purpose. */
+  /* The day strip (day_strip.dart): bare days and month labels, one landed tile. */
+  .sday, .smon { top: 150.25px; width: 60px; text-align: center; color: #fff; }
+  .sday b { display: block; font-size: 11px; font-weight: 500; color: rgb(255 255 255 / 0.784); }
+  .sday span { display: block; margin-top: 3.65px; font-size: 22px; font-weight: 600; letter-spacing: -0.4px; }
+  .smon { top: 164.55px; }
+  .smon b { display: block; font-size: 11px; font-weight: 700; letter-spacing: 0.4px; color: rgb(255 255 255 / 0.784); }
+  .smon span { display: block; margin-top: 1.75px; font-size: 10px; font-weight: 600; letter-spacing: 0.2px; color: rgb(255 255 255 / 0.646); }
+  .stile { top: 142.9px; width: 46px; height: 70px; border-radius: 16px; background: #fff; transform: scale(1.08); box-shadow: var(--lift); }
+  .stile b { margin-top: 7.35px; color: rgb(var(--brgb) / 0.824); }
+  .stile span { margin-top: 3.15px; font-weight: 700; color: var(--band); }
+
+  /* The plan card (income_plan_card.dart) and its sections. */
+  .ledger { left: 0; right: 0; height: 3px; overflow: hidden; background: rgb(var(--brgb) / 0.176); }
+  .ledger i { display: block; height: 3px; }
+  .ledger .lf { position: absolute; inset: 0; border-radius: 1.5px; overflow: hidden; background: #E57373; }
+  .ledger .lb { display: flex; }
+  .bk { width: 16px; height: 16px; }
+  .b-head { left: 60px; font-size: 13px; font-weight: 600; }
+  .b-name { left: 60px; font-size: 15px; font-weight: 500; }
+  .b-amt { right: 24px; font-size: 15px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .chk { left: 24px; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid #7A757F; }
+  .chk.on { border-color: #10B981; background: #10B981 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M7 12.4l3.3 3.2 6.6-7' fill='none' stroke='%23fff' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center / 21px no-repeat; }
+  .hair { left: 24px; right: 24px; height: 1px; background: rgb(202 196 208 / 0.235); }
+  .rule { left: 0; right: 0; height: 1px; background: rgb(202 196 208 / 0.235); }
+
+  /* ── Cash Flow ── */
+  /* The purpose card: CashPurposeBars, a two-rule gutter and one bar per purpose. */
   .cash { padding: 16px 24px 18px; }
   .cbars { position: relative; display: flex; }
   .crules { position: absolute; left: 40px; right: 0; top: 0; height: 120px; }
@@ -265,10 +377,50 @@
   .clab svg { width: 13px; height: 13px; fill: rgba(27, 24, 48, 0.55); }
   .clab b { font-size: 12px; font-weight: 700; line-height: 1; letter-spacing: -0.2px; }
 
-  /* Protection: AnnuityDrawdownChart. */
-  .chartbox { padding: 18px 24px 16px; }
+  /* Monthly Budget (budget_bar_chart.dart): twelve stacked columns, the month in hand lit. */
+  .mb { width: 21.75px; display: flex; flex-direction: column; border-radius: 5px 5px 0 0; overflow: hidden; opacity: 0.45; transform-origin: 50% 100%; }
+  .mb i { flex: none; }
+  .mb.sel { opacity: 1; transform: scale(1.03); }
+  .mb.nil { opacity: 1; border-radius: 5px; background: #F4F3F5; }
+  .mlab b { position: absolute; top: 214.15px; width: 30px; text-align: center; font-size: 9px; font-weight: 500; color: rgb(var(--irgb) / 0.353); }
+  .mlab b.on { font-weight: 700; color: var(--foot); }
+  .lg { display: flex; align-items: baseline; font-size: 10px; font-weight: 500; color: rgb(var(--irgb) / 0.549); }
+  .lg i { flex: none; align-self: center; width: 6px; height: 6px; margin-right: 6px; border-radius: 50%; }
+  .lg b { margin-left: auto; font-weight: 600; color: rgb(var(--irgb)); font-variant-numeric: tabular-nums; }
+
+  /* Cash Reserves (months_report.dart, reserve_scale_track.dart, cash_flow_gateway.dart). */
+  .basis { display: flex; align-items: center; font-size: 13px; font-weight: 500; color: rgb(var(--irgb) / 0.51); }
+  .basis svg { width: 14px; height: 14px; margin-left: 7px; color: rgb(var(--irgb) / 0.353); }
+  .scale { width: 297px; height: 20px; border-radius: 10px; overflow: hidden; background: rgb(var(--brgb) / 0.176); }
+  .scale i { position: absolute; top: 0; height: 20px; }
+  .scale .zone { left: 25%; width: 25%; background: rgb(var(--brgb) / 0.314); }
+  .scale .fill { left: 0; width: 100%; border-radius: 10px; background: var(--foot); }
+  .scale .tick { width: 2px; margin-left: -1px; background: #fff; }
+  .slab b { position: absolute; width: 48px; text-align: center; font-size: 10px; font-weight: 400; color: rgb(var(--irgb) / 0.431); }
+  .foot { left: 0; right: 0; height: 42.3px; border-top: 1px solid rgb(202 196 208 / 0.235); display: flex; align-items: center; justify-content: space-between; padding: 0 24px; font-size: 13px; font-weight: 500; color: rgb(var(--irgb) / 0.549); }
+  .marks { display: flex; }
+  .marks i { width: 20.3px; height: 20.3px; border-radius: 6px; display: grid; place-items: center; font-style: normal; font-size: 9.5px; font-weight: 700; letter-spacing: -0.2px; color: #1A1A1A; box-shadow: 0 0 0 1.5px #fff; }
+  .marks i + i { margin-left: -3.3px; }
+
+  /* ── Protection ── */
+  /* The coverage card: AnnuityDrawdownChart, and HealthDrawdownBars on the second face. The two faces
+     share one cell, so the card holds the taller (the Life face, with its legend). */
+  .chartbox { padding: 16px 24px; }
+  .faces { display: grid; }
+  .face { grid-area: 1 / 1; min-width: 0; }
+  .face + .face { opacity: 0; }
+  /* The page's hero (_heroRow): the label at 12 semibold, 2 under it the figure, 16 to the chart.
+     The label takes --quiet for AA where the app sets onSurface at 140. */
+  .phead { display: flex; align-items: baseline; gap: 16px; }
+  .plab { flex: 1; min-width: 0; font-size: 12px; font-weight: 600; line-height: 1.2; color: var(--quiet); }
+  .pmark { display: none; flex: none; font-size: 12px; font-weight: 600; line-height: 1.2; color: rgba(27, 24, 48, 0.431); }
+  .pmark b { font-weight: 600; color: var(--ink); }
+  .motion .pmark { display: block; }
+  /* assumptionPageHeroStyle (30 bold, -1.0) for the figure; the need in brackets at 22 (_needMarkStyle). */
+  .pfig { margin: 2px 0 16px; font-size: 30px; font-weight: 700; letter-spacing: -1px; line-height: 1.1; --lh: 1.1em; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .pfig .pk { font-size: 22px; font-weight: 500; letter-spacing: 0; line-height: 1; color: rgba(27, 24, 48, 0.431); }
+  .pfig .pn { font-size: 22px; font-weight: 600; letter-spacing: -0.5px; line-height: 1; color: rgba(27, 24, 48, 0.647); }
   .chart { display: block; width: 100%; height: auto; overflow: visible; }
-  .chart text { font-family: Figtree, system-ui, sans-serif; }
   .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 12px; font-size: 12px; color: var(--quiet); }
   .legend span { display: inline-flex; align-items: center; gap: 6px; }
   .sw { display: inline-block; width: 14px; height: 7px; border-radius: 2px; }
@@ -276,15 +428,40 @@
   .sw.held { height: 1.2px; border-radius: 0; background: linear-gradient(90deg, rgba(27, 24, 48, 0.3) 0 5px, transparent 5px 9px, rgba(27, 24, 48, 0.3) 9px 14px); }
   .sw.dry { background: rgba(198, 40, 40, 0.102); }
 
-  /* Growth: the Core & Satellite orrery (core_satellite_figure.dart). */
-  .orbitbox { padding: 16px 24px; }
-  .orrery { position: relative; height: 240px; }
-  .ring { position: absolute; left: 50%; top: 50%; width: calc(2 * min(50% - 30.88px, 154.24px)); height: 154.24px; border: 1px solid rgba(0, 0, 0, 0.102); border-radius: 50%; transform: translate(-50%, -50%); z-index: 2; }
+  /* Protection (protection_member_control.dart, the coverage cards). */
+  .mem { left: 24px; top: 153.8px; width: 345px; height: 43.2px; color: #fff; }
+  .mem p { position: absolute; top: 0; width: 172.5px; height: 30px; display: flex; align-items: center; justify-content: center; gap: 15.5px; font-size: 18px; font-weight: 700; }
+  .mem p i { width: 30px; height: 30px; border-radius: 9px; display: grid; place-items: center; font-style: normal; font-size: 14px; background: rgb(255 255 255 / 0.22); }
+  .mem .off { opacity: 0.45; font-weight: 600; }
+  .mem .rule { position: absolute; left: 0; top: 39.2px; width: 172.5px; height: 4px; border-radius: 4px 4px 0 0; background: #fff; }
+  .pcol { width: 99px; display: flex; justify-content: center; align-items: baseline; font-size: 22px; letter-spacing: -0.37px; }
+  .pw { align-items: center; gap: 5px; font-size: 12px; font-weight: 600; letter-spacing: 0; color: rgb(var(--irgb) / 0.647); }
+  .pw svg { width: 14px; height: 14px; }
+  .gring { width: 64px; height: 64px; overflow: visible; }
+  .rbars { width: 297px; height: 44px; }
+  .rbars i { position: absolute; bottom: 0; width: 19.15px; border-radius: 3px; background: #7986CB; transform-origin: 50% 100%; }
+  .rbars .bill { background: rgb(var(--irgb) / 0.275); }
+
+  /* ── Growth ── */
+  /* The portfolio card: the Core & Satellite orrery (core_satellite_figure.dart). */
+  /* The node's hero (core_satellite_panel.dart _HeroRow): its name at 18, 8 down its total
+     (heroFontSize, base 34), 2 down its count; inset 16 / 8 / 4 / 24, then the full-bleed seam.
+     The total's line holds 34 for every node, so a step to 30 never moves the count. */
+  .nhero { display: grid; padding: 16px 8px 4px 24px; }
+  .nv { grid-area: 1 / 1; min-width: 0; }
+  .nv + .nv { opacity: 0; }
+  .nn { font-size: 18px; font-weight: 700; letter-spacing: -0.22px; line-height: 1.15; }
+  .nt { margin-top: 8px; height: 34px; display: flex; align-items: flex-end; font-weight: 700; letter-spacing: -1.2px; line-height: 1; --lh: 1em; font-variant-numeric: tabular-nums; }
+  .nc { margin-top: 2px; font-size: 13px; line-height: 1.2; color: rgba(27, 24, 48, 0.647); }
+  .nrule { display: block; height: 1px; background: rgb(202 196 208 / 0.235); }
+  /* orreryRadii(328, 220): the x inset 30.88, ry 67.12, rx capped at 2 x ry. */
+  .orrery { position: relative; height: 220px; margin: 12px 16px; }
+  .ring { position: absolute; left: 50%; top: 50%; width: calc(2 * min(50% - 30.88px, 134.24px)); height: 134.24px; border: 1px solid rgba(0, 0, 0, 0.102); border-radius: 50%; transform: translate(-50%, -50%); z-index: 2; }
   .body { position: absolute; left: 50%; top: 50%; width: 0; height: 0; z-index: 4; }
-  .body.core { z-index: 3; --r: 40.24px; --fill: 219, 130, 0; }
+  .body.core { z-index: 3; --r: 30.24px; --fill: 219, 130, 0; }
   .body.sat { --r: 24px; --fill: 255, 164, 31; }
-  .body.s0 { left: calc(50% + min(50% - 30.88px, 154.24px)); }
-  .body.s1 { left: calc(50% - min(50% - 30.88px, 154.24px)); }
+  .body.s0 { left: calc(50% + min(50% - 30.88px, 134.24px)); }
+  .body.s1 { left: calc(50% - min(50% - 30.88px, 134.24px)); }
   .disc {
     position: absolute;
     left: calc(-1 * var(--r)); top: calc(-1 * var(--r));
@@ -295,11 +472,78 @@
     border: 1.5px solid rgba(var(--fill), 0.59);
     color: #B45309;
   }
-  .disc svg { width: calc(var(--r) * 0.62); height: calc(var(--r) * 0.62); fill: currentColor; }
-  .lit .disc { background: rgba(var(--fill), 0.36); border: 2.5px solid rgb(var(--fill)); box-shadow: 0 0 17px 1.5px rgba(var(--fill), 0.31); transform: scale(1.12); }
-  .cap { position: absolute; width: 96px; left: -48px; top: calc(var(--r) + 6px); text-align: center; font-size: 11px; font-weight: 600; line-height: 1.15; color: rgba(27, 24, 48, 0.65); }
+  .disc svg { position: relative; width: calc(var(--r) * 0.62); height: calc(var(--r) * 0.62); fill: currentColor; }
+  /* The lit disc as a layer over the rest one, so a change of node is an opacity crossfade:
+     together they make the app's 0.36 wash and a 2.5 rim. */
+  .glow { position: absolute; inset: -1.5px; border-radius: 50%; background: rgba(var(--fill), 0.2195); border: 2.5px solid rgb(var(--fill)); box-shadow: 0 0 17px 1.5px rgba(var(--fill), 0.31); opacity: 0; }
+  .lit .glow { opacity: 1; }
+  .cap { position: absolute; width: 96px; left: -48px; top: calc(var(--r) + 6px); text-align: center; font-size: 11px; font-weight: 600; line-height: 1.15; color: var(--ink); opacity: 0.647; }
   .body.above .cap { top: auto; bottom: calc(var(--r) + 6px); }
-  .lit .cap { font-weight: 700; color: var(--ink); }
+  .lit .cap { font-weight: 700; opacity: 1; }
+
+  /* Growth (projected_wealth_panel.dart, rate_panel.dart, the portfolio income section). */
+  .dial { height: 36.2px; padding: 0 14px; display: flex; align-items: center; gap: 6px; border-radius: 999px; background: rgb(var(--brgb) / 0.102); font-size: 12px; font-weight: 600; color: rgb(var(--irgb) / 0.784); }
+  .dial svg { width: 13px; height: 13px; color: rgb(var(--irgb) / 0.647); }
+  .tl { right: 289px; font-size: 11px; font-weight: 500; color: rgb(var(--irgb) / 0.549); }
+  .tube { left: 64px; top: 149.7px; width: 12px; height: 207.2px; border-radius: 6px; overflow: hidden; background: rgb(var(--brgb) / 0.115); }
+  .tube i { position: absolute; left: 0; bottom: 0; width: 12px; border-radius: 6px; transform-origin: 50% 100%; }
+  .tube .ghost { height: 34%; background: rgb(255 183 77 / 0.18); box-shadow: inset 0 0 0 1px rgb(255 183 77 / 0.51); }
+  .tube .fill { height: 25.5%; background: #FFB74D; }
+  .vrule { left: 92px; top: 149.7px; width: 1px; height: 207.2px; background: rgb(202 196 208 / 0.235); }
+  .sbars { left: 109px; top: 149.7px; width: 212px; height: 64px; }
+  .sbars i { position: absolute; bottom: 0; width: 44px; border-radius: 5px 5px 0 0; transform-origin: 50% 100%; }
+  .sbars .gh { background: rgb(203 192 178 / 0.15); box-shadow: inset 0 0 0 1.2px #CBC0B2; }
+  .srow { left: 109px; width: 212px; display: flex; align-items: baseline; font-size: 12px; font-weight: 600; }
+  .srow i { flex: none; align-self: center; width: 6px; height: 6px; margin-right: 9px; border-radius: 50%; }
+  .srow i.gh { background: rgb(203 192 178 / 0.18); box-shadow: inset 0 0 0 1.2px #CBC0B2; }
+  .srow span { font-weight: 500; color: rgb(var(--irgb) / 0.549); }
+  .srow b { margin-left: auto; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .srow b.nil { color: rgb(var(--irgb) / 0.255); }
+
+  /* ── The close ── */
+  /* The close's marks (tabs_orrery_page.dart TabMarks): QuietChip, the tint at 38/255, the glyph in
+     textOn's light ink. TabMarks draws no off state, so off is the orrery's resting outline
+     (pillar_strata_beat.dart _NodeGlyphDisc at weight 0): a 1.5 rim at 150/255, the mark at 0.70. */
+  /* Medals under the words, so a mark going quiet is seen before the bar is (founder, 2026-11-12). */
+  .tabmarks { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 18px; max-width: 288px; margin-top: 36px; }
+  .tm { position: relative; width: 100%; aspect-ratio: 1; }
+  .tm i { position: absolute; inset: 0; border-radius: 50%; display: grid; place-items: center; }
+  .tm .on { background: rgb(var(--a) / 0.149); color: var(--k); }
+  .tm .off { border: clamp(2px, 0.5vw, 3px) solid rgb(var(--a) / 0.588); color: rgb(var(--a)); opacity: 0; }
+  .tm svg { width: 40%; height: 40%; fill: currentColor; }
+
+  /* The close's phone: the Budget tab in the app's dark theme, each colour resolved
+     from app_theme.dart _buildDark (ColorScheme.fromSeed(AppColors.primary, dark)).
+     The band, its white head and the hues are the same in both modes (tab_band_palette.dart). */
+  .dk .screen { background: #1D1B20; }                           /* kLaunchGroundDark, the dark scaffold */
+  .dk .dash { --irgb: 231 224 232; --lift: 0 3px 12.5px rgb(0 0 0 / 0.11), 0 10px 33.3px rgb(0 0 0 / 0.055); }   /* onSurface (TabBand re-inks only light); _liftShadows */
+  .dk .k-var, .dk .nav .tf { color: #CBC4CF; }                   /* onSurfaceVariant */
+  .dk .nav .lit { color: #fff; }
+  .dk .dc { background: #211F24; border-color: #948F99; }       /* panelSurface, outline */
+  .dk .ledger { background: rgb(0 0 0 / 0.176); }                /* panelRecess(alpha: 45) */
+  .dk .chk:not(.on) { border-color: #948F99; }                   /* outline */
+  .dk .hair, .dk .rule { background: rgb(73 69 78 / 0.235); }    /* outlineVariant at 60 */
+  /* band_wallpaper.dart on dark: the scaffold for a base, every bloom at 0.16. It fills the
+     shell's body, 748 over the bar and 852 with Budget alone, so the two cross-fade. */
+  .dk .wall {
+    bottom: auto; height: 748px;
+    background:
+      radial-gradient(circle 373.35px at 95% 100%, rgb(185 166 242 / 0.16), rgb(185 166 242 / 0.064) 186.68px, rgb(185 166 242 / 0) 373.35px),
+      radial-gradient(circle 334.05px at 5% 87.5%, rgb(244 163 190 / 0.16), rgb(244 163 190 / 0.064) 167.03px, rgb(244 163 190 / 0) 334.05px),
+      radial-gradient(circle 334.05px at 100% 55%, rgb(125 185 242 / 0.16), rgb(125 185 242 / 0.064) 167.03px, rgb(125 185 242 / 0) 334.05px),
+      radial-gradient(circle 353.7px at 0 40%, rgb(91 75 158 / 0.16), rgb(91 75 158 / 0.064) 176.85px, rgb(91 75 158 / 0) 353.7px),
+      #1D1B20;
+  }
+  .dk .wall.tall { height: 852px; opacity: 0; }
+  /* The bar on dark (app_shell.dart): the pill on surfaceContainerHigh over the scaffold's strip.
+     The drop is clipped to Budget's share, so it grows by its right edge alone. The "+" beside
+     the pill draws no shadow; floating alone it takes the pill's. */
+  .dk .nav { background: none; }
+  .dk .nav .ng { position: absolute; inset: 0; background: #1D1B20; }
+  .dk .nav .pill { background: #2B292F; }
+  .dk .nav .drop { left: 2px; width: 191.33px; background: #7B6BAE; clip-path: inset(0 78.13px 0 0 round 18px); }
+  .dk .nav .fab { box-shadow: none; }
+  .dk .nav .fsh { position: absolute; inset: 0; border-radius: inherit; box-shadow: 0 6px 28.7px rgb(0 0 0 / 0.196); opacity: 0; }
 
   /* Number reels (animated_number.dart): the laid-out text is the final figure. */
   .reel { position: relative; display: inline-block; }
@@ -309,23 +553,40 @@
   .reel .rs { display: block; margin-top: calc((1.1em - var(--lh)) / 2); }
   .reel .rs b { display: block; height: var(--lh); line-height: var(--lh); font-weight: inherit; text-align: center; }
 
-  /* Footer */
+  /* ── Footer ── */
   footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--muted); font-size: 0.9375rem; }
   footer .wrap { display: grid; gap: 16px; }
   @media (min-width: 720px) { footer .wrap { grid-template-columns: 1fr auto; align-items: center; } }
   footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
   footer nav a { text-decoration: none; }
   footer nav a:hover { color: var(--ink); }
+  /* 44-point targets, as in the header; wrapped rows sit far enough apart that theirs never overlap. */
+  @media (max-width: 879px) {
+    footer nav { row-gap: 20px; }
+    footer nav a { padding: 10px 0; margin: -10px 0; }
+  }
 
+  /* ── Motion ── */
   /* The stepped arrival (arrival_clock.dart): each beat fades and rises 12
      over 440ms easeOutCubic, once, when its block first scrolls into view. */
   @media (prefers-reduced-motion: no-preference) {
     .motion [data-at] { opacity: 0; }
     .motion [data-at].in { animation: arrive 440ms var(--out) both; }
     .motion .story .blk, .motion .story .ground { opacity: 0; }
-    .motion .closing-logo .cblk { opacity: 0; }
+    .motion .dash [data-b], .motion .dash .sday, .motion .dash .smon, .motion .dash .plan { opacity: 0; }
+    /* The hero starts on the words; the orrery and its rows wait for the story. */
+    .motion .story .sw-words { opacity: 1; }
+    .motion .story .core-ground, .motion .oring, .motion .nd, .motion .haze, .motion .pg { opacity: 0; }
+    .motion .oring path { stroke-dasharray: 1 1; stroke-dashoffset: 1; }
+    /* A pillar change: the rows out in 150 on easeInCubic, then the heading
+       and each row rise 6 (ConceptRow's own) on the 440 beat, 80 apart. */
+    .motion .pg.on { opacity: 1; }
+    .motion .pg.on .ph, .motion .pg.on li { animation: rise 440ms var(--out) both; animation-delay: calc(140ms + var(--i) * 80ms); }
+    .motion .pg.out { opacity: 1; animation: fade 150ms cubic-bezier(0.55, 0.055, 0.675, 0.19) both; }
   }
   @keyframes arrive { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+  @keyframes rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+  @keyframes fade { from { opacity: 1; } to { opacity: 0; } }
 </style>
 </head>
 <body>
@@ -344,10 +605,35 @@
 <symbol id="g-cycle" viewBox="0 0 1024 1024"><path d="M896 192L896 384Q896 397 886.5 406.5Q877 416 864 416L864 416L672 416Q659 416 649.5 406.5Q640 397 640 384Q640 371 649.5 361.5Q659 352 672 352L672 352L787 352L728 293Q685 250 627.5 225Q570 200 504 200L502 200Q502 200 501.5 200Q501 200 501 200Q436 200 378.5 224.5Q321 249 278 291L278 291Q274 295 268.5 297Q263 299 257 299Q243 299 234 290Q225 281 225 267Q225 261 227 255Q229 249 234 245L234 245Q286 194 355 165Q424 136 502 136Q582 136 652 166Q722 196 774 248L774 248L832 307L832 192Q832 179 841.5 169.5Q851 160 864 160Q877 160 886.5 169.5Q896 179 896 192L896 192L896 192ZM746 733Q702 775 644.5 799.5Q587 824 522 824Q456 824 397.5 799Q339 774 296 731L237 672L352 672Q365 672 374.5 662.5Q384 653 384 640Q384 627 374.5 617.5Q365 608 352 608L352 608L160 608Q147 608 137.5 617.5Q128 627 128 640L128 640L128 832Q128 845 137.5 854.5Q147 864 160 864Q173 864 182.5 854.5Q192 845 192 832L192 832L192 717L251 776Q302 828 371.5 858Q441 888 520 888L522 888Q522 888 522.5 888Q523 888 523 888Q601 888 670 859Q739 830 790 779L790 779Q795 775 797.5 769Q800 763 800 757Q800 743 790.5 734Q781 725 768 725Q761 725 755.5 727Q750 729 746 733L746 733L746 733Z"/></symbol>
 <symbol id="g-target" viewBox="0 0 1024 1024"><path d="M887 333Q907 372 917.5 417.5Q928 463 928 512Q928 598 895 674Q863 750 806.5 806.5Q750 863 674 896Q598 929 512 929Q426 929 350 896Q274 863 217.5 806.5Q161 750 128 674Q95 598 95 512Q95 426 128 350Q161 274 217.5 217.5Q274 161 350 129Q426 96 512 96Q590 96 659.5 122.5Q729 149 783 196L783 196L873 105Q878 101 883.5 98.5Q889 96 896 96Q909 96 918.5 105.5Q928 115 928 128Q928 135 925.5 140.5Q923 146 919 151L919 151L535 535Q530 539 524.5 541.5Q519 544 512 544Q499 544 489.5 534.5Q480 525 480 512Q480 505 482.5 499.5Q485 494 489 489L600 378Q582 366 559.5 359Q537 352 512 352Q446 352 399 399Q352 446 352 512Q352 578 399 625Q446 672 512 672Q578 672 625 625Q672 578 672 512Q672 509 672 507Q672 505 672 502L672 503Q672 502 672 501.5Q672 501 672 501Q672 488 681 478.5Q690 469 704 469Q717 469 726 477.5Q735 486 736 499L736 499Q736 502 736 505.5Q736 509 736 512Q736 558 718 599Q701 640 670.5 670.5Q640 701 599 718Q558 736 512 736Q466 736 425 718Q384 701 353.5 670.5Q323 640 306 599Q288 558 288 512Q288 466 306 425Q323 384 353.5 353.5Q384 323 425 306Q466 288 512 288Q550 288 584.5 300Q619 312 647 333L646 333L737 242Q692 204 634.5 182Q577 160 513 160Q440 160 376 188Q312 216 264 263.5Q216 311 189 375Q161 439 161 512Q161 585 189 649Q216 713 264 760.5Q312 808 376 836Q440 864 513 864Q585 864 649 836Q714 808 761.5 760.5Q809 713 837 649Q864 585 864 512Q864 471 855 432Q846 393 829 358L830 360Q828 357 827.5 353.5Q827 350 827 346Q827 333 836 323.5Q845 314 859 314Q868 314 876 319Q884 324 887 332L887 333L887 333Z"/></symbol>
 <symbol id="g-wallet" viewBox="0 0 1024 1024"><path d="M864 256L224 256Q211 256 201.5 246.5Q192 237 192 224Q192 211 201.5 201.5Q211 192 224 192L224 192L768 192Q781 192 790.5 182.5Q800 173 800 160Q800 147 790.5 137.5Q781 128 768 128L768 128L224 128Q184 128 156 156Q128 184 128 224L128 224L128 736Q128 776 156 804Q184 832 224 832L224 832L864 832Q891 832 909.5 813.5Q928 795 928 768L928 768L928 320Q928 293 909.5 274.5Q891 256 864 256L864 256ZM864 768L224 768Q211 768 201.5 758.5Q192 749 192 736L192 736L192 315Q199 317 207 318.5Q215 320 224 320Q224 320 224 320Q224 320 224 320L864 320L864 768ZM672 528Q672 508 686 494Q700 480 720 480Q740 480 754 494Q768 508 768 528Q768 548 754 562Q740 576 720 576L720 576Q700 576 686 562Q672 548 672 528L672 528Z"/></symbol>
+<!-- The orrery's node glyphs (Phosphor regular), as above. -->
+<symbol id="g-piggy" viewBox="0 0 1024 1024"><path d="M768 464Q768 484 754 498Q740 512 720 512Q700 512 686 498Q672 484 672 464Q672 444 686 430Q700 416 720 416L720 416Q740 416 754 430Q768 444 768 464L768 464ZM608 256L448 256Q435 256 425.5 265.5Q416 275 416 288Q416 301 425.5 310.5Q435 320 448 320L448 320L608 320Q621 320 630.5 310.5Q640 301 640 288Q640 275 630.5 265.5Q621 256 608 256L608 256ZM992 448L992 576Q992 616 964 644Q936 672 896 672L896 672L887 672L822 854Q815 872 798.5 884Q782 896 761 896Q761 896 761 896Q761 896 761 896L711 896Q711 896 711 896Q711 896 711 896Q690 896 673.5 884Q657 872 650 854L650 854L643 832L413 832L406 854Q399 872 382.5 884Q366 896 345 896Q345 896 345 896Q345 896 345 896L295 896Q295 896 295 896Q295 896 295 896Q274 896 257.5 884Q241 872 234 854L234 854L184 713Q149 674 127 625Q105 576 98 521L98 519Q83 528 73.5 543Q64 558 64 576L64 576Q64 589 54.5 598.5Q45 608 32 608Q19 608 9.5 598.5Q0 589 0 576L0 576Q0 531 27.5 497Q55 463 96 452L97 452Q103 384 132 325Q162 266 209 222Q256 178 317 153Q379 128 448 128L864 128Q877 128 886.5 137.5Q896 147 896 160Q896 173 886.5 182.5Q877 192 864 192L864 192L778 192Q818 220 848.5 257Q879 294 898 338L899 340Q900 343 901.5 346Q903 349 904 352Q941 355 966.5 382.5Q992 410 992 448Q992 448 992 448Q992 448 992 448L992 448ZM928 448Q928 435 918.5 425.5Q909 416 896 416L896 416L881 416Q881 416 881 416Q881 416 881 416Q871 416 862.5 409.5Q854 403 851 394L851 394Q837 349 810 312Q783 275 747.5 248.5Q712 222 668 207Q624 192 576 192Q576 192 576 192Q576 192 576 192L448 192Q448 192 448 192Q448 192 448 192Q388 192 336 215Q283 237 244 276Q205 315 183 368Q160 420 160 480Q160 536 180.5 586Q201 636 236 675L236 675Q238 677 239.5 679.5Q241 682 242 685L242 685L295 832L345 832L361 789Q364 780 372 774Q380 768 391 768L665 768Q676 768 684 774Q692 780 695 789L695 789L711 832L761 832L834 629Q837 620 845.5 614Q854 608 864 608L896 608Q909 608 918.5 598.5Q928 589 928 576L928 576L928 448Z"/></symbol>
+<symbol id="g-coins" viewBox="0 0 1024 1024"><path d="M921 564Q909 555 894 549.5Q879 544 862 544Q855 544 848.5 545Q842 546 836 547L836 547L669 586Q670 580 671 573.5Q672 567 672 560Q672 514 639 481Q606 448 560 448Q560 448 560 448Q560 448 560 448L360 448Q360 448 360 448Q360 448 359 448Q333 448 310 458Q287 468 269 485L179 576L64 576Q37 576 18.5 594.5Q0 613 0 640L0 640L0 800Q0 827 18.5 845.5Q37 864 64 864L64 864L480 864Q480 864 480 864Q480 864 480 864Q482 864 484 863.5Q486 863 488 863L488 863L744 799Q745 799 746.5 798.5Q748 798 749 797L749 797L906 730Q930 718 945 694.5Q960 671 960 642Q960 619 949.5 598.5Q939 578 922 564L921 564L921 564ZM64 640L160 640L160 800L64 800L64 640ZM878 673L726 738L476 800L224 800L224 621L315 531Q323 522 334.5 517Q346 512 360 512Q360 512 360 512Q360 512 360 512L560 512Q580 512 594 526Q608 540 608 560Q608 580 594 594Q580 608 560 608L560 608L448 608Q435 608 425.5 617.5Q416 627 416 640Q416 653 425.5 662.5Q435 672 448 672L448 672L576 672Q578 672 580 672Q582 672 583 671L583 671L852 609Q854 609 856.5 608.5Q859 608 862 608Q876 608 886 618Q896 628 896 642Q896 652 891 660Q886 668 878 673L878 673L878 673ZM656 384Q656 384 656 384Q656 384 656 384Q662 384 668.5 383.5Q675 383 680 382L680 382Q694 425 731.5 452.5Q769 480 816 480Q876 480 918 438Q960 396 960 336Q960 276 918 234Q876 192 816 192Q810 192 804 192.5Q798 193 792 194L792 194Q778 151 740.5 123.5Q703 96 656 96Q596 96 554 138Q512 180 512 240Q512 300 554 342Q596 384 656 384Q656 384 656 384Q656 384 656 384L656 384L656 384ZM896 336Q896 369 872.5 392.5Q849 416 816 416Q783 416 759.5 392.5Q736 369 736 336Q736 303 759.5 279.5Q783 256 816 256L816 256Q849 256 872.5 279.5Q896 303 896 336L896 336ZM656 160Q683 160 704.5 176.5Q726 193 733 218L733 218Q709 236 693 261.5Q677 287 673 317L673 318Q669 319 665 319.5Q661 320 656 320L656 320Q623 320 599.5 296.5Q576 273 576 240Q576 207 599.5 183.5Q623 160 656 160L656 160Z"/></symbol>
+<symbol id="g-heart" viewBox="0 0 1024 1024"><path d="M712 160Q650 160 598 185.5Q546 211 512 256Q478 211 426 185.5Q374 160 312 160Q261 160 216 180Q170 199 136.5 232.5Q103 266 84 312Q64 357 64 408L64 408Q64 513 129 605Q194 698 273.5 767.5Q353 837 422 879Q490 920 497 924Q500 926 504 927Q508 928 512 928Q516 928 520 927Q524 926 527 924L527 924Q534 920 602 879Q671 837 750.5 767.5Q830 698 895 605Q960 513 960 408Q960 357 940 312Q921 266 887.5 232.5Q854 199 808 180Q763 160 712 160L712 160L712 160ZM512 859Q485 843 421 801Q358 759 292.5 698.5Q227 638 178 563Q128 489 128 408Q128 332 182 278Q236 224 312 224L312 224Q370 224 416 253Q462 282 482 332Q486 341 494 346.5Q502 352 512 352Q522 352 530 346.5Q538 341 542 332L542 332Q562 282 608 253Q654 224 712 224Q788 224 842 278Q896 332 896 408L896 408Q896 488 846 563Q797 638 731.5 698.5Q666 759 603 801Q539 843 512 859L512 859Z"/></symbol>
+<symbol id="g-aid" viewBox="0 0 1024 1024"><path d="M864 224L704 224L704 192Q704 152 676 124Q648 96 608 96L608 96L416 96Q376 96 348 124Q320 152 320 192L320 192L320 224L160 224Q133 224 114.5 242.5Q96 261 96 288L96 288L96 800Q96 827 114.5 845.5Q133 864 160 864L160 864L864 864Q891 864 909.5 845.5Q928 827 928 800L928 800L928 288Q928 261 909.5 242.5Q891 224 864 224L864 224ZM384 192Q384 179 393.5 169.5Q403 160 416 160L416 160L608 160Q621 160 630.5 169.5Q640 179 640 192L640 192L640 224L384 224L384 192ZM864 800L160 800L160 288L864 288L864 800ZM640 544Q640 557 630.5 566.5Q621 576 608 576L608 576L544 576L544 640Q544 653 534.5 662.5Q525 672 512 672Q499 672 489.5 662.5Q480 653 480 640L480 640L480 576L416 576Q403 576 393.5 566.5Q384 557 384 544Q384 531 393.5 521.5Q403 512 416 512L416 512L480 512L480 448Q480 435 489.5 425.5Q499 416 512 416Q525 416 534.5 425.5Q544 435 544 448L544 448L544 512L608 512Q621 512 630.5 521.5Q640 531 640 544L640 544Z"/></symbol>
+<symbol id="g-hospital" viewBox="0 0 1024 1024"><path d="M992 832L960 832L960 512Q960 485 941.5 466.5Q923 448 896 448L896 448L672 448L672 192Q672 165 653.5 146.5Q635 128 608 128L608 128L224 128Q197 128 178.5 146.5Q160 165 160 192L160 192L160 832L128 832Q115 832 105.5 841.5Q96 851 96 864Q96 877 105.5 886.5Q115 896 128 896L128 896L992 896Q1005 896 1014.5 886.5Q1024 877 1024 864Q1024 851 1014.5 841.5Q1005 832 992 832L992 832ZM896 512L896 832L672 832L672 512L896 512ZM224 192L608 192L608 832L544 832L544 640Q544 627 534.5 617.5Q525 608 512 608L512 608L320 608Q307 608 297.5 617.5Q288 627 288 640L288 640L288 832L224 832L224 192ZM480 832L352 832L352 672L480 672L480 832ZM288 384Q288 371 297.5 361.5Q307 352 320 352L320 352L384 352L384 288Q384 275 393.5 265.5Q403 256 416 256Q429 256 438.5 265.5Q448 275 448 288L448 288L448 352L512 352Q525 352 534.5 361.5Q544 371 544 384Q544 397 534.5 406.5Q525 416 512 416L512 416L448 416L448 480Q448 493 438.5 502.5Q429 512 416 512Q403 512 393.5 502.5Q384 493 384 480L384 480L384 416L320 416Q307 416 297.5 406.5Q288 397 288 384L288 384Z"/></symbol>
+<symbol id="g-lineup" viewBox="0 0 1024 1024"><path d="M928 832Q928 845 918.5 854.5Q909 864 896 864L896 864L128 864Q115 864 105.5 854.5Q96 845 96 832L96 832L96 192Q96 179 105.5 169.5Q115 160 128 160Q141 160 150.5 169.5Q160 179 160 192L160 192L160 627L361 425Q366 421 371.5 418.5Q377 416 384 416Q391 416 396.5 418.5Q402 421 407 425L512 531L723 320L640 320Q627 320 617.5 310.5Q608 301 608 288Q608 275 617.5 265.5Q627 256 640 256L640 256L800 256Q813 256 822.5 265.5Q832 275 832 288L832 288L832 448Q832 461 822.5 470.5Q813 480 800 480Q787 480 777.5 470.5Q768 461 768 448L768 448L768 365L535 599Q530 603 524.5 605.5Q519 608 512 608Q505 608 499.5 605.5Q494 603 489 599L384 493L160 717L160 800L896 800Q909 800 918.5 809.5Q928 819 928 832L928 832Z"/></symbol>
+<symbol id="g-percent" viewBox="0 0 1024 1024"><path d="M823 247L247 823Q242 827 236.5 829.5Q231 832 224 832Q211 832 201.5 822.5Q192 813 192 800Q192 793 194.5 787.5Q197 782 201 777L201 777L777 201Q782 197 787.5 194.5Q793 192 800 192Q813 192 822.5 201.5Q832 211 832 224Q832 231 829.5 236.5Q827 242 823 247L823 247L823 247ZM202 406Q183 386 171.5 360Q160 334 160 304Q160 244 202 202Q244 160 304 160Q334 160 360 171.5Q386 183 406 202L406 202Q425 222 436.5 248Q448 274 448 304Q448 364 406 406Q364 448 304 448Q274 448 248 436.5Q222 425 202 406L202 406ZM224 304Q224 337 247.5 360.5Q271 384 304 384Q337 384 360.5 360.5Q384 337 384 304Q384 287 377.5 272.5Q371 258 361 247L361 247Q350 237 335.5 230.5Q321 224 304 224Q271 224 247.5 247.5Q224 271 224 304Q224 304 224 304Q224 304 224 304L224 304ZM864 720Q864 780 822 822Q780 864 720 864Q660 864 618 822Q576 780 576 720Q576 660 618 618Q660 576 720 576Q750 576 776 587.5Q802 599 822 618L822 618Q841 638 852.5 664Q864 690 864 720Q864 720 864 720Q864 720 864 720L864 720L864 720ZM800 720Q800 720 800 720Q800 720 800 720Q800 687 776.5 663.5Q753 640 720 640Q687 640 663.5 663.5Q640 687 640 720Q640 753 663.5 776.5Q687 800 720 800Q737 800 751.5 793.5Q766 787 777 777L777 777Q787 766 793.5 751.5Q800 737 800 720Q800 720 800 720Q800 720 800 720L800 720L800 720Z"/></symbol>
+<symbol id="g-pie" viewBox="0 0 1024 1024"><path d="M400 466Q407 461 411.5 454Q416 447 416 438Q416 438 416 438Q416 438 416 438L416 438L416 150Q416 137 406.5 127.5Q397 118 384 118Q381 118 378.5 118.5Q376 119 373 120L373 120Q312 142 261 181Q210 220 173.5 271Q137 322 116 383Q96 445 96 512Q96 532 98 552Q100 572 103 591L103 588Q104 596 109 602Q114 608 121 611L121 611Q124 613 127.5 613.5Q131 614 134 614Q134 614 134 614Q134 614 134 614L134 614Q134 614 134 614Q134 614 134 614Q139 614 143 613Q147 612 151 610L150 610L400 466ZM352 198L352 420L160 530Q160 526 160 521Q160 516 160 512Q160 461 174 414Q188 367 213 326.5Q238 286 273 254Q308 221 350 199L352 198L352 198ZM512 96Q499 96 489.5 105.5Q480 115 480 128L480 128L480 495L165 679Q158 683 153.5 690.5Q149 698 149 707Q149 711 150 715Q151 719 153 723L153 723Q181 769 219 807Q257 845 303 872Q349 899 402 913Q455 928 512 928Q598 928 674 895Q750 863 806 806.5Q862 750 895 674Q928 598 928 512Q928 426 895 350Q862 274 806 217.5Q750 161 674 129Q598 96 512 96L512 96L512 96ZM512 864Q468 864 427 853Q386 843 349.5 824Q313 805 282 778Q251 751 227 718L226 717L528 541Q535 537 539.5 529.5Q544 522 544 514L544 161Q612 168 670 198Q729 227 772 274Q815 321 840 382Q864 443 864 512Q864 585 837 649Q809 713 761 761Q713 809 649 836Q585 864 512 864Q512 864 512 864Q512 864 512 864L512 864L512 864Z"/></symbol>
+<!-- The tabs' glyphs (Phosphor regular, fill for a lit tab or chip, bold for the "+"). -->
+<symbol id="g-cal" viewBox="0 0 1024 1024"><path d="M832 128L736 128L736 96Q736 83 726.5 73.5Q717 64 704 64Q691 64 681.5 73.5Q672 83 672 96L672 96L672 128L352 128L352 96Q352 83 342.5 73.5Q333 64 320 64Q307 64 297.5 73.5Q288 83 288 96L288 96L288 128L192 128Q165 128 146.5 146.5Q128 165 128 192L128 192L128 832Q128 859 146.5 877.5Q165 896 192 896L192 896L832 896Q859 896 877.5 877.5Q896 859 896 832L896 832L896 192Q896 165 877.5 146.5Q859 128 832 128L832 128ZM288 192L288 224Q288 237 297.5 246.5Q307 256 320 256Q333 256 342.5 246.5Q352 237 352 224L352 224L352 192L672 192L672 224Q672 237 681.5 246.5Q691 256 704 256Q717 256 726.5 246.5Q736 237 736 224L736 224L736 192L832 192L832 320L192 320L192 192L288 192ZM832 832L192 832L192 384L832 384L832 832Z"/></symbol>
+<symbol id="g-money" viewBox="0 0 1024 1024"><path d="M977 240Q973 238 969 236.5Q965 235 960 235Q956 235 952.5 236Q949 237 946 238L946 238Q882 270 825 280Q769 290 718 287Q667 284 619 270Q571 257 522 242Q471 225 418 211Q366 196 308.5 192.5Q251 189 187 201Q123 212 50 248Q42 252 37 259.5Q32 267 32 277L32 277L32 277L32 277L32 757L32 757L32 757Q32 770 41.5 779.5Q51 789 64 789Q68 789 71.5 788Q75 787 78 785L78 785Q142 754 199 744Q255 733 306 736.5Q357 740 405 753Q454 767 502 782Q560 801 620 816.5Q680 832 746 832Q798 832 854 819.5Q910 807 974 776Q982 772 987 764Q992 756 992 747L992 267L992 267L992 267Q992 259 988 251.5Q984 244 977 240L977 240L977 240ZM928 727Q867 754 814 762Q760 770 711 766Q662 762 615 749Q569 736 522 721Q464 703 404 687.5Q344 672 278 672Q229 672 182.5 681.5Q136 691 93 709L96 708L96 297Q157 270 211 262Q264 254 313 258Q362 262 409 275Q455 288 502 303Q549 318 598 331Q646 345 698 350Q750 355 807 348Q864 342 928 316L928 727ZM512 384Q459 384 421.5 421.5Q384 459 384 512Q384 565 421.5 602.5Q459 640 512 640Q565 640 602.5 602.5Q640 565 640 512L640 512Q640 459 602.5 421.5Q565 384 512 384L512 384ZM512 576Q485 576 466.5 557.5Q448 539 448 512Q448 485 466.5 466.5Q485 448 512 448Q539 448 557.5 466.5Q576 485 576 512L576 512Q576 539 557.5 557.5Q539 576 512 576L512 576ZM224 384L224 576Q224 589 214.5 598.5Q205 608 192 608Q179 608 169.5 598.5Q160 589 160 576L160 576L160 384Q160 371 169.5 361.5Q179 352 192 352Q205 352 214.5 361.5Q224 371 224 384L224 384ZM800 640L800 448Q800 435 809.5 425.5Q819 416 832 416Q845 416 854.5 425.5Q864 435 864 448L864 448L864 640Q864 653 854.5 662.5Q845 672 832 672Q819 672 809.5 662.5Q800 653 800 640L800 640Z"/></symbol>
+<symbol id="g-shield" viewBox="0 0 1024 1024"><path d="M832 160L192 160Q165 160 146.5 178.5Q128 197 128 224L128 224L128 448Q128 527 145 591Q163 655 190 705Q217 755 250 793Q284 830 316 857Q385 913 443 935.5Q501 958 504 959Q506 959 508 959.5Q510 960 512 960Q514 960 516.5 959.5Q519 959 521 959L521 959Q524 958 581.5 935.5Q639 913 709 857Q741 830 774 793Q807 755 834 705Q861 655 879 591Q896 527 896 448L896 224Q896 197 877.5 178.5Q859 160 832 160L832 160L832 160ZM832 448Q832 504 822 554Q812 604 791.5 649Q771 694 740 733Q710 772 670 806Q636 834 597 856Q558 878 516 893L512 894Q467 879 428 856.5Q389 834 355 807L356 807Q315 774 285 734Q254 695 233.5 650Q213 605 202 555Q192 504 192 448L192 224L832 224L832 448Z"/></symbol>
+<symbol id="g-plant" viewBox="0 0 1024 1024"><path d="M991 192Q990 179 981.5 170.5Q973 162 961 161L960 161Q883 157 814 166Q745 175 687.5 197Q630 219 586 253Q543 286 516 330Q480 389 480 457.5Q480 526 515 593Q496 616 481.5 643Q467 670 459 699L458 701L393 636Q417 587 416 537.5Q415 488 389 446Q370 413 337 388Q305 364 263 347.5Q221 331 171 325Q120 318 63 321Q51 322 42.5 330.5Q34 339 33 351L33 351Q30 408 37 458Q44 509 60 551Q76 593 101 625Q126 657 158 677Q179 690 203 697Q227 704 254 704L254 704Q280 704 304 698Q328 692 349 681L348 681L448 781L448 896Q448 909 457.5 918.5Q467 928 480 928Q493 928 502.5 918.5Q512 909 512 896L512 896L512 778L512 778Q512 778 512 777Q512 738 525 702Q538 666 561 638L561 638Q590 653 624 662Q658 671 694 672L694 672Q694 672 694.5 672L695 672Q730 672 762.5 662.5Q795 653 823 636L822 636Q866 609 899 566Q933 522 955 464.5Q977 407 986 338Q995 269 991 192ZM191 622Q145 595 120 532Q95 469 96 384Q181 383 244 408Q307 433 334 479Q349 503 351.5 530.5Q354 558 344 587L247 489Q242 485 236.5 483Q231 481 225 481Q211 481 202 490Q193 499 193 513Q193 519 195 524.5Q197 530 201 535L299 632Q270 642 242.5 639.5Q215 637 191 622L191 622ZM788 582Q748 606 702 608Q656 610 608 590L823 375Q827 370 829 364.5Q831 359 831 353Q831 339 822 330Q813 321 799 321Q793 321 787.5 323Q782 325 777 329L777 329L563 544Q542 496 544 450Q546 404 571 363Q592 329 626 302Q661 276 707 258Q753 240 808 231Q864 223 928 224Q929 288 921 344Q912 399 894 445Q876 491 850 526Q823 561 788 582L788 582Z"/></symbol>
+<symbol id="g-info" viewBox="0 0 1024 1024"><path d="M512 96Q426 96 350 129Q274 161 217.5 217.5Q161 274 129 350Q96 426 96 512Q96 598 129 674Q161 750 217.5 806.5Q274 863 350 895Q426 928 512 928Q598 928 674 895Q750 863 806.5 806.5Q863 750 895 674Q928 598 928 512L928 512Q928 426 895 350Q862 274 806 218Q750 162 674 129Q598 96 512 96L512 96ZM512 864Q439 864 375 836Q311 809 263 761Q215 713 188 649Q160 585 160 512Q160 439 188 375Q215 311 263 263Q311 215 375 188Q439 160 512 160Q585 160 649 188Q713 215 761 263Q809 311 836 375Q864 439 864 512L864 512Q864 585 836 649Q809 713 761 761Q713 809 649 836Q585 864 512 864L512 864L512 864ZM576 704Q576 717 566.5 726.5Q557 736 544 736L544 736Q517 736 498.5 717.5Q480 699 480 672L480 672L480 512Q467 512 457.5 502.5Q448 493 448 480Q448 467 457.5 457.5Q467 448 480 448L480 448Q507 448 525.5 466.5Q544 485 544 512L544 512L544 672Q557 672 566.5 681.5Q576 691 576 704L576 704ZM448 336Q448 316 462 302Q476 288 496 288Q516 288 530 302Q544 316 544 336Q544 356 530 370Q516 384 496 384L496 384Q476 384 462 370Q448 356 448 336L448 336Z"/></symbol>
+<symbol id="g-search" viewBox="0 0 1024 1024"><path d="M919 873L718 673Q756 628 778 570Q800 512 800 448Q800 375 772 310Q745 246 697 198.5Q649 151 585 123Q521 95 448 95Q375 95 310 123Q246 151 198.5 198.5Q151 246 123 310Q95 375 95 448Q95 521 123 585Q151 649 198.5 697Q246 745 310 772Q375 800 448 800Q512 800 570 778Q628 756 674 718L673 718L873 919Q878 923 883.5 925.5Q889 928 896 928Q909 928 918.5 918.5Q928 909 928 896Q928 889 925.5 883.5Q923 878 919 873L919 873L919 873ZM160 448Q160 388 183 336Q205 283 244 244Q283 205 336 183Q388 160 448 160Q508 160 560 183Q613 205 652 244Q691 283 713 336Q736 388 736 448Q736 508 713 560Q691 613 652 652Q613 691 560 713Q508 736 448 736L448 736Q388 736 336 713Q284 691 244.5 651.5Q205 612 183 560Q160 508 160 448L160 448Z"/></symbol>
+<symbol id="g-gear" viewBox="0 0 1024 1024"><path d="M512 320Q432 320 376 376Q320 432 320 512Q320 592 376 648Q432 704 512 704Q592 704 648 648Q704 592 704 512L704 512Q704 433 647.5 376.5Q591 320 512 320L512 320L512 320ZM512 640Q459 640 421.5 602.5Q384 565 384 512Q384 459 421.5 421.5Q459 384 512 384Q565 384 602.5 421.5Q640 459 640 512L640 512Q640 565 602.5 602.5Q565 640 512 640L512 640ZM864 521Q864 512 864 503L924 429Q927 425 929 420Q931 415 931 409Q931 407 930.5 404.5Q930 402 930 400L930 401Q922 371 910.5 344.5Q899 318 885 294L886 296Q882 289 876 285Q870 281 862 280L862 280L767 269Q761 263 755 257L744 162Q743 154 739 148Q735 142 728 138L728 138Q706 125 680 114Q654 103 626 95L623 95Q621 94 619 94Q617 94 615 94Q609 94 604 95.5Q599 97 595 101L595 101L521 160Q512 160 503 160L429 100Q425 97 420 95Q415 93 409 93Q407 93 404.5 93.5Q402 94 400 95L401 95Q371 103 344.5 114Q318 125 294 139L296 138Q289 142 285 148Q281 154 280 162L280 162L269 257Q263 263 257 269L162 280Q154 281 148 285Q142 289 138 296L138 296Q125 318 114 344Q103 370 95 398L95 401Q94 403 94 405Q94 407 94 409Q94 415 95.5 420Q97 425 101 429L101 429L160 503Q160 512 160 521L100 595Q97 599 95 604Q93 609 93 615Q93 617 93.5 619.5Q94 622 95 624L95 623Q103 653 114 679.5Q125 706 139 730L138 728Q142 735 148 739Q154 743 162 744L162 744L257 755Q263 761 269 767L280 862Q281 870 285 876Q289 882 296 886L296 886Q318 899 344 910Q370 921 398 929L401 929Q403 930 405 930Q407 930 409 930Q415 930 420 928.5Q425 927 429 923L429 923L503 864Q512 864 521 864L595 924Q599 927 604 929Q609 931 615 931Q617 931 619.5 930.5Q622 930 624 930L623 930Q653 922 679.5 910.5Q706 899 730 885L728 886Q735 882 739 876Q743 870 744 862L744 862L755 767Q761 761 767 755L862 744Q870 743 876 739Q882 735 886 728L886 728Q899 706 910 680Q921 654 929 626L929 623Q930 621 930 619Q930 617 930 615Q930 609 928.5 604Q927 599 923 595L923 595L864 521ZM800 495Q800 499 800 503Q800 507 800 512Q800 517 800 521.5Q800 526 800 530L800 529L800 530.5L800 531Q800 537 801.5 542Q803 547 807 551L807 551L863 622Q858 640 851.5 655Q845 670 837 684L838 682L748 692Q742 693 736.5 696Q731 699 728 703L728 703Q722 710 716 716Q710 722 703 727L703 728Q699 731 696 736.5Q693 742 692 748L692 748L682 838Q670 845 655.5 851Q641 857 625 862L622 863L551 806Q547 803 542 801Q537 799 532 799L531 799L531 799L530 799Q526 800 521.5 800Q517 800 512 800Q508 800 503.5 800Q499 800 494 799L495 799Q494 799 493.5 799L493 799Q487 799 482 801Q477 803 473 806L473 806L402 863Q384 858 369 851.5Q354 845 340 837L342 838L332 748Q331 742 328 736.5Q325 731 321 728L321 728Q314 722 308 716Q302 710 297 703L296 703Q293 699 287.5 696Q282 693 276 692L276 692L186 682Q179 670 173 655Q167 640 162 625L161 622L218 551Q221 547 223 542Q225 537 225 531Q225 531 225 530.5Q225 530 225 529L225 530Q224 526 224 521.5Q224 517 224 512Q224 508 224 503Q224 498 225 494L225 495Q225 494 225 493.5L225 493Q225 487 223 482Q221 477 218 473L218 473L161 402Q166 384 172.5 369Q179 354 187 340L186 342L276 332Q282 331 287.5 328Q293 325 296 321L296 321Q302 314 308 308Q314 302 321 297L321 296Q325 293 328 287.5Q331 282 332 276L332 276L342 186Q354 179 369 173Q384 167 399 162L402 161L473 218Q477 221 482 223Q487 225 493 225Q493 225 493.5 225Q494 225 495 225L494 225Q498 224 502.5 224Q507 224 512 224Q516 224 521 224Q526 224 530 225L529 225Q530 225 530.5 225L531 225Q537 225 542 223Q547 221 551 218L551 218L622 161Q640 166 655 172.5Q670 179 684 187L682 186L692 276Q693 282 696 287.5Q699 293 703 296L703 296Q710 302 716 308Q722 314 727 321L728 321Q731 325 736.5 328Q742 331 748 332L748 332L838 342Q845 354 851 368.5Q857 383 862 399L863 402L806 473Q803 477 801 482Q799 487 799 493L799 493.5Q799 494 799 495L799 495L800 495Z"/></symbol>
+<symbol id="g-trend" viewBox="0 0 1024 1024"><path d="M960 224L960 480Q960 493 950.5 502.5Q941 512 928 512Q915 512 905.5 502.5Q896 493 896 480L896 480L896 301L567 631Q562 635 556.5 637.5Q551 640 544 640Q537 640 531.5 637.5Q526 635 521 631L384 493L119 759Q114 763 108.5 765.5Q103 768 96 768Q83 768 73.5 758.5Q64 749 64 736Q64 729 66.5 723.5Q69 718 73 713L73 713L361 425Q366 421 371.5 418.5Q377 416 384 416Q391 416 396.5 418.5Q402 421 407 425L544 563L851 256L672 256Q659 256 649.5 246.5Q640 237 640 224Q640 211 649.5 201.5Q659 192 672 192L672 192L928 192Q941 192 950.5 201.5Q960 211 960 224L960 224Z"/></symbol>
+<symbol id="g-down" viewBox="0 0 1024 1024"><path d="M855 407L535 727Q530 731 524.5 733.5Q519 736 512 736Q505 736 499.5 733.5Q494 731 489 727L489 727L169 407Q165 402 162.5 396.5Q160 391 160 384Q160 371 169.5 361.5Q179 352 192 352Q199 352 204.5 354.5Q210 357 215 361L512 659L809 361Q814 357 819.5 354.5Q825 352 832 352Q845 352 854.5 361.5Q864 371 864 384Q864 391 861.5 396.5Q859 402 855 407L855 407Z"/></symbol>
+<symbol id="g-right" viewBox="0 0 1024 1024"><path d="M727 535L407 855Q402 859 396.5 861.5Q391 864 384 864Q371 864 361.5 854.5Q352 845 352 832Q352 825 354.5 819.5Q357 814 361 809L659 512L361 215Q357 210 354.5 204.5Q352 199 352 192Q352 179 361.5 169.5Q371 160 384 160Q391 160 396.5 162.5Q402 165 407 169L407 169L727 489Q731 494 733.5 499.5Q736 505 736 512Q736 519 733.5 524.5Q731 530 727 535L727 535Z"/></symbol>
+<symbol id="g-cal-f" viewBox="0 0 1024 1024"><path d="M832 128L736 128L736 96Q736 83 726.5 73.5Q717 64 704 64Q691 64 681.5 73.5Q672 83 672 96L672 96L672 128L352 128L352 96Q352 83 342.5 73.5Q333 64 320 64Q307 64 297.5 73.5Q288 83 288 96L288 96L288 128L192 128Q165 128 146.5 146.5Q128 165 128 192L128 192L128 832Q128 859 146.5 877.5Q165 896 192 896L192 896L832 896Q859 896 877.5 877.5Q896 859 896 832L896 832L896 192Q896 165 877.5 146.5Q859 128 832 128L832 128ZM832 320L192 320L192 192L288 192L288 224Q288 237 297.5 246.5Q307 256 320 256Q333 256 342.5 246.5Q352 237 352 224L352 224L352 192L672 192L672 224Q672 237 681.5 246.5Q691 256 704 256Q717 256 726.5 246.5Q736 237 736 224L736 224L736 192L832 192L832 320Z"/></symbol>
+<symbol id="g-money-f" viewBox="0 0 1024 1024"><path d="M977 240Q973 238 969 236.5Q965 235 960 235Q956 235 952.5 236Q949 237 946 238L946 238Q882 270 825 280Q769 290 718 287Q667 284 619 270Q571 257 522 242Q471 225 418 211Q365 197 307.5 193Q250 189 187 201Q123 213 50 248Q42 252 37 260Q32 268 32 277L32 757L32 757L32 757Q32 770 41.5 779.5Q51 789 64 789Q68 789 71.5 788Q75 787 78 785L78 785Q142 754 199 744Q255 733 306 736.5Q357 740 405 753Q454 767 502 782Q560 801 620 816.5Q680 832 746 832Q798 832 854 819.5Q910 807 974 776Q982 772 987 764Q992 756 992 747L992 267L992 267L992 267Q992 259 988 251.5Q984 244 977 240L977 240L977 240ZM192 608Q192 621 182.5 630.5Q173 640 160 640Q147 640 137.5 630.5Q128 621 128 608L128 608L128 352Q128 339 137.5 329.5Q147 320 160 320Q173 320 182.5 329.5Q192 339 192 352L192 352L192 608ZM512 640Q459 640 421.5 602.5Q384 565 384 512Q384 459 421.5 421.5Q459 384 512 384Q565 384 602.5 421.5Q640 459 640 512L640 512Q640 565 602.5 602.5Q565 640 512 640L512 640ZM896 672Q896 685 886.5 694.5Q877 704 864 704Q851 704 841.5 694.5Q832 685 832 672L832 672L832 416Q832 403 841.5 393.5Q851 384 864 384Q877 384 886.5 393.5Q896 403 896 416L896 416L896 672Z"/></symbol>
+<symbol id="g-shield-f" viewBox="0 0 1024 1024"><path d="M896 224L896 448Q896 527 879 591Q861 655 834 705Q807 755 774 793Q740 830 708 857Q639 913 581 935.5Q523 958 520 959Q518 959 516 959.5Q514 960 512 960Q510 960 507.5 959.5Q505 959 503 959L503 959Q500 958 442.5 935.5Q385 913 315 857Q283 830 250 793Q217 755 190 705Q163 655 145 591Q128 527 128 448L128 224Q128 197 146.5 178.5Q165 160 192 160L192 160L832 160Q859 160 877.5 178.5Q896 197 896 224L896 224L896 224Z"/></symbol>
+<symbol id="g-plant-f" viewBox="0 0 1024 1024"><path d="M822 636Q795 653 762.5 662.5Q730 672 695 672Q695 672 694.5 672L694 672L694 672Q665 671 637 665Q609 659 583 648L585 649Q566 676 555 708.5Q544 741 544 778L544 778L544 778L544 778L544 896L544 896L544 896Q544 909 534.5 918.5Q525 928 512 928Q511 928 510.5 928L510 928L510 928Q497 927 488.5 917.5Q480 908 480 895L480 895L480 895L480 895L480 845L326 691Q310 697 291.5 700.5Q273 704 254 704L254 704Q254 704 253.5 704L253 704Q227 704 202.5 697Q178 690 157 677L158 677Q125 657 101 625Q76 593 59.5 551Q43 509 37 459Q30 408 33 351Q34 339 42.5 330.5Q51 322 63 321L63 321Q120 318 171 325Q221 331 263 347.5Q305 364 337 389Q369 413 389 446Q402 466 409 490.5Q416 515 416 542Q416 546 415.5 551Q415 556 415 561L415 560Q414 566 409.5 570.5Q405 575 399 575Q396 575 393 573.5Q390 572 387 570L387 570L311 489Q306 485 300.5 483Q295 481 289 481Q275 481 266 490Q257 499 257 513Q257 519 259 524.5Q261 530 265 535L265 535L481 756Q481 753 481 751Q481 749 482 746Q487 700 506.5 660Q526 620 556 588L556 588L759 375Q763 370 765.5 364.5Q768 359 768 352Q768 339 758.5 329.5Q749 320 736 320Q729 320 723.5 322.5Q718 325 713 329L713 329L517 537Q515 539 512 540.5Q509 542 506 542Q500 542 496 538.5Q492 535 490 530L490 530Q476 477 482.5 426Q489 375 516 330Q543 286 586 252Q630 219 687.5 197Q745 175 814 166Q883 157 961 161Q973 162 981.5 170.5Q990 179 991 191L991 192Q995 269 986 338Q977 407 955 464.5Q933 522 899 566Q866 609 822 636L822 636Z"/></symbol>
+<symbol id="g-heart-f" viewBox="0 0 1024 1024"><path d="M960 408Q960 513 895 605Q830 698 750.5 767.5Q671 837 602 879Q534 920 527 924Q524 926 520 927Q516 928 512 928Q508 928 504 927Q500 926 497 924L497 924Q490 920 422 879Q353 837 273.5 767.5Q194 698 129 605Q64 513 64 408Q64 357 84 312Q103 266 136.5 232.5Q170 199 216 180Q261 160 312 160L312 160Q374 160 426 185.5Q478 211 512 256Q546 211 598 185.5Q650 160 712 160Q763 160 808 180Q854 199 887.5 232.5Q921 266 940 312Q960 357 960 408L960 408L960 408Z"/></symbol>
+<symbol id="g-aid-f" viewBox="0 0 1024 1024"><path d="M864 224L704 224L704 192Q704 152 676 124Q648 96 608 96L608 96L416 96Q376 96 348 124Q320 152 320 192L320 192L320 224L160 224Q133 224 114.5 242.5Q96 261 96 288L96 288L96 800Q96 827 114.5 845.5Q133 864 160 864L160 864L864 864Q891 864 909.5 845.5Q928 827 928 800L928 800L928 288Q928 261 909.5 242.5Q891 224 864 224L864 224ZM608 576L544 576L544 640Q544 653 534.5 662.5Q525 672 512 672Q499 672 489.5 662.5Q480 653 480 640L480 640L480 576L416 576Q403 576 393.5 566.5Q384 557 384 544Q384 531 393.5 521.5Q403 512 416 512L416 512L480 512L480 448Q480 435 489.5 425.5Q499 416 512 416Q525 416 534.5 425.5Q544 435 544 448L544 448L544 512L608 512Q621 512 630.5 521.5Q640 531 640 544Q640 557 630.5 566.5Q621 576 608 576L608 576ZM640 224L384 224L384 192Q384 179 393.5 169.5Q403 160 416 160L416 160L608 160Q621 160 630.5 169.5Q640 179 640 192L640 192L640 224Z"/></symbol>
+<symbol id="g-plus" viewBox="0 0 1024 1024"><path d="M912 512Q912 532 898 546Q884 560 864 560L864 560L560 560L560 864Q560 884 546 898Q532 912 512 912Q492 912 478 898Q464 884 464 864L464 864L464 560L160 560Q140 560 126 546Q112 532 112 512Q112 492 126 478Q140 464 160 464L160 464L464 464L464 160Q464 140 478 126Q492 112 512 112Q532 112 546 126Q560 140 560 160L560 160L560 464L864 464Q884 464 898 478Q912 492 912 512L912 512Z"/></symbol>
 <!-- Phone chrome, in points on a 393-wide screen, inked in currentColor. -->
 <symbol id="g-sbar" viewBox="0 0 393 54"><text x="66" y="31" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="600" letter-spacing="-0.3" fill="currentColor">9:41</text><g fill="currentColor"><rect x="294" y="32" width="3" height="4" rx="1"/><rect x="298.6" y="29.6" width="3" height="6.4" rx="1"/><rect x="303.2" y="27.2" width="3" height="8.8" rx="1"/><rect x="307.8" y="24.8" width="3" height="11.2" rx="1"/><circle cx="325" cy="34.4" r="1.9"/><rect x="343" y="27.5" width="21" height="8" rx="2"/><rect x="367.4" y="29.5" width="1.6" height="4" rx="0.8" opacity="0.45"/></g><g fill="none" stroke="currentColor" stroke-linecap="round"><path d="M317.2 28.7A11 11 0 0 1 332.8 28.7M320.05 31.55A7 7 0 0 1 329.95 31.55" stroke-width="2.1"/><rect x="341" y="25.5" width="25" height="12" rx="3.6" stroke-width="1" opacity="0.4"/></g></symbol>
-<symbol id="g-pagebar" viewBox="0 0 393 56"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M31.5 20.5L24 28L31.5 35.5" stroke-width="2.2"/><circle cx="369" cy="28" r="10" stroke-width="1.6"/><path d="M369 27v6" stroke-width="1.8"/></g><circle cx="369" cy="23.4" r="1.25" fill="currentColor"/></symbol>
-<symbol id="g-walkbar" viewBox="0 0 393 48"><path d="M32 16.5L24.5 24L32 31.5M358 17l14 14M372 17l-14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
 
 <div class="wrap">
@@ -365,15 +651,84 @@
         <p class="eyebrow">Claryo: Paycheck System</p>
         <h1>Plan your paycheck. Secure your future.</h1>
         <p class="lead">Have a plan before payday arrives. Then build these pillars in order:<br /> cash reserves, protection, growth.</p>
+        <!-- No store links yet: each badge becomes an <a> once its listing is live. -->
+        <div class="stores">
+          <img src="assets/badges/app-store.svg" width="120" height="40" alt="Download on the App Store">
+          <img class="play" src="assets/badges/google-play.png" width="154" height="60" alt="Get it on Google Play">
+        </div>
       </div>
-      <!-- The sign-in screen's band head (auth_page.dart, auth_story.dart):
-           blocks set down bottom-up and named in white, then gathered into the
-           84 tile beside the name. The sheet and its form are left out, so the
-           name and tile rest at the screen's centre with the telling above.
-           The image role sits on the svg so the replay button stays outside it. -->
+      <!-- The sign-in story (auth_story.dart) on the Budget band; its tile becomes the core of the
+           onboarding orrery (pillar_strata_beat.dart) and the pillars take turns, each naming its
+           signals below. At rest, and with no script, Cash Flow is lit with its rows. -->
       <div class="phone">
         <div class="screen">
           <div class="stage story hero-screen lt-top lt-foot">
+            <p class="sw-words"><b>Claryo</b><span>The breadwinner's<br>paycheck system</span></p>
+            <div class="orr" aria-hidden="true">
+              <svg class="rings" viewBox="0 0 344 359.5" focusable="false">
+                <defs>
+                  <filter id="oblur" filterUnits="userSpaceOnUse" x="-40" y="-40" width="424" height="439.5"><feGaussianBlur stdDeviation="10"/></filter>
+                  <filter id="ohaze" filterUnits="userSpaceOnUse" x="-110" y="-110" width="220" height="220"><feGaussianBlur stdDeviation="24"/></filter>
+                  <radialGradient id="ofill0"><stop offset="0.55" stop-color="rgb(139 208 201)" stop-opacity="0"/><stop offset="1" stop-color="rgb(139 208 201)" stop-opacity="0.1"/></radialGradient>
+                  <radialGradient id="ofill1"><stop offset="0.55" stop-color="rgb(181 188 226)" stop-opacity="0"/><stop offset="1" stop-color="rgb(181 188 226)" stop-opacity="0.1"/></radialGradient>
+                  <radialGradient id="ofill2"><stop offset="0.55" stop-color="rgb(255 197 113)" stop-opacity="0"/><stop offset="1" stop-color="rgb(255 197 113)" stop-opacity="0.1"/></radialGradient>
+                </defs>
+                <circle class="haze" r="26" transform="translate(172 179.75)"/>
+                <g class="oring" style="--t: 139 208 201">
+                  <ellipse class="o-fill" cx="172" cy="179.75" rx="57.6" ry="60.7" fill="url(#ofill0)"/>
+                  <path class="o-glow" d="M172 119.05A57.6 60.7 0 1 1 172 240.45A57.6 60.7 0 1 1 172 119.05" pathLength="1"/>
+                  <path class="o-rest" d="M172 119.05A57.6 60.7 0 1 1 172 240.45A57.6 60.7 0 1 1 172 119.05" pathLength="1" stroke-opacity="0.588"/>
+                  <path class="o-lit" d="M172 119.05A57.6 60.7 0 1 1 172 240.45A57.6 60.7 0 1 1 172 119.05" pathLength="1"/>
+                </g>
+                <g class="oring" style="--t: 181 188 226">
+                  <ellipse class="o-fill" cx="172" cy="179.75" rx="100.8" ry="106.225" fill="url(#ofill1)" opacity="0"/>
+                  <path class="o-glow" d="M172 73.525A100.8 106.225 0 1 1 172 285.975A100.8 106.225 0 1 1 172 73.525" pathLength="1" opacity="0"/>
+                  <path class="o-rest" d="M172 73.525A100.8 106.225 0 1 1 172 285.975A100.8 106.225 0 1 1 172 73.525" pathLength="1" stroke-opacity="0.486"/>
+                  <path class="o-lit" d="M172 73.525A100.8 106.225 0 1 1 172 285.975A100.8 106.225 0 1 1 172 73.525" pathLength="1" opacity="0"/>
+                </g>
+                <g class="oring" style="--t: 255 197 113">
+                  <ellipse class="o-fill" cx="172" cy="179.75" rx="144" ry="151.75" fill="url(#ofill2)" opacity="0"/>
+                  <path class="o-glow" d="M172 28A144 151.75 0 1 1 172 331.5A144 151.75 0 1 1 172 28" pathLength="1" opacity="0"/>
+                  <path class="o-rest" d="M172 28A144 151.75 0 1 1 172 331.5A144 151.75 0 1 1 172 28" pathLength="1" stroke-opacity="0.392"/>
+                  <path class="o-lit" d="M172 28A144 151.75 0 1 1 172 331.5A144 151.75 0 1 1 172 28" pathLength="1" opacity="0"/>
+                </g>
+              </svg>
+              <span class="nd" style="--t: 139 208 201; transform: translate(211.6px, 161.75px) scale(1.22);"><span class="q"><svg><use href="#g-wallet"/></svg></span><span class="l"><svg><use href="#g-wallet"/></svg></span></span>
+              <span class="nd" style="--t: 139 208 201; transform: translate(125.2px, 214.318px) scale(1.22);"><span class="q"><svg><use href="#g-piggy"/></svg></span><span class="l"><svg><use href="#g-piggy"/></svg></span></span>
+              <span class="nd" style="--t: 139 208 201; transform: translate(125.2px, 109.182px) scale(1.22);"><span class="q"><svg><use href="#g-coins"/></svg></span><span class="l"><svg><use href="#g-coins"/></svg></span></span>
+              <span class="nd" style="--t: 181 188 226; transform: translate(254.8px, 161.75px) scale(0.88); opacity: 0.7;"><span class="q"><svg><use href="#g-heart"/></svg></span><span class="l" style="opacity: 0"><svg><use href="#g-heart"/></svg></span></span>
+              <span class="nd" style="--t: 181 188 226; transform: translate(103.6px, 253.744px) scale(0.88); opacity: 0.7;"><span class="q"><svg><use href="#g-aid"/></svg></span><span class="l" style="opacity: 0"><svg><use href="#g-aid"/></svg></span></span>
+              <span class="nd" style="--t: 181 188 226; transform: translate(103.6px, 69.756px) scale(0.88); opacity: 0.7;"><span class="q"><svg><use href="#g-hospital"/></svg></span><span class="l" style="opacity: 0"><svg><use href="#g-hospital"/></svg></span></span>
+              <span class="nd" style="--t: 255 197 113; transform: translate(298px, 161.75px) scale(0.88); opacity: 0.7;"><span class="q"><svg><use href="#g-lineup"/></svg></span><span class="l" style="opacity: 0"><svg><use href="#g-lineup"/></svg></span></span>
+              <span class="nd" style="--t: 255 197 113; transform: translate(82px, 293.169px) scale(0.88); opacity: 0.7;"><span class="q"><svg><use href="#g-percent"/></svg></span><span class="l" style="opacity: 0"><svg><use href="#g-percent"/></svg></span></span>
+              <span class="nd" style="--t: 255 197 113; transform: translate(82px, 30.331px) scale(0.88); opacity: 0.7;"><span class="q"><svg><use href="#g-pie"/></svg></span><span class="l" style="opacity: 0"><svg><use href="#g-pie"/></svg></span></span>
+            </div>
+            <div class="sigs">
+              <div class="pg" style="--t: 139 208 201">
+                <p class="ph" style="--i: 0">Cash Flow</p>
+                <ul>
+                  <li style="--i: 1"><span class="chip"><svg aria-hidden="true"><use href="#g-wallet"/></svg></span><span class="words"><span class="t">Monthly Budget</span><span class="g">Plan each paycheck before it arrives.</span></span></li>
+                  <li style="--i: 2"><span class="chip"><svg aria-hidden="true"><use href="#g-piggy"/></svg></span><span class="words"><span class="t">Cash Reserves</span><span class="g">Cash set against 3 to 6 months of expenses.</span></span></li>
+                  <li style="--i: 3"><span class="chip"><svg aria-hidden="true"><use href="#g-coins"/></svg></span><span class="words"><span class="t">Consumer Debt</span><span class="g">Card and loan payments as a share of income.</span></span></li>
+                </ul>
+              </div>
+              <div class="pg" style="--t: 181 188 226">
+                <p class="ph" style="--i: 0">Protection</p>
+                <ul>
+                  <li style="--i: 1"><span class="chip"><svg aria-hidden="true"><use href="#g-heart"/></svg></span><span class="words"><span class="t">Life Insurance</span><span class="g">Pays your beneficiaries a lump sum if you die.</span></span></li>
+                  <li style="--i: 2"><span class="chip"><svg aria-hidden="true"><use href="#g-aid"/></svg></span><span class="words"><span class="t">Health Insurance</span><span class="g">Pays you a lump sum on critical illness diagnosis.</span></span></li>
+                  <li style="--i: 3"><span class="chip"><svg aria-hidden="true"><use href="#g-hospital"/></svg></span><span class="words"><span class="t">Medical Insurance</span><span class="g">Pays hospital bills up to a yearly limit.</span></span></li>
+                </ul>
+              </div>
+              <div class="pg" style="--t: 255 197 113">
+                <p class="ph" style="--i: 0">Growth</p>
+                <ul>
+                  <li style="--i: 1"><span class="chip"><svg aria-hidden="true"><use href="#g-lineup"/></svg></span><span class="words"><span class="t">Projected Wealth</span><span class="g">What different returns build over time.</span></span></li>
+                  <li style="--i: 2"><span class="chip"><svg aria-hidden="true"><use href="#g-percent"/></svg></span><span class="words"><span class="t">Investment Rate</span><span class="g">The share of your income you invest.</span></span></li>
+                  <li style="--i: 3"><span class="chip"><svg aria-hidden="true"><use href="#g-pie"/></svg></span><span class="words"><span class="t">Portfolio Income</span><span class="g">Dividends, interest and rent your assets paid.</span></span></li>
+                </ul>
+              </div>
+            </div>
             <svg class="tell" viewBox="0 0 393 852" role="img" aria-label="Four steps, built from the bottom up: plan your paycheck, build your cash, protect your household, then grow." focusable="false">
               <defs>
                 <filter id="lift" x="-25%" y="-25%" width="150%" height="150%">
@@ -385,19 +740,19 @@
                 <clipPath id="nc2"><rect class="nclip" x="0" y="276" width="230" height="32" transform="translate(130 0)"/></clipPath>
                 <clipPath id="nc3"><rect class="nclip" x="0" y="308" width="230" height="32" transform="translate(130 0)"/></clipPath>
               </defs>
-              <rect class="ground" x="-42" y="-42" width="84" height="84" rx="24.02" fill="#F5F2FA" filter="url(#lift)" transform="translate(327 425.7)"/>
+              <rect class="ground" x="-42" y="-42" width="84" height="84" rx="24.02" fill="#F5F2FA" filter="url(#lift)" opacity="0" transform="translate(196.5 271.75) scale(0.619)"/>
+              <rect class="core-ground" x="-42" y="-42" width="84" height="84" rx="24.02" fill="#F5F2FA" transform="translate(196.5 271.75) scale(0.619)"/>
               <g stroke="#fff" stroke-width="1.25" stroke-opacity="0">
-                <rect class="blk" vector-effect="non-scaling-stroke" width="45.12" height="12.08" rx="2.956" fill="#FFB74D" transform="translate(304.44 399.95)"/>
-                <rect class="blk" vector-effect="non-scaling-stroke" width="45.12" height="12.08" rx="2.956" fill="#7986CB" transform="translate(304.44 413.09)"/>
-                <rect class="blk" vector-effect="non-scaling-stroke" width="45.12" height="12.08" rx="2.956" fill="#4DB6AC" transform="translate(304.44 426.24)"/>
-                <rect class="blk" vector-effect="non-scaling-stroke" width="45.12" height="12.08" rx="2.956" fill="#7B6BAE" transform="translate(304.44 439.39)"/>
+                <rect class="blk" vector-effect="non-scaling-stroke" width="45.12" height="12.08" rx="2.956" fill="#FFB74D" transform="translate(182.533 255.807) scale(0.619)"/>
+                <rect class="blk" vector-effect="non-scaling-stroke" width="45.12" height="12.08" rx="2.956" fill="#7986CB" transform="translate(182.533 263.945) scale(0.619)"/>
+                <rect class="blk" vector-effect="non-scaling-stroke" width="45.12" height="12.08" rx="2.956" fill="#4DB6AC" transform="translate(182.533 272.083) scale(0.619)"/>
+                <rect class="blk" vector-effect="non-scaling-stroke" width="45.12" height="12.08" rx="2.956" fill="#7B6BAE" transform="translate(182.533 280.221) scale(0.619)"/>
               </g>
               <text class="name" x="130" y="228" dominant-baseline="central" clip-path="url(#nc0)" opacity="0">THEN GROW</text>
               <text class="name" x="130" y="260" dominant-baseline="central" clip-path="url(#nc1)" opacity="0">PROTECT YOUR HOUSEHOLD</text>
               <text class="name" x="130" y="292" dominant-baseline="central" clip-path="url(#nc2)" opacity="0">BUILD YOUR CASH</text>
               <text class="name" x="130" y="324" dominant-baseline="central" clip-path="url(#nc3)" opacity="0">PLAN YOUR PAYCHECK</text>
             </svg>
-            <p class="sw-words"><b>Claryo</b><span>The breadwinner's<br>paycheck system</span></p>
             <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
             <i class="homebar"></i>
           </div>
@@ -405,27 +760,20 @@
       </div>
     </div>
 
-    <section aria-labelledby="who" data-clock>
+    <section class="interlude" aria-labelledby="who" data-clock>
       <h2 id="who" data-at="0">Built for breadwinners</h2>
-      <p class="intro" data-at="80">You carry financial responsibility for a household, on one income or two. Claryo is for people who are ready to do the work.</p>
+      <p class="intro" data-at="80">You carry financial responsibility for a household, on one income or two. Claryo is for people who are ready to take hold of their financial future.</p>
     </section>
 
     <!-- Budget: the paycheck actions (paycheck_actions_beat.dart, split_reveal.dart,
          concepts/card_tour.dart). BudgetChoice order, equal slices, no amounts. -->
     <section aria-labelledby="b-budget" data-clock>
       <div class="beat">
-        <div>
+        <div class="copy">
           <p class="tab" style="--c: var(--purple)" data-at="0">Budget</p>
-          <h2 id="b-budget" data-at="0">Split every paycheck</h2>
-          <p class="intro" data-at="80">Each paycheck goes to five uses until nothing is left unplanned: Save, Repay, Spend, Earmark, Invest.</p>
-        </div>
-        <figure class="fig" data-at="160" data-play="actions">
-          <div class="phone">
-            <div class="screen">
-              <div class="stage tut">
-              <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
-              <svg class="tut-g" aria-hidden="true" focusable="false"><use href="#g-walkbar"/></svg>
-              <p class="bh">One paycheck,<br><span>five actions.</span></p>
+          <h2 id="b-budget" data-at="0">Plan paychecks ahead of time</h2>
+          <p class="intro" data-at="80">Each paycheck goes to five uses until nothing is left unallocated: Save, Repay, Spend, Earmark, Invest.</p>
+          <figure class="fig" data-at="160" data-play="actions">
           <div class="card actions">
             <div class="strip" aria-hidden="true">
               <div class="bar">
@@ -446,9 +794,70 @@
               <li class="row" style="--hue: #7986CB"><span class="wash"></span><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-invest"/></svg></span><span class="words"><span class="t">Invest</span><span class="g">Assets that build future income</span></span></div></li>
             </ul>
           </div>
-              <i class="cta" aria-hidden="true">Continue</i>
-              <i class="mark"></i>
-              <i class="homebar"></i>
+          </figure>
+        </div>
+        <!-- The Budget tab as it opens (dashboard_page.dart), the payday plan in a calm state. -->
+        <figure class="phonefig" data-at="160" data-play="dash">
+          <div class="phone" role="img" aria-label="Claryo's Budget tab: Juan and Maria's plan for payday, Wednesday the 11th. A ₱20,000 Employment paycheck, 3 of 5 done: Electricity ₱4,000 and Internet ₱1,800 paid, Vitamins and Medicines ₱3,000 and Stocks ₱6,200 still to move, Repay ₱5,000 done.">
+            <div class="screen">
+              <div class="stage dash p-budget lt-top" data-tab="budget">
+                <i class="wall" aria-hidden="true"></i>
+                <i class="bandbg" aria-hidden="true"></i>
+                <!-- dashboard_header.dart; a calm day draws no alarm glyph (attention_reasons_sheet.dart). -->
+                <p class="d-eye">Your plan</p>
+                <p class="d-name">Juan &amp; Maria<svg aria-hidden="true"><use href="#g-info"/></svg></p>
+                <svg class="d-glyph" style="left:300px;top:88px" aria-hidden="true"><use href="#g-search"/></svg>
+                <svg class="d-glyph" style="left:344px;top:88px" aria-hidden="true"><use href="#g-gear"/></svg>
+                <!-- day_strip.dart: paydays and month labels, the landed day lifted in white. -->
+                <p class="sday" style="left:13.7px"><b>Mon</b><span>26</span></p>
+                <p class="smon" style="left:90.1px"><b>NOV</b><span>2026</span></p>
+                <p class="sday stile" style="left:173.5px"><b>Wed</b><span>11</span></p>
+                <p class="sday" style="left:242.9px"><b>Wed</b><span>25</span></p>
+                <p class="smon" style="left:319.3px"><b>DEC</b><span>2026</span></p>
+                <!-- income_plan_card.dart and its sections (allocation_bucket_section.dart). -->
+                <div class="dc plan" style="left:16px;top:242.5px;width:361px;height:460.5px">
+                  <p class="h-num" style="left:24px;top:20.2px;font-size:32px;letter-spacing:-1px"><span data-reel>₱20,000<span class="dec">.00</span></span></p>
+                  <p style="left:24px;top:72.55px;font-size:13px;font-weight:600;letter-spacing:-0.1px">Employment</p>
+                  <p class="k-muted" style="left:24px;top:93.5px;font-size:12px;font-weight:500">Payday · 3 of 5 done</p>
+                  <div class="ledger" style="top:124.8px" aria-hidden="true"><i class="lf" style="transform:translateX(-46%)"><i class="lb" style="transform:translateX(46%)"><i style="width:25%;background:#E07B54"></i><i style="width:29%;background:#E57373"></i></i></i></div>
+                  <svg class="bk" style="left:28px;top:141.5px;color:#E57373" aria-hidden="true"><use href="#g-spend"/></svg>
+                  <p class="b-head" style="top:140.25px">Spend</p>
+                  <i class="chk on" style="top:177px"></i>
+                  <p class="b-name k-var" style="top:178.75px">Electricity</p>
+                  <p class="b-amt k-var" style="top:178.75px">₱4,000.00</p>
+                  <i class="hair" style="top:213.3px"></i>
+                  <i class="chk on" style="top:226px"></i>
+                  <p class="b-name k-var" style="top:227.75px">Internet</p>
+                  <p class="b-amt k-var" style="top:227.75px">₱1,800.00</p>
+                  <i class="hair" style="top:262.3px"></i>
+                  <i class="chk" style="top:275px"></i>
+                  <p class="b-name" style="top:276.75px">Vitamins &amp; Medicines</p>
+                  <p class="b-amt" style="top:276.75px">₱3,000.00</p>
+                  <i class="rule" style="top:319.5px"></i>
+                  <svg class="bk" style="left:28px;top:331.75px;color:#7986CB" aria-hidden="true"><use href="#g-invest"/></svg>
+                  <p class="b-head" style="top:332px">Invest</p>
+                  <i class="chk" style="top:368px"></i>
+                  <p class="b-name" style="top:369.75px">Stocks</p>
+                  <p class="b-amt" style="top:369.75px">₱6,200.00</p>
+                  <i class="rule" style="top:412.2px"></i>
+                  <i class="chk on" style="top:425px"></i>
+                  <p class="b-head k-var" style="top:428.55px">Repay</p>
+                  <p class="b-amt k-var" style="top:428.55px;right:46px;font-size:13px">₱5,000.00</p>
+                  <svg class="car" style="left:323px;top:430px" aria-hidden="true"><use href="#g-down"/></svg>
+                </div>
+                <!-- app_shell.dart: the floating bar, Budget lit, and the "+" beside it. -->
+                <div class="nav" aria-hidden="true">
+                  <div class="pill" style="width:293px">
+                    <i class="drop" style="left:2px;width:113.2px;background:#7B6BAE"></i>
+                    <span class="tf lit" style="left:0;width:117.2px"><svg><use href="#g-cal-f"/></svg>Budget</span>
+                    <span class="tf" style="left:117.2px;width:58.6px"><svg><use href="#g-money"/></svg></span>
+                    <span class="tf" style="left:175.8px;width:58.6px"><svg><use href="#g-shield"/></svg></span>
+                    <span class="tf" style="left:234.4px;width:58.6px"><svg><use href="#g-plant"/></svg></span>
+                  </div>
+                  <i class="fab"><svg><use href="#g-plus"/></svg></i>
+                </div>
+                <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+                <i class="homebar" aria-hidden="true"></i>
               </div>
             </div>
           </div>
@@ -460,22 +869,13 @@
          concepts/cash_purpose_beats.dart). Ceiling niceAxisCeiling(337,500) =
          500,000 on the 120 band; kind words from enums.dart recursLabel. -->
     <section aria-labelledby="b-cash" data-clock>
-      <div class="beat">
-        <div>
+      <div class="beat flip">
+        <div class="copy">
           <p class="tab" style="--c: var(--teal)" data-at="0">Cash Flow</p>
-          <h2 id="b-cash" data-at="0">Know what your cash is for</h2>
-          <p class="intro" data-at="80">Every cash account sits in one of four purposes: your emergency fund, recurring expenses, one-off goals, or cash with no purpose yet.</p>
-        </div>
-        <figure class="fig" data-at="160" data-play="cash">
-          <div class="phone">
-            <div class="screen">
-              <div class="stage sp p-cash lt-top">
-              <i class="wall"></i>
-              <i class="bandbg"></i>
-              <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
-              <svg class="bar-g" aria-hidden="true" focusable="false"><use href="#g-pagebar"/></svg>
-              <p class="pname">Cash Reserves</p>
-          <div class="card framed cashcard">
+          <h2 id="b-cash" data-at="0">Cash with a purpose</h2>
+          <p class="intro" data-at="80">Organize your cash accounts to the following buckets: emergency reserves, recurring, and one-time expenses</p>
+          <figure class="fig" data-at="160" data-play="cash">
+          <div class="card cashcard">
             <div class="cash" aria-hidden="true">
               <div class="cbars">
                 <div class="crules"><i style="top: 0"></i><i style="top: 60px"></i></div>
@@ -494,7 +894,74 @@
               <li class="row" style="--hue: #B0BEC5"><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-wallet"/></svg></span><span class="words"><span class="t">Unassigned</span><span class="g">No purpose yet</span></span><span class="amt">₱75,000</span></div></li>
             </ul>
           </div>
-              <i class="homebar"></i>
+          </figure>
+        </div>
+        <!-- The Cash Flow tab as it opens (cash_flow_pillar_page.dart). -->
+        <figure class="phonefig" data-at="160" data-play="dash">
+          <div class="phone" role="img" aria-label="Claryo's Cash Flow tab: ₱40,000 income in November, with the year's monthly budget charted and November's split between investments, earmarks and expenses; cash reserves of 11.4 months of expenses, ₱466,013 across 8 cash accounts; Consumer Debt below.">
+            <div class="screen">
+              <div class="stage dash p-cash lt-top" data-tab="cash">
+                <i class="wall" aria-hidden="true"></i>
+                <i class="bandbg" aria-hidden="true"></i>
+                <!-- pillar_header.dart: title at 0, promise at 80 (arrival_clock.dart) -->
+                <p class="d-title" data-b="0,12">Cash Flow<svg aria-hidden="true"><use href="#g-info"/></svg></p>
+                <p class="d-prom" data-b="80,6">What comes in, and the job every peso has.</p>
+                <svg class="d-glyph" data-b="0,12" style="left:344px;top:86.3px" aria-hidden="true"><use href="#g-gear"/></svg>
+                <!-- cash_flow_budget_panel.dart: card 0 at 160, its bars and legend (the proof) at 460. -->
+                <div class="dc" data-b="160,12" style="top:146px;height:291.7px">
+                  <p class="dl"><i><svg aria-hidden="true"><use href="#g-wallet"/></svg></i>Monthly Budget<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p>
+                  <p class="h-num" style="left:24px;top:43.7px;font-size:36px;letter-spacing:-1px">₱40,000</p>
+                  <p style="left:24px;top:89px;font-size:12px;color:rgb(var(--irgb) / 0.51)">income in November</p>
+                  <div class="mchart" data-b="460,8" aria-hidden="true">
+                    <i class="mb" style="left:25.5px;top:155px;height:55px"><i style="height:1.7px;background:#26A69A"></i><i style="height:2.3px;background:#5C6BC0"></i><i style="height:51px;background:#EF5350"></i></i>
+                    <i class="mb" style="left:50.25px;top:152.3px;height:57.7px"><i style="height:57.7px;background:#EF5350"></i></i>
+                    <i class="mb" style="left:75px;top:152.7px;height:57.3px"><i style="height:7px;background:#26A69A"></i><i style="height:11.3px;background:#5C6BC0"></i><i style="height:39px;background:#EF5350"></i></i>
+                    <i class="mb" style="left:99.75px;top:117px;height:93px"><i style="height:5.3px;background:#26A69A"></i><i style="height:39px;background:#5C6BC0"></i><i style="height:48.7px;background:#EF5350"></i></i>
+                    <i class="mb" style="left:124.5px;top:168.7px;height:41.3px"><i style="height:22.3px;background:#5C6BC0"></i><i style="height:5px;background:#66BB6A"></i><i style="height:14px;background:#EF5350"></i></i>
+                    <i class="mb" style="left:149.25px;top:180px;height:30px"><i style="height:6px;background:#26A69A"></i><i style="height:13px;background:#5C6BC0"></i><i style="height:11px;background:#EF5350"></i></i>
+                    <i class="mb" style="left:174px;top:182.3px;height:27.7px"><i style="height:11.3px;background:#26A69A"></i><i style="height:2px;background:#66BB6A"></i><i style="height:14.4px;background:#EF5350"></i></i>
+                    <i class="mb" style="left:198.75px;top:198.7px;height:11.3px"><i style="height:3.7px;background:#C3C8D0"></i><i style="height:1.7px;background:#26A69A"></i><i style="height:5.9px;background:#5C6BC0"></i></i>
+                    <i class="mb" style="left:223.5px;top:173.3px;height:36.7px"><i style="height:12px;background:#C3C8D0"></i><i style="height:13.7px;background:#5C6BC0"></i><i style="height:5px;background:#66BB6A"></i><i style="height:6px;background:#EF5350"></i></i>
+                    <i class="mb" style="left:248.25px;top:174px;height:36px"><i style="height:17px;background:#26A69A"></i><i style="height:8.3px;background:#5C6BC0"></i><i style="height:6.3px;background:#66BB6A"></i><i style="height:4.4px;background:#EF5350"></i></i>
+                    <i class="mb sel" style="left:273px;top:188px;height:22px"><i style="height:5.61px;background:#5C6BC0"></i><i style="height:5.5px;background:#66BB6A"></i><i style="height:10.89px;background:#EF5350"></i></i>
+                    <i class="mb nil" style="left:297.75px;top:206px;height:4px"></i>
+                    <p class="mlab"><b style="left:21.38px">2026</b><b style="left:46.12px">F</b><b style="left:70.88px">M</b><b style="left:95.62px">A</b><b style="left:120.38px">M</b><b style="left:145.12px">J</b><b style="left:169.88px">J</b><b style="left:194.62px">A</b><b style="left:219.38px">S</b><b style="left:244.12px">O</b><b class="on" style="left:268.88px">N</b><b style="left:293.62px">D</b></p>
+                  </div>
+                  <p class="lg" data-b="460,8" style="left:24px;top:236.8px;width:140.5px"><i style="background:#26A69A"></i>Savings<span>&nbsp;· 0%</span><b>₱0</b></p>
+                  <p class="lg" data-b="460,8" style="left:180.5px;top:236.8px;width:140.5px"><i style="background:#5C6BC0"></i>Investments<span>&nbsp;· 25%</span><b>₱10,200</b></p>
+                  <p class="lg" data-b="460,8" style="left:24px;top:254.8px;width:140.5px"><i style="background:#66BB6A"></i>Earmark<span>&nbsp;· 25%</span><b>₱10,000</b></p>
+                  <p class="lg" data-b="460,8" style="left:180.5px;top:254.8px;width:140.5px"><i style="background:#EF5350"></i>Expenses<span>&nbsp;· 50%</span><b>₱19,800</b></p>
+                </div>
+                <!-- cash_flow_cash_panel.dart: card 1 at 760, the months counting; basis and scale at 1060. -->
+                <div class="dc" data-b="760,12" style="top:455.3px;height:238.7px">
+                  <p class="dl"><i><svg aria-hidden="true"><use href="#g-piggy"/></svg></i>Cash Reserves<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p>
+                  <p class="h-num" style="left:24px;top:48.4px;font-size:32px;letter-spacing:-1.3px"><span class="cnt" data-v="11.4" data-k="months"><span class="w">11</span><span class="dec">.4</span></span><span class="unit" style="margin-left:2.42px;font-size:14.08px"> months of expenses</span></p>
+                  <p class="basis" data-b="1060,8" style="left:24px;top:97.45px">₱466,013 reserved · avg ₱40,900/mo<svg aria-hidden="true"><use href="#g-info"/></svg></p>
+                  <div class="scale" data-b="1060,8" style="left:24px;top:126.7px" aria-hidden="true">
+                    <i class="zone"></i><i class="fill" style="transform:translateX(-5%)"></i>
+                    <i class="tick" style="left:25%"></i><i class="tick" style="left:50%"></i><i class="tick" style="left:75%"></i>
+                  </div>
+                  <p class="slab" data-b="1060,8" style="top:152.5px"><b style="left:74.25px">3 mo</b><b style="left:148.5px">6 mo</b><b style="left:222.75px">9 mo</b><b style="left:273px">12 mo</b></p>
+                  <div class="foot" data-b="1060,8" style="top:195.7px">
+                    <span>Cash accounts · 8</span>
+                    <span class="marks" aria-hidden="true"><i style="background:#000;color:#3DDC84">M</i><i style="background:#7BE0D5">GT</i><i style="background:#9575CD">T</i><i style="background:#4DB6AC">F</i><i style="background:#F58C0B;color:#fff">UB</i><i style="background:#283593;color:#FFE135">B</i></span>
+                  </div>
+                </div>
+                <!-- cash_flow_debt_panel.dart: card 2 at 1360, its head above the fold. -->
+                <div class="dc" data-b="1360,12" style="top:712.7px;height:140px">
+                  <p class="dl"><i><svg aria-hidden="true"><use href="#g-coins"/></svg></i>Consumer Debt<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p>
+                </div>
+                <div class="nav" aria-hidden="true">
+                  <div class="pill">
+                    <i class="drop" style="left:72.6px;width:137.2px;background:#4DB6AC"></i>
+                    <span class="tf" style="left:0;width:70.6px"><svg><use href="#g-cal"/></svg></span>
+                    <span class="tf lit" style="left:70.6px;width:141.2px"><svg><use href="#g-money-f"/></svg>Cash Flow</span>
+                    <span class="tf" style="left:211.8px;width:70.6px"><svg><use href="#g-shield"/></svg></span>
+                    <span class="tf" style="left:282.4px;width:70.6px"><svg><use href="#g-plant"/></svg></span>
+                  </div>
+                </div>
+                <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+                <i class="homebar" aria-hidden="true"></i>
               </div>
             </div>
           </div>
@@ -505,21 +972,19 @@
     <!-- Protection: AnnuityDrawdownChart (concepts/coverage_method_beats.dart). -->
     <section aria-labelledby="b-protect" data-clock>
       <div class="beat">
-        <div>
+        <div class="copy">
           <p class="tab" style="--c: var(--peri)" data-at="0">Protection</p>
-          <h2 id="b-protect" data-at="0">How long your cover lasts</h2>
-          <p class="intro" data-at="80">A household spending ₱900K a year for 20 years needs ₱13.9M of cover in today's money. Ten times income, ₱12.0M, covers 16½ of those years; red marks the rest.</p>
-        </div>
-        <figure class="fig" data-at="160" data-play="chart">
-          <div class="phone">
-            <div class="screen">
-              <div class="stage sp p-protect lt-top">
-              <i class="wall"></i>
-              <i class="bandbg"></i>
-              <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
-              <svg class="bar-g" aria-hidden="true" focusable="false"><use href="#g-pagebar"/></svg>
-              <p class="pname">Life Coverage</p>
-          <div class="card framed chartbox">
+          <h2 id="b-protect" data-at="0">How well your coverage supports you</h2>
+          <p class="intro" data-at="80">See if you have sufficient life, health, and medical coverage to protect your household</p>
+          <figure class="fig" data-at="160" data-play="chart">
+          <div class="card chartbox">
+            <!-- Two faces in one cell, Life then Health, each its page's hero over its chart.
+                 Without script, or under reduce motion, Life alone. -->
+            <div class="faces">
+            <div class="face">
+            <!-- life_coverage_page.dart _heroRow: funds (need), its settlement cell left out. -->
+            <div class="phead"><p class="plab">Funds (need)</p><p class="pmark" aria-hidden="true"><b>Life</b> · Health</p></div>
+            <p class="pfig"><span data-reel>₱12.0<span class="mag">M</span></span><span class="pk"> (</span><span class="pn">₱13.9<span class="mag">M</span></span><span class="pk">)</span></p>
             <!-- Data: growingAnnuityDue + drawdownSeries (lib/core/life_coverage.dart)
                  for need 900,000 a year, return 6%, inflation 3%, span 20, rule
                  12,000,000: need 13,891,702 at year 0, the rule dry at year 17
@@ -567,8 +1032,133 @@
               </g>
             </svg>
             <div class="legend" aria-hidden="true"><span><i class="sw need"></i>Household need</span><span><i class="sw held"></i>Your cover</span><span><i class="sw dry"></i>Not funded</span></div>
+            </div>
+            <div class="face">
+            <!-- health_coverage_page.dart _heroRow, its set-aside cell left out. Data: the walk's sample
+                 (concepts/health_recovery_beats.dart) through healthCoverFor: a 1,000,000 bill, a 400,000
+                 limit, a 1,000,000 lump sum and the 100,000 fund leave 500,000, five months at 100,000. -->
+            <div class="phead"><p class="plab">5.0 months of cover</p><p class="pmark" aria-hidden="true">Life · <b>Health</b></p></div>
+            <p class="pfig">₱500<span class="mag">K</span></p>
+            <!-- HealthDrawdownBars in Life's 168 box (stacked_milestone_chart.dart): gutter 46, six
+                 45.67 slots, bars 0.62 of a slot, the peak at 0.85 of the 150 plot. The bill bar is
+                 what is left on the floor with the bill stacked on it; month 5 is 0 and draws no bar. -->
+            <svg class="chart" viewBox="0 0 320 168" role="img" aria-label="Chart: medical insurance pays ₱400K of a ₱1.0M hospital bill and the lump sum and emergency fund pay the rest, leaving ₱500K that replaces ₱100K of income a month until it runs out after month 5." focusable="false">
+              <g stroke="rgba(27,24,48,0.07)" stroke-width="0.8">
+                <line x1="46" x2="320" y1="107.5" y2="107.5"/>
+                <line x1="46" x2="320" y1="65" y2="65"/>
+                <line x1="46" x2="320" y1="22.5" y2="22.5"/>
+              </g>
+              <g font-size="8" font-weight="500" fill="#6B6779" text-anchor="end">
+                <text x="42" y="107.5" dominant-baseline="central">₱500K</text>
+                <text x="42" y="65" dominant-baseline="central">₱1.0M</text>
+                <text x="42" y="22.5" dominant-baseline="central">₱1.5M</text>
+              </g>
+              <g fill="none" stroke="rgba(27,24,48,0.22)" stroke-width="1.3" stroke-linecap="round" stroke-dasharray="5 4">
+                <line x1="114.5" y1="116" x2="160.17" y2="124.5"/>
+                <line x1="160.17" y1="124.5" x2="205.83" y2="133"/>
+                <line x1="205.83" y1="133" x2="251.5" y2="141.5"/>
+                <line x1="251.5" y1="141.5" x2="297.17" y2="150"/>
+              </g>
+              <g class="hb" data-h="127.5"><rect x="54.68" y="107.5" width="28.31" height="42.5" fill="#7986CB"/><path fill="#ABAFC4" d="M54.68 107.5V26.5A4 4 0 0 1 58.68 22.5H78.99A4 4 0 0 1 82.99 26.5V107.5Z"/></g>
+              <g class="hb" data-h="34"><path fill="#7986CB" d="M100.34 150V120A4 4 0 0 1 104.34 116H124.66A4 4 0 0 1 128.66 120V150Z"/></g>
+              <g class="hb" data-h="25.5"><path fill="#7986CB" d="M146.01 150V128.5A4 4 0 0 1 150.01 124.5H170.32A4 4 0 0 1 174.32 128.5V150Z"/></g>
+              <g class="hb" data-h="17"><path fill="#7986CB" d="M191.68 150V137A4 4 0 0 1 195.68 133H215.99A4 4 0 0 1 219.99 137V150Z"/></g>
+              <g class="hb" data-h="8.5"><path fill="#7986CB" d="M237.34 150V145.5A4 4 0 0 1 241.34 141.5H261.66A4 4 0 0 1 265.66 145.5V150Z"/></g>
+              <g fill="rgba(27,24,48,0.30)">
+                <circle class="hd" cx="68.83" cy="22.5" r="2.5"/>
+                <circle class="hd" cx="114.5" cy="116" r="2.5"/>
+                <circle class="hd" cx="160.17" cy="124.5" r="2.5"/>
+                <circle class="hd" cx="205.83" cy="133" r="2.5"/>
+                <circle class="hd" cx="251.5" cy="141.5" r="2.5"/>
+              </g>
+              <g class="hv" font-size="9" font-weight="600" fill="#6B6779" text-anchor="middle">
+                <text x="68.83" y="17.25">₱1.5M</text>
+                <text x="114.5" y="110.75">₱400K</text>
+                <text x="160.17" y="119.25">₱300K</text>
+                <text x="205.83" y="127.75">₱200K</text>
+                <text x="251.5" y="136.25">₱100K</text>
+              </g>
+              <g fill="rgba(27,24,48,0.35)">
+                <rect x="44.8" y="0" width="1.2" height="149"/>
+                <rect x="46" y="148.4" width="274" height="1.2"/>
+              </g>
+              <g font-size="9" font-weight="500" fill="#6B6779" text-anchor="middle">
+                <text x="68.83" y="161" dominant-baseline="central">Bill</text>
+                <text x="114.5" y="161" dominant-baseline="central">Mo 1</text>
+                <text x="160.17" y="161" dominant-baseline="central">Mo 2</text>
+                <text x="205.83" y="161" dominant-baseline="central">Mo 3</text>
+                <text x="251.5" y="161" dominant-baseline="central">Mo 4</text>
+                <text x="297.17" y="161" dominant-baseline="central">Mo 5</text>
+              </g>
+            </svg>
+            </div>
+            </div>
           </div>
-              <i class="homebar"></i>
+          </figure>
+        </div>
+        <!-- The Protection tab as it opens (protection_pillar_page.dart). -->
+        <figure class="phonefig" data-at="160" data-play="dash">
+          <div class="phone" role="img" aria-label="Claryo's Protection tab for Juan: ₱15.0M life, ₱4.0M health and ₱250K a year medical cover across 5 products; life cover funds 26.7 years against a 20-year goal; health cover pays for 23.3 months off work after the hospital bill is paid.">
+            <div class="screen">
+              <div class="stage dash p-protect lt-top" data-tab="protect">
+                <i class="wall" aria-hidden="true"></i>
+                <i class="bandbg" aria-hidden="true"></i>
+                <p class="d-title" data-b="0,12">Protection<svg aria-hidden="true"><use href="#g-info"/></svg></p>
+                <p class="d-prom" data-b="80,6">Insurance for you and your household.</p>
+                <svg class="d-glyph" data-b="0,12" style="left:344px;top:86.3px" aria-hidden="true"><use href="#g-gear"/></svg>
+                <!-- protection_member_control.dart: the member row at 80, the live member underlined -->
+                <div class="mem" data-b="80,6">
+                  <p style="left:0"><i style="background:#CF7515">J</i>Me</p>
+                  <p class="off" style="left:172.5px"><i>M</i>Spouse</p>
+                  <i class="rule"></i>
+                </div>
+                <!-- protection_policies_panel.dart: card 0 at 160, its strip at 460 -->
+                <div class="dc" data-b="160,12" style="top:222px;height:157.7px">
+                  <p class="dl"><i><svg aria-hidden="true"><use href="#g-umbrella"/></svg></i>Insurance Products<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p>
+                  <p class="pcol h-num" style="left:24px;top:49.2px">₱15.0M</p>
+                  <p class="pcol h-num" style="left:123px;top:49.2px">₱4.0M</p>
+                  <p class="pcol h-num" style="left:222px;top:49.2px">₱250K<span class="unit" style="margin-left:4.18px;font-size:10px">/yr</span></p>
+                  <p class="pcol pw" style="left:24px;top:80.7px"><svg aria-hidden="true"><use href="#g-heart"/></svg>Life</p>
+                  <p class="pcol pw" style="left:123px;top:80.7px"><svg aria-hidden="true"><use href="#g-aid"/></svg>Health</p>
+                  <p class="pcol pw" style="left:222px;top:80.7px"><svg aria-hidden="true"><use href="#g-hospital"/></svg>Medical</p>
+                  <div class="foot" data-b="460,8" style="top:114px">
+                    <span>Products · 5</span>
+                    <span class="marks" aria-hidden="true"><i style="background:#F6E714;color:#fff">S</i><i style="background:#EE7623;color:#fff">I</i><i style="background:#7986CB;color:#fff">M</i><i style="background:#4DB6AC">N</i></span>
+                  </div>
+                </div>
+                <!-- protection_life_panel.dart: card 1 at 760 on its seal clock; the ring strokes a pitch on, check in place. -->
+                <div class="dc" data-b="760,12" style="top:397.3px;height:123.7px">
+                  <p class="dl"><i><svg aria-hidden="true"><use href="#g-heart-f"/></svg></i>Life Coverage<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p>
+                  <p class="h-num" style="left:24px;top:46px;font-size:32px;letter-spacing:-1.3px"><span class="cnt" data-v="26.7"><span class="w">26</span><span class="dec">.7</span></span><span class="unit" style="margin-left:2.56px;font-size:14.08px"> years funded</span></p>
+                  <p class="k-muted" data-b="1060,8" style="left:24px;top:87.45px;font-size:13px;font-weight:500">Goal 20 years, to 2046</p>
+                  <svg class="gring" data-b="1060,8" style="left:249px;top:43.9px" viewBox="0 0 64 64" aria-hidden="true">
+                    <circle cx="32" cy="32" r="28.5" fill="none" stroke="rgb(22 27 61 / 0.11)" stroke-width="7"/>
+                    <circle class="arc" cx="32" cy="32" r="28.5" fill="none" stroke="#7986CB" stroke-width="7" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" transform="rotate(-90 32 32)"/>
+                    <path d="M22.27 32.51L29.44 39.17L41.73 25.34" fill="none" stroke="#10B981" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"/>
+                  </svg>
+                </div>
+                <!-- protection_health_panel.dart: card 2 at 1360; line and recovery bars (recovery_bars.dart) at 1660. -->
+                <div class="dc" data-b="1360,12" style="top:539.5px;height:183.2px">
+                  <p class="dl"><i><svg aria-hidden="true"><use href="#g-aid-f"/></svg></i>Health Coverage<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p>
+                  <p class="h-num" style="left:24px;top:41.2px;font-size:32px;letter-spacing:-1.3px"><span class="cnt" data-v="23.3"><span class="w">23</span><span class="dec">.3</span></span><span class="unit" style="margin-left:2.56px;font-size:14.08px"> months off work</span></p>
+                  <div class="proof" data-b="1660,8">
+                    <p class="k-muted" style="left:24px;top:80.55px;font-size:13px;font-weight:500">After the hospital bill is paid</p>
+                    <div class="rbars" style="left:24px;top:105.2px" aria-hidden="true"><i class="bill" style="left:0;height:44px"></i><i style="left:23.15px;height:24.45px"></i><i style="left:46.31px;height:22.41px"></i><i style="left:69.46px;height:20.37px"></i><i style="left:92.62px;height:18.33px"></i><i style="left:115.77px;height:16.3px"></i><i style="left:138.92px;height:14.26px"></i><i style="left:162.08px;height:12.22px"></i><i style="left:185.23px;height:10.19px"></i><i style="left:208.38px;height:8.15px"></i><i style="left:231.54px;height:6.11px"></i><i style="left:254.69px;height:4.07px"></i><i style="left:277.85px;height:3px"></i></div>
+                    <p class="k-faint" style="left:24px;top:153.7px;font-size:10px">Bill</p>
+                    <p class="k-faint" style="right:24px;top:153.7px;font-size:10px">23 mo</p>
+                  </div>
+                </div>
+                <div class="nav" aria-hidden="true">
+                  <div class="pill">
+                    <i class="drop" style="left:143.2px;width:137.2px;background:#7986CB"></i>
+                    <span class="tf" style="left:0;width:70.6px"><svg><use href="#g-cal"/></svg></span>
+                    <span class="tf" style="left:70.6px;width:70.6px"><svg><use href="#g-money"/></svg></span>
+                    <span class="tf lit" style="left:141.2px;width:141.2px"><svg><use href="#g-shield-f"/></svg>Protection</span>
+                    <span class="tf" style="left:282.4px;width:70.6px"><svg><use href="#g-plant"/></svg></span>
+                  </div>
+                </div>
+                <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+                <i class="homebar" aria-hidden="true"></i>
               </div>
             </div>
           </div>
@@ -577,32 +1167,92 @@
     </section>
 
     <!-- Growth: Core & Satellite (core_satellite_figure.dart) with the walk's
-         sample nodes (concepts/core_satellite_beats.dart), the first satellite lit. -->
+         sample nodes (concepts/core_satellite_beats.dart), the lit node's hero above it. -->
     <section aria-labelledby="b-growth" data-clock>
-      <div class="beat">
-        <div>
+      <div class="beat flip">
+        <div class="copy">
           <p class="tab" style="--c: var(--amber)" data-at="0">Growth</p>
-          <h2 id="b-growth" data-at="0">Your portfolio, by role</h2>
-          <p class="intro" data-at="80">Your holdings sit in the core. Move the ones you treat differently, such as collectibles or speculation, into satellites around it.</p>
-        </div>
-        <figure class="fig" data-at="160" data-play="orrery">
-          <div class="phone">
-            <div class="screen">
-              <div class="stage sp p-growth lt-top">
-              <i class="wall"></i>
-              <i class="bandbg"></i>
-              <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
-              <svg class="bar-g" aria-hidden="true" focusable="false"><use href="#g-pagebar"/></svg>
-              <p class="pname">Investment Portfolio</p>
-          <div class="card framed orbitbox">
+          <h2 id="b-growth" data-at="0">Your portfolio, as core and satellites</h2>
+          <p class="intro" data-at="80">You have core holdings, then satellites - your riskier bets. Not categorized by asset type, but your own competencies.</p>
+          <figure class="fig" data-at="160" data-play="orrery">
+          <div class="card orbitbox">
+            <!-- core_satellite_panel.dart _HeroRow, one per node in the panel's order; the sample's
+                 totals and counts (investment_portfolio_example.dart). Never summed: no portfolio total. -->
+            <div class="nhero">
+              <div class="nv"><p class="nn">Core Holdings</p><p class="nt"><span data-reel style="font-size:30px">₱2,400,000</span></p><p class="nc">3 holdings</p></div>
+              <div class="nv"><p class="nn">Collectibles</p><p class="nt"><span style="font-size:34px">₱180,000</span></p><p class="nc">1 holding</p></div>
+              <div class="nv"><p class="nn">Speculation</p><p class="nt"><span style="font-size:34px">₱340,000</span></p><p class="nc">2 holdings</p></div>
+            </div>
+            <i class="nrule" aria-hidden="true"></i>
             <div class="orrery" role="img" aria-label="A core holding at the center, with two satellites around it: Collectibles and Speculation.">
               <div class="ring" aria-hidden="true"></div>
-              <div class="body core" aria-hidden="true"><span class="disc"><svg><use href="#g-sun"/></svg></span><span class="cap">Core</span></div>
-              <div class="body sat s0 lit" aria-hidden="true"><span class="disc"><svg><use href="#g-diamond"/></svg></span><span class="cap">Collectibles</span></div>
-              <div class="body sat s1" aria-hidden="true"><span class="disc"><svg><use href="#g-rocket"/></svg></span><span class="cap">Speculation</span></div>
+              <div class="body core lit" aria-hidden="true"><span class="disc"><i class="glow"></i><svg><use href="#g-sun"/></svg></span><span class="cap">Core</span></div>
+              <div class="body sat s0" aria-hidden="true"><span class="disc"><i class="glow"></i><svg><use href="#g-diamond"/></svg></span><span class="cap">Collectibles</span></div>
+              <div class="body sat s1" aria-hidden="true"><span class="disc"><i class="glow"></i><svg><use href="#g-rocket"/></svg></span><span class="cap">Speculation</span></div>
             </div>
           </div>
-              <i class="homebar"></i>
+          </figure>
+        </div>
+        <!-- The Growth tab as it opens (growth_pillar_page.dart). -->
+        <figure class="phonefig" data-at="160" data-play="dash">
+          <div class="phone" role="img" aria-label="Claryo's Growth tab: projected wealth of ₱32.4M by 2056, 4.4 times what goes in; an investment rate of 20.8%, projected 26.2%, with ₱172,724 invested over 12 months; portfolio income of ₱10,448 a month from dividends and rent, plus ₱3,445 a month at a 4% withdrawal.">
+            <div class="screen">
+              <div class="stage dash p-growth lt-top" data-tab="growth">
+                <i class="wall" aria-hidden="true"></i>
+                <i class="bandbg" aria-hidden="true"></i>
+                <p class="d-title" data-b="0,12">Growth<svg aria-hidden="true"><use href="#g-info"/></svg></p>
+                <p class="d-prom" data-b="80,6" style="font-size:13px;top:115.45px">Income turned into assets that earn for you.</p>
+                <svg class="d-glyph" data-b="0,12" style="left:344px;top:86.3px" aria-hidden="true"><use href="#g-gear"/></svg>
+                <!-- growth/projected_wealth_panel.dart: card 0 at 160, its reels over 800, the line after them. -->
+                <div class="dc" data-b="160,12" style="top:149px;height:119.7px">
+                  <p class="dl"><i><svg aria-hidden="true"><use href="#g-plant-f"/></svg></i>Projected Wealth<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p>
+                  <p class="h-num" style="left:23px;top:46.3px;font-size:28px;letter-spacing:-1px"><span data-reel>₱32.4<span class="mag">M</span></span></p>
+                  <p class="k-muted" data-b="960,0,250" style="left:24px;top:86.05px;font-size:13px;font-weight:500"><b class="k-ink">4.4×</b> what you put in</p>
+                  <p class="dial" style="left:226.6px;top:55.6px"><svg aria-hidden="true"><use href="#g-cal"/></svg>By 2056</p>
+                </div>
+                <!-- growth/rate_panel.dart: card 1 at 760; its ledger at 1060, in the by-target ink (house rule 2). -->
+                <div class="dc" data-b="760,12" style="top:286.3px;height:110.7px">
+                  <p class="dl"><i><svg aria-hidden="true"><use href="#g-trend"/></svg></i>Investment Rate<svg class="car" aria-hidden="true"><use href="#g-down"/></svg></p>
+                  <p class="h-num" style="left:24px;top:41.2px;font-size:30px;letter-spacing:-1px"><span data-reel>20<span class="dec">.8</span></span><span class="unit" style="font-size:13.2px">%</span></p>
+                  <p class="k-sec" style="left:24px;top:79.4px;font-size:12px;font-weight:500">Projected 26.2%.</p>
+                  <div class="proof" data-b="1060,8">
+                    <p class="h-num" style="right:64px;top:45.25px;font-size:15px;letter-spacing:-0.3px;color:#C62828"><span data-reel>₱0</span></p>
+                    <p class="k-muted" style="left:287px;top:48.1px;font-size:12px;font-weight:500">Nov</p>
+                    <p class="h-num" style="right:64px;top:72.25px;font-size:15px;letter-spacing:-0.3px;color:#43A047"><span data-reel>₱172,724</span></p>
+                    <p class="k-muted" style="left:287px;top:75.1px;font-size:12px;font-weight:500">12 mo</p>
+                  </div>
+                </div>
+                <!-- growth_portfolio_income_section.dart: card 2 at 1360, its 600ms climb at 1660 (income_stream_bars.dart). -->
+                <div class="dc" data-b="1360,12" style="top:415px;height:420px">
+                  <p class="dl"><i><svg aria-hidden="true"><use href="#g-pie"/></svg></i>Portfolio Income<svg class="inf" aria-hidden="true"><use href="#g-info"/></svg><svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p>
+                  <p class="h-num" style="left:24px;top:46.5px;font-size:34px;letter-spacing:-1.2px">₱10,448<span class="unit" style="margin-left:6.46px;font-size:14.96px">/month</span></p>
+                  <p class="k-sec" style="left:24px;top:99.7px;font-size:12px;font-weight:500">Plus ₱3,445/month at <b style="color:#FFB74D">4% a year</b></p>
+                  <div class="proof" data-b="1660,8">
+                    <i class="rule" style="top:133.5px"></i>
+                    <p class="tl" style="top:150.95px">100%</p>
+                    <p class="tl" style="top:203.25px">75%</p>
+                    <p class="tl" style="top:255.55px">50%</p>
+                    <p class="tl" style="top:307.95px">25%</p>
+                    <div class="tube" aria-hidden="true"><i class="ghost"></i><i class="fill"></i></div>
+                    <i class="vrule"></i>
+                    <div class="sbars" aria-hidden="true"><i style="left:4.5px;height:50.6px;background:#DB8200"></i><i style="left:57.5px;height:2.3px;background:#FFA41F"></i><i style="left:110.5px;height:64px;background:#FFC36B"></i><i class="gh" style="left:163.5px;height:37.8px"></i></div>
+                    <p class="srow" style="top:238.7px"><i style="background:#DB8200"></i>Dividends<span>&nbsp;· 44%</span><b>₱4,615</b></p>
+                    <p class="srow" style="top:270px"><i style="background:#FFA41F"></i>Interest<b class="nil">—</b></p>
+                    <p class="srow" style="top:301.7px"><i style="background:#FFC36B"></i>Rental Income<span>&nbsp;· 56%</span><b>₱5,833</b></p>
+                    <p class="srow" style="top:333.7px"><i class="gh"></i>4% withdrawal<b>₱3,445</b></p>
+                  </div>
+                </div>
+                <div class="nav" aria-hidden="true">
+                  <div class="pill">
+                    <i class="drop" style="left:213.8px;width:137.2px;background:#FFB74D"></i>
+                    <span class="tf" style="left:0;width:70.6px"><svg><use href="#g-cal"/></svg></span>
+                    <span class="tf" style="left:70.6px;width:70.6px"><svg><use href="#g-money"/></svg></span>
+                    <span class="tf" style="left:141.2px;width:70.6px"><svg><use href="#g-shield"/></svg></span>
+                    <span class="tf lit" style="left:211.8px;width:141.2px"><svg><use href="#g-plant-f"/></svg>Growth</span>
+                  </div>
+                </div>
+                <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+                <i class="homebar" aria-hidden="true"></i>
               </div>
             </div>
           </div>
@@ -610,96 +1260,83 @@
       </div>
     </section>
 
-    <!-- The gallery: the four tabs in order, as real screenshots. Until a
-         tab's file exists its phone shows the tab's head on its band (each
-         line is the app's own, its source noted beside it). To drop one in,
-         save the screenshot as assets/screens/<name>.png (portrait iPhone,
-         393 : 852, e.g. 1179 x 2556) and uncomment that slot's img line.
-         Nothing is requested before then, so a missing file costs no 404. -->
-    <section class="gal" data-clock>
-      <div class="gal-row">
-        <figure class="gslot" data-at="160">
-          <div class="phone">
-            <div class="screen">
-              <div class="stage tb p-budget lt-top">
-                <i class="wall"></i>
-                <i class="bandbg"></i>
-                <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
-                <p class="tname budget">Budget</p>
-                <!-- auth_page.dart, the sign-up line: the Budget tab's head is a greeting, with no line of its own -->
-                <p class="tline">Plan every paycheck before it arrives.</p>
-                <i class="homebar"></i>
-              </div>
-              <!-- <img class="shot" src="assets/screens/budget-month.png" width="1179" height="2556" alt="" loading="lazy" decoding="async"> -->
-            </div>
-          </div>
-        </figure>
-        <figure class="gslot" data-at="460">
-          <div class="phone">
-            <div class="screen">
-              <div class="stage tb p-cash lt-top">
-                <i class="wall"></i>
-                <i class="bandbg"></i>
-                <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
-                <p class="tname">Cash Flow</p>
-                <!-- cash_flow_pillar_page.dart _cashFlowPromise, in pesos -->
-                <p class="tline">What comes in, and the job every peso has.</p>
-                <i class="homebar"></i>
-              </div>
-              <!-- <img class="shot" src="assets/screens/cash-flow.png" width="1179" height="2556" alt="" loading="lazy" decoding="async"> -->
-            </div>
-          </div>
-        </figure>
-        <figure class="gslot" data-at="760">
-          <div class="phone">
-            <div class="screen">
-              <div class="stage tb p-protect lt-top">
-                <i class="wall"></i>
-                <i class="bandbg"></i>
-                <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
-                <p class="tname">Protection</p>
-                <!-- protection_pillar_page.dart kProtectionPromise -->
-                <p class="tline">Insurance for you and your household.</p>
-                <i class="homebar"></i>
-              </div>
-              <!-- <img class="shot" src="assets/screens/protection.png" width="1179" height="2556" alt="" loading="lazy" decoding="async"> -->
-            </div>
-          </div>
-        </figure>
-        <figure class="gslot" data-at="1060">
-          <div class="phone">
-            <div class="screen">
-              <div class="stage tb p-growth lt-top">
-                <i class="wall"></i>
-                <i class="bandbg"></i>
-                <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
-                <p class="tname">Growth</p>
-                <!-- growth_pillar_page.dart kGrowthPromise -->
-                <p class="tline">Income turned into assets that earn for you.</p>
-                <i class="homebar"></i>
-              </div>
-              <!-- <img class="shot" src="assets/screens/growth.png" width="1179" height="2556" alt="" loading="lazy" decoding="async"> -->
-            </div>
-          </div>
-        </figure>
-      </div>
-    </section>
-
-    <!-- The close: Budget alone, then the pillars laid in bottom-up (launch_story.dart's Laid motion). -->
+    <!-- The close: the Budget tab in the app's dark theme, its bar losing the
+         pillar tabs until Budget is alone (app_shell.dart `lone`), then again. -->
     <section aria-labelledby="start" data-clock>
       <div class="beat">
-        <div>
-          <h2 id="start" data-at="0">Start where you need to</h2>
-          <p class="intro" data-at="80">Budget is always on. Cash Flow, Protection and Growth can each be switched off. Pick the tabs you need on first run, and add the rest in Settings when you're ready.</p>
+        <div class="copy">
+          <h2 id="start" data-at="0">Progress at your pace</h2>
+          <p class="intro" data-at="80">Switch off tabs to focus on certain pillars. Budget is always on. Cash Flow, Protection and Growth can each be turned off. Reactivate them again when you're ready.</p>
+          <!-- Settings › Tabs' marks (tabs_orrery_page.dart TabMarks), each going quiet as its tab leaves the phone's bar. -->
+          <div class="tabmarks" data-at="160" role="img" aria-label="Cash Flow, Protection, Growth">
+            <span class="tm" style="--a: 77 182 172; --k: #00695C"><i class="on"><svg><use href="#g-money"/></svg></i><i class="off"><svg><use href="#g-money"/></svg></i></span>
+            <span class="tm" style="--a: 121 134 203; --k: #3F4A9E"><i class="on"><svg><use href="#g-shield"/></svg></i><i class="off"><svg><use href="#g-shield"/></svg></i></span>
+            <span class="tm" style="--a: 255 183 77; --k: #B45309"><i class="on"><svg><use href="#g-plant"/></svg></i><i class="off"><svg><use href="#g-plant"/></svg></i></span>
+          </div>
         </div>
-        <figure class="fig closing-logo" data-at="160" data-play="close" role="img" aria-label="The Claryo logo, built up from the paycheck block.">
-          <svg viewBox="0 0 200 200" aria-hidden="true" focusable="false">
-            <rect x="-80" y="-80" width="160" height="160" rx="45.76" fill="#F5F2FA" filter="url(#lift)" transform="translate(100 100)"/>
-            <rect class="cblk" width="85.94" height="23.01" rx="5.63" fill="#FFB74D" transform="translate(57.02 50.94)"/>
-            <rect class="cblk" width="85.94" height="23.01" rx="5.63" fill="#7986CB" transform="translate(57.02 75.98)"/>
-            <rect class="cblk" width="85.94" height="23.01" rx="5.63" fill="#4DB6AC" transform="translate(57.02 101.02)"/>
-            <rect width="85.94" height="23.01" rx="5.63" fill="#7B6BAE" transform="translate(57.02 126.06)"/>
-          </svg>
+        <figure class="phonefig" data-at="160" data-play="dash">
+          <div class="phone dk" role="img" aria-label="The Budget tab in dark mode, its nav bar dropping Growth, Protection and Cash Flow until Budget is the only tab.">
+            <div class="screen">
+              <div class="stage dash p-budget lt-top lt-foot" data-tab="budget">
+                <i class="wall" aria-hidden="true"></i>
+                <i class="wall tall" aria-hidden="true"></i>
+                <i class="bandbg" aria-hidden="true"></i>
+                <p class="d-eye">Your plan</p>
+                <p class="d-name">Juan &amp; Maria<svg aria-hidden="true"><use href="#g-info"/></svg></p>
+                <svg class="d-glyph" style="left:300px;top:88px" aria-hidden="true"><use href="#g-search"/></svg>
+                <svg class="d-glyph" style="left:344px;top:88px" aria-hidden="true"><use href="#g-gear"/></svg>
+                <p class="sday" style="left:13.7px"><b>Mon</b><span>26</span></p>
+                <p class="smon" style="left:90.1px"><b>NOV</b><span>2026</span></p>
+                <p class="sday stile" style="left:173.5px"><b>Wed</b><span>11</span></p>
+                <p class="sday" style="left:242.9px"><b>Wed</b><span>25</span></p>
+                <p class="smon" style="left:319.3px"><b>DEC</b><span>2026</span></p>
+                <div class="dc plan" style="left:16px;top:242.5px;width:361px;height:460.5px">
+                  <p class="h-num" style="left:24px;top:20.2px;font-size:32px;letter-spacing:-1px"><span data-reel>₱20,000<span class="dec">.00</span></span></p>
+                  <p style="left:24px;top:72.55px;font-size:13px;font-weight:600;letter-spacing:-0.1px">Employment</p>
+                  <p class="k-muted" style="left:24px;top:93.5px;font-size:12px;font-weight:500">Payday · 3 of 5 done</p>
+                  <div class="ledger" style="top:124.8px" aria-hidden="true"><i class="lf" style="transform:translateX(-46%)"><i class="lb" style="transform:translateX(46%)"><i style="width:25%;background:#E07B54"></i><i style="width:29%;background:#E57373"></i></i></i></div>
+                  <svg class="bk" style="left:28px;top:141.5px;color:#E57373" aria-hidden="true"><use href="#g-spend"/></svg>
+                  <p class="b-head" style="top:140.25px">Spend</p>
+                  <i class="chk on" style="top:177px"></i>
+                  <p class="b-name k-var" style="top:178.75px">Electricity</p>
+                  <p class="b-amt k-var" style="top:178.75px">₱4,000.00</p>
+                  <i class="hair" style="top:213.3px"></i>
+                  <i class="chk on" style="top:226px"></i>
+                  <p class="b-name k-var" style="top:227.75px">Internet</p>
+                  <p class="b-amt k-var" style="top:227.75px">₱1,800.00</p>
+                  <i class="hair" style="top:262.3px"></i>
+                  <i class="chk" style="top:275px"></i>
+                  <p class="b-name" style="top:276.75px">Vitamins &amp; Medicines</p>
+                  <p class="b-amt" style="top:276.75px">₱3,000.00</p>
+                  <i class="rule" style="top:319.5px"></i>
+                  <svg class="bk" style="left:28px;top:331.75px;color:#7986CB" aria-hidden="true"><use href="#g-invest"/></svg>
+                  <p class="b-head" style="top:332px">Invest</p>
+                  <i class="chk" style="top:368px"></i>
+                  <p class="b-name" style="top:369.75px">Stocks</p>
+                  <p class="b-amt" style="top:369.75px">₱6,200.00</p>
+                  <i class="rule" style="top:412.2px"></i>
+                  <i class="chk on" style="top:425px"></i>
+                  <p class="b-head k-var" style="top:428.55px">Repay</p>
+                  <p class="b-amt k-var" style="top:428.55px;right:46px;font-size:13px">₱5,000.00</p>
+                  <svg class="car" style="left:323px;top:430px" aria-hidden="true"><use href="#g-down"/></svg>
+                </div>
+                <!-- All four tabs at rest; the loop moves them by transform from here. -->
+                <div class="nav" aria-hidden="true">
+                  <i class="ng"></i>
+                  <div class="pill" style="width:293px">
+                    <i class="drop"></i>
+                    <span class="tf lit" style="left:0;width:117.2px"><svg><use href="#g-cal-f"/></svg>Budget</span>
+                    <span class="tf" style="left:117.2px;width:58.6px"><svg><use href="#g-money"/></svg></span>
+                    <span class="tf" style="left:175.8px;width:58.6px"><svg><use href="#g-shield"/></svg></span>
+                    <span class="tf" style="left:234.4px;width:58.6px"><svg><use href="#g-plant"/></svg></span>
+                  </div>
+                  <i class="fab"><i class="fsh"></i><svg><use href="#g-plus"/></svg></i>
+                </div>
+                <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+                <i class="homebar" aria-hidden="true"></i>
+              </div>
+            </div>
+          </div>
         </figure>
       </div>
     </section>
@@ -734,9 +1371,11 @@
     };
   };
   const easeOutCubic = cubic(0.215, 0.61, 0.355, 1);
+  const easeInCubic = cubic(0.55, 0.055, 0.675, 0.19);
   const easeInOutCubic = cubic(0.645, 0.045, 0.355, 1);
   const easeOutQuart = cubic(0.165, 0.84, 0.44, 1);
   const easeOutBack = cubic(0.175, 0.885, 0.32, 1.275);
+  const easeOut = cubic(0.25, 0.1, 0.25, 1);            // Curves.easeOut
   const span = (t, start, len) => Math.min(1, Math.max(0, (t - start) / len));
   const lerp = (a, b, t) => a + (b - a) * t;
 
@@ -750,29 +1389,81 @@
     };
     requestAnimationFrame(tick);
   };
+  // An arrival beat (arrival_clock.dart): 440 on easeOutCubic from `at`.
+  const beat = (ms, at, len = 440) => easeOutCubic(span(ms, at, len));
+  // A bar chart's climb (progressFor): bar i of n starts i / (n - 1) of `share` in, then eases out.
+  const staggered = (raw, i, n, share) => { const s = (i / (n - 1)) * share; return easeOutCubic((raw - s) / (1 - s)); };
+
+  // ── The loops: the hero, the Protection faces, Core & Satellite, the close ─
+  // Each runs on a clock that advances only once started and while its element is
+  // on screen, so a loop pauses off screen and resumes where it left. step(dt) runs
+  // each frame; the first after a start or a return advances 0, none more than 100.
+  const loopClock = (el, step, { threshold = 0, seen: onSeen } = {}) => {
+    let raf = 0, last = -1, started = false, seen = false;
+    const tick = now => {
+      const dt = last < 0 ? 0 : Math.min(Math.max(now - last, 0), 100);
+      last = now;
+      step(dt);
+      raf = requestAnimationFrame(tick);
+    };
+    const go = () => { if (started && seen && !raf) { last = -1; raf = requestAnimationFrame(tick); } };
+    new IntersectionObserver(es => {
+      const en = es[es.length - 1];
+      seen = en.isIntersecting;
+      if (!seen && raf) { cancelAnimationFrame(raf); raf = 0; }
+      if (onSeen) onSeen(en);
+      go();
+    }, { threshold }).observe(el);
+    return {
+      start() { started = true; go(); },
+      get started() { return started; },
+      get running() { return raf !== 0; },
+    };
+  };
+
+  // The turns cycle real information, a sanctioned loop (founder, 2026-11-12): each
+  // view holds a TURN; a lit node or ring crosses over _kSelectionDuration, a hero
+  // over heroSelectionSwap (chart_utils.dart). turnAt(r): turn k, the view in hand n,
+  // the one leaving p and the time into the turn; turn 0 has none leaving.
+  const TURN = 4500, SELECT = 280, HERO_SWAP = 200;
+  const turnAt = (r, count) => {
+    const k = Math.floor(r / TURN);
+    return { k, n: k % count, p: (k + count - 1) % count, since: r - k * TURN };
+  };
+  const swapOf = ({ k, since }) => (k ? span(since, 0, HERO_SWAP) : 1);
+  // A hero swap: the view in hand in on easeOutCubic, the leaving one out on easeInCubic.
+  const crossfade = (views, { k, n, p }, u) => views.forEach((v, j) => {
+    v.style.opacity = j === n ? easeOutCubic(u) : k && j === p ? easeInCubic(1 - u) : 0;
+  });
 
   // ── Number reels (animated_number.dart) ──────────────────────────────────
   // Each digit is a reel: columns leave 30/950 of the run apart and turn for
   // 780/950 of it on easeOutCubic; the low places spin a turn further.
   const reels = el => {
-    const text = el.textContent;
-    const cols = [];
+    // One element is one AnimatedNumber: its digits, across commas and a split decimal, are one figure.
     const sr = document.createElement('span');
     sr.className = 'sr';
-    sr.textContent = text;
+    sr.textContent = el.textContent;
     const shown = document.createElement('span');
     shown.setAttribute('aria-hidden', 'true');
-    for (const tok of text.match(/\d+(?:\.\d+)?|[^\d]+/g)) {
-      if (!/\d/.test(tok)) { shown.append(tok); continue; }
-      const digits = tok.replace('.', '');
-      const decimals = tok.includes('.') ? tok.length - tok.indexOf('.') - 1 : 0;
-      const value = parseInt(digits, 10);
-      const n = digits.length;
-      const startPlaces = Math.max(1, decimals + 1);
-      const pitch = n > 1 ? Math.min(30 / 950, (1 - 780 / 950) / (n - 1)) : 0;
-      let d = 0;
-      for (const ch of tok) {
-        if (ch === '.') { shown.append('.'); continue; }
+    shown.append(...[...el.childNodes].map(n => n.cloneNode(true)));
+    const texts = [];
+    const walk = n => { for (const c of [...n.childNodes]) { if (c.nodeType === 3) texts.push(c); else walk(c); } };
+    walk(shown);
+    const all = texts.map(t => t.data).join('');
+    const digits = all.replace(/\D/g, '');
+    const value = Number(digits);
+    const dot = all.indexOf('.');
+    const decimals = dot < 0 ? 0 : (all.slice(dot + 1).match(/^\d*/) || [''])[0].length;
+    const n = digits.length;
+    const startPlaces = decimals + 1;
+    const pitch = n > 1 ? Math.min(30 / 950, (1 - 780 / 950) / (n - 1)) : 0;
+    const cols = [];
+    let d = 0;
+    for (const t of texts) {
+      const out = document.createDocumentFragment();
+      for (const ch of t.data) {
+        if (!/\d/.test(ch)) { out.append(ch); continue; }
         const place = n - 1 - d;
         const steps = Number(ch) + (Math.floor(value / 10 ** (place + 1)) > 0 ? 10 : 0);
         const reel = document.createElement('span');
@@ -791,61 +1482,171 @@
         }
         clip.append(strip);
         reel.append(ghost, clip);
-        shown.append(reel);
-        cols.push({ reel, strip, steps, fromLeft: d, pitch, vis0: place < startPlaces ? 1 : 0 });
+        out.append(reel);
+        cols.push({ reel, strip, steps, fromLeft: d, vis0: place < startPlaces ? 1 : 0 });
         d++;
       }
+      t.replaceWith(out);
     }
     el.replaceChildren(sr, shown);
-    const frame = t => {
+    const draw = t => {
       for (const c of cols) {
-        const e = easeOutCubic((t - c.fromLeft * c.pitch) / (780 / 950));
+        const e = easeOutCubic((t - c.fromLeft * pitch) / (780 / 950));
         c.strip.style.transform = `translateY(calc(${-c.steps * e} * var(--lh)))`;
         c.reel.style.opacity = c.vis0 + (1 - c.vis0) * e;
       }
     };
-    frame(0);
-    return ms => run(ms, t => frame(t / ms));
+    draw(0);
+    const play = ms => run(ms, t => draw(t / ms));
+    play.draw = draw;
+    return play;
   };
 
   const players = {};
 
-  // ── Hero: the logo story (auth_story.dart) ───────────────────────────────
+  // ── Hero: the logo story (auth_story.dart), then the orrery it builds ────
+  // The story and the orrery are the app's; the cut is this page's own
+  // (founder, 2026-11-12): one shot on the band, the tile becoming the core,
+  // then the pillars taking turns with their signals named below the figure.
   const story = document.querySelector('.story .tell');
   if (story) {
+    const stage = story.parentElement;
+    const orr = stage.querySelector('.orr');
+    const sigs = stage.querySelector('.sigs');
+    const groups = [...sigs.querySelectorAll('.pg')];
     const blocks = [...story.querySelectorAll('.blk')];      // Growth at the top
     const names = [...story.querySelectorAll('.name')];
     const clips = [...story.querySelectorAll('.nclip')];
-    const ground = story.querySelector('.ground');
-    // The 84 tile beside the name, centred on the screen; the told rows above
-    // it from 216, names at 130 (auth_story.dart).
-    const T = 84, CX = 327, CY = 425.7, TX = 44, TY = 216, NX = 130;
-    const logo = i => ({ x: CX - T / 2 + T * 0.2314, y: CY - T / 2 + T * (0.1934 + i * (0.1438 + 0.0127)), w: T * 0.5371, h: T * 0.1438 });
-    const frame = ms => {
+    const lifted = story.querySelector('.ground');           // the tile, lifted off the band
+    const flat = story.querySelector('.core-ground');        // AppLogoMark draws no lift
+    const words = stage.querySelector('.sw-words');
+    const haze = orr.querySelector('.haze');
+    const rings = [...orr.querySelectorAll('.oring')].map(g => ({
+      g, sweep: 0,
+      paths: [...g.querySelectorAll('path')],
+      lit: [...g.querySelectorAll('.o-glow, .o-lit')],
+      fill: g.querySelector('.o-fill'),
+    }));
+
+    // pillar_strata_beat.dart in its iPhone 16 box (344 × 359.5): edgeInset 28
+    // gives rx 144, ry 151.75 (ratio floor 1.0), and _kPillars' ring factors.
+    // Nodes seat at 0, 120 and 240 degrees and drift at _kDriftSpeed.
+    const OC = { x: 172, y: 179.75 }, RX = 144, RY = 151.75;
+    const FAC = [0.4, 0.7, 1], SPEED = [1, -0.75, 0.55];
+    const nodes = [...orr.querySelectorAll('.nd')].map((el, k) => ({
+      el, lit: el.querySelector('.l'), p: Math.floor(k / 3), n: k % 3,
+      start: Math.min(0.45 + k * 0.05, 0.75),                // the entrance stagger, clamped
+    }));
+
+    // The 84 tile beside the name; the core it becomes, at the box's centre. The
+    // app's core is 34 (_heroDiameter); 52 keeps the logo whole and readable.
+    const TILE = { x: 327, y: 425.7, s: 84 }, CORE = { x: 196.5, y: 271.75, s: 52 };
+    const TX = 44, TY = 216, NX = 130, BW = 45.12, BH = 12.08;
+
+    // The beats, in ms of time on screen. The story; the tile holds, then
+    // travels on easeInOutCubic as the words fade over _kCloseUp (450); the
+    // orrery's own 1600 entrance, its rows live at 0.375 (_kCtaLiveAt); then,
+    // once settled, the drift and the turns begin.
+    const AT_MOVE = 3990 + 600, MOVE = 600, FADE = 450;
+    const AT_ORRERY = AT_MOVE + MOVE, ENTRANCE = 1600, AT_ROWS = AT_ORRERY + 600;
+    const SETTLED = AT_ORRERY + ENTRANCE;
+    const logo = (i, c) => ({ x: c.x - c.s / 2 + c.s * 0.2314, y: c.y - c.s / 2 + c.s * (0.1934 + i * (0.1438 + 0.0127)), w: c.s * 0.5371, h: c.s * 0.1438 });
+
+    const tell = ms => {
       const s = ms / 1000;
+      const mv = easeInOutCubic(span(ms, AT_MOVE, MOVE));
+      const c = { x: lerp(TILE.x, CORE.x, mv), y: lerp(TILE.y, CORE.y, mv), s: lerp(TILE.s, CORE.s, mv) };
       const fold = easeInOutCubic(span(s, 3.0, 0.99));
       const grown = easeOutCubic(span(fold, 0.45, 0.55));
-      ground.style.opacity = grown;
-      ground.setAttribute('transform', `translate(${CX} ${CY}) scale(${lerp(0.86, 1, grown)})`);
+      const tile = `translate(${c.x} ${c.y}) scale(${(lerp(0.86, 1, grown) * c.s) / TILE.s})`;
+      // The flat ground is the tile; the lifted one under it only adds the shadow, which goes.
+      lifted.style.opacity = grown * (1 - mv);
+      flat.style.opacity = grown;
+      lifted.setAttribute('transform', tile);
+      flat.setAttribute('transform', tile);
       const namesOut = span(s, 2.9, 0.25);
       blocks.forEach((b, i) => {
         const fromBottom = 3 - i;
         const start = 0.2 + fromBottom * 0.36;
         const land = easeOutQuart(span(s, start, 0.42));
         const gather = easeInOutCubic(span(s, 3.0 + fromBottom * 0.08, 0.75));
-        const to = logo(i);
+        const to = logo(i, c);
         const x = lerp(TX, to.x, gather);
         const y = lerp(TY + 32 * i - (1 - land) * 22, to.y, gather);
         b.style.opacity = span(s, start, 0.42 * 0.35);
         // A white edge holds each block on the band until the tile's ground takes over.
         b.style.strokeOpacity = 0.4 * (1 - gather);
-        b.setAttribute('transform', `translate(${x} ${y}) scale(${lerp(72, to.w, gather) / to.w} ${lerp(24, to.h, gather) / to.h})`);
+        b.setAttribute('transform', `translate(${x} ${y}) scale(${lerp(72, to.w, gather) / BW} ${lerp(24, to.h, gather) / BH})`);
         const named = easeOutCubic(span(s, start + 0.3, 0.4));
         names[i].style.opacity = Math.min(1, named * 3) * (1 - namesOut);
         clips[i].setAttribute('transform', `translate(${NX} 0) scale(${Math.max(named, 0.0001)} 1)`);
       });
+      words.style.opacity = 1 - easeInOutCubic(span(ms, AT_MOVE, FADE));
     };
-    frame(0);
+
+    // Which pillar is lit, and how lit each ring is: one pillar a turn, each
+    // change the app's selection crossfade on easeOutCubic.
+    const turn = ms => {
+      const { k, n, p, since } = turnAt(Math.max(0, ms - SETTLED), 3);
+      const t = k ? easeOutCubic(span(since, 0, SELECT)) : 1;
+      return { sel: n, ws: [0, 1, 2].map(j => (j === n ? t : j === p ? 1 - t : 0)) };
+    };
+
+    // The rows: the old pillar's leave, the new one's rise (the CSS beside .pg).
+    let shown = -1;
+    const show = i => {
+      if (i === shown) return;
+      if (shown >= 0) groups[shown].classList.replace('on', 'out');
+      if (i >= 0) { groups[i].classList.remove('out'); groups[i].classList.add('on'); }
+      shown = i;
+    };
+
+    // Past the entrance only the drift moves every frame; the rest is drawn
+    // when it changes.
+    let lastW = '';
+    const frame = (ms, all) => {
+      const intro = all || ms <= SETTLED + 100;
+      if (intro) tell(Math.min(ms, SETTLED));
+      const e = span(ms, AT_ORRERY, ENTRANCE);
+      const { sel, ws } = turn(ms);
+      const key = ws.join();
+      const changed = intro || key !== lastW;
+      lastW = key;
+      // The rings sweep on from the centre out, each 0.12 after the last.
+      rings.forEach((r, p) => {
+        if (intro) {
+          const raw = span(e, p * 0.12, 0.45);
+          r.sweep = easeOutCubic(raw);
+          r.g.style.opacity = raw > 0 ? 1 : 0;
+          r.paths.forEach(path => { path.style.strokeDashoffset = 1 - r.sweep; });
+        }
+        if (changed) {
+          r.lit.forEach(el => { el.style.opacity = ws[p]; });
+          r.fill.style.opacity = ws[p] * r.sweep;
+        }
+      });
+      // The nodes pop onto their seats on easeOutBack; lit, a disc is 1.22 and
+      // whole, backgrounded 0.88 at 0.7. The seat never moves with the light.
+      const drift = (Math.max(0, ms - SETTLED) / 90000) * 2 * Math.PI;
+      nodes.forEach(nd => {
+        const w = ws[nd.p];
+        const pop = easeOutBack(span(e, nd.start, 0.55));
+        const a = (nd.n * 2 * Math.PI) / 3 + drift * SPEED[nd.p];
+        const x = OC.x + RX * FAC[nd.p] * Math.cos(a), y = OC.y + RY * FAC[nd.p] * Math.sin(a);
+        nd.el.style.transform = `translate(${x - 18}px, ${y - 18}px) scale(${(0.4 + 0.6 * Math.min(pop, 1.2)) * (0.88 + 0.34 * w)})`;
+        if (changed) {
+          nd.el.style.opacity = pop > 0 ? 0.7 + 0.3 * w : 0;
+          nd.lit.style.opacity = w;
+        }
+      });
+      if (intro) {
+        const h = span(e, 0.7, 0.3);
+        haze.style.opacity = h > 0 ? 1 : 0;
+        haze.setAttribute('transform', `translate(${OC.x} ${OC.y}) scale(${0.4 + 0.6 * Math.min(easeOutBack(h), 1.2)})`);
+      }
+      show(ms >= AT_ROWS ? sel : -1);
+    };
+
     // Each clip spans its name's inked width, so the reveal keeps the app's tempo.
     // WebKit's measure leaves the 1.3 letter-spacing out: measuring again with it
     // off tells whether this engine counted it, and it is added back where it didn't.
@@ -857,41 +1658,57 @@
       return w - bare > 1 ? w : w + 1.3 * n.textContent.length;
     };
     const measure = () => names.forEach((n, i) => clips[i].setAttribute('width', inked(n) + 3));
-    let playing = true;                         // until the story first starts, a tap does nothing
-    const play = () => { playing = true; run(3990, frame, () => { playing = false; }); };
+
+    // One clock for the story, the entrance, the drift (one revolution per 90s,
+    // _kOrbitDuration) and the turns; a replay's fade (_kCloseUp, 450) runs in their place.
+    let live = 0, fade = -1, ratio = 0, fontsIn = false;
+    const restart = () => {
+      groups.forEach(g => g.classList.remove('on', 'out'));
+      shown = -1;
+      live = 0;
+      lastW = '';
+      frame(0, true);
+      orr.style.opacity = sigs.style.opacity = story.style.opacity = '';
+    };
+    const clock = loopClock(stage, dt => {
+      if (fade < 0) {
+        live += dt;
+        frame(live);
+      } else {
+        // The picture leaves over 300, the words return over the last 225.
+        fade += dt;
+        orr.style.opacity = sigs.style.opacity = story.style.opacity = 1 - easeInOutCubic(span(fade, 0, 300));
+        words.style.opacity = easeInOutCubic(span(fade, 225, 225));
+        if (fade >= 450) { fade = -1; restart(); }
+      }
+    }, { threshold: [0, 0.3], seen: en => { ratio = en.intersectionRatio; maybeStart(); } });
+    const maybeStart = () => { if (!clock.started && fontsIn && ratio >= 0.3) { measure(); restart(); clock.start(); } };
+    frame(0, true);
+
     // The story never waits past 1s for Figtree, and the names are re-measured
     // once it lands; load() asks for their face outright, as ready alone may not.
+    // On a phone the hero's phone sits below the words, so it starts when seen.
     const fonts = document.fonts ? document.fonts.load('700 12px Figtree').then(() => document.fonts.ready) : Promise.resolve();
     fonts.then(measure);
-    // Below the words on a phone, so it starts when its band is in view.
-    const seen = new Promise(r => {
-      const o = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { o.disconnect(); r(); } }, { threshold: 0.3 });
-      o.observe(story.parentElement);
-    });
-    Promise.all([Promise.race([fonts, new Promise(r => setTimeout(r, 1000))]), seen]).then(() => { measure(); play(); });
+    Promise.race([fonts, new Promise(r => setTimeout(r, 1000))]).then(() => { fontsIn = true; maybeStart(); });
 
-    // A tap on the landed tile tells the story again (auth_story.dart _replay):
-    // ignored mid-story, the picture fades over _kCloseUp (450ms), then restarts.
+    // A tap on the core tells the whole story again (auth_story.dart _replay):
+    // ignored mid-story; the orrery, its rows and the core fade as the words
+    // return, then the story restarts from nothing.
     const replay = document.createElement('button');
     replay.type = 'button';
     replay.className = 'replay';
     replay.setAttribute('aria-label', 'Replay the logo story');
-    story.parentElement.append(replay);
+    stage.append(replay);
     replay.addEventListener('click', () => {
-      if (playing) return;
-      playing = true;
-      run(450, ms => { story.style.opacity = 1 - easeInOutCubic(ms / 450); }, () => {
-        frame(0);
-        story.style.opacity = '';
-        play();
-      });
+      if (!clock.started || fade >= 0 || live < SETTLED) return;
+      fade = 0;
     });
   }
 
   // ── Budget: the split, then the tour (paycheck_actions_beat.dart) ───────
   const actions = document.querySelector('.actions');
   if (actions) {
-    const bar = actions.querySelector('.bar');
     const rem = actions.querySelector('.rem');
     const slices = [...actions.querySelectorAll('.slot i')];
     const rows = [...actions.querySelectorAll('.row')];
@@ -907,16 +1724,16 @@
     // Any touch on the card ends the tour for good (card_tour.dart).
     actions.addEventListener('pointerdown', () => { touched = true; if (stopTour) stopTour(); light(null); }, { passive: true });
     const frame = ms => {
-      const seam = 2, W = bar.clientWidth, slotW = (W - 4 * seam) / 5;
-      let edge = 0;
+      // The edge in the bar's own terms (slot = (100% - 8) / 5, 2pt seams).
+      let edge = 'translateX(0)';
       slices.forEach((el, i) => {
-        const p = easeOutCubic(span(ms, 160 + 300 * i, 440));
+        const p = beat(ms, 160 + 300 * i);
         el.style.transform = `translateX(${(p - 1) * 100}%)`;
-        if (p > 0) edge = i * (slotW + seam) + p * slotW + seam;
+        if (p > 0) edge = `translateX(calc(${i + p} * (100% - 8px) / 5 + ${2 * (i + 1)}px))`;
         rins[i].style.opacity = p;
         rins[i].style.transform = `translateY(${(p - 1) * 100}%)`;
       });
-      rem.style.transform = `translateX(${edge}px)`;
+      rem.style.transform = edge;
     };
     // A pitch after the carve, each action holds the light for 900ms, then rest.
     const tour = () => {
@@ -947,7 +1764,7 @@
     const months = reels(cash.querySelector('.months'));
     const frame = ms => {
       bars.forEach((b, i) => {
-        const p = easeOutCubic(span(ms, 160 + 300 * i, 440));
+        const p = beat(ms, 160 + 300 * i);
         b.style.transform = `translate(-50%, ${(1 - p) * heights[i]}px)`;
         labs[i].style.opacity = p;
         rins[i].style.opacity = p;
@@ -958,87 +1775,310 @@
     players.cash = () => { run(1500, frame); setTimeout(() => months(800), 160); };
   }
 
-  // ── Protection: the drawdown sweeps, the shortfall settles red ──────────
-  const chart = document.querySelector('.chart');
-  if (chart) {
-    const sweep = chart.querySelector('.sweep');
-    const dry = chart.querySelector('.dry');
-    const frame = ms => {
+  // ── Protection: Life, then Health, in one card ──────────────────────────
+  const faces = [...document.querySelectorAll('.chartbox .face')];
+  if (faces.length === 2) {
+    const [life, health] = faces;
+    // Life: the drawdown sweeps, the shortfall settles red (kAnnuityChartSweep, 900).
+    const sweep = life.querySelector('.sweep');
+    const dry = life.querySelector('.dry');
+    const lifeAt = ms => {
       const p = easeOutCubic(ms / 900);        // the tween's curve
       const e = easeOutCubic(p);               // StackedAreaPainter eases again
       sweep.setAttribute('transform', `translate(46 0) scale(${Math.max(e, 0.0001)} 1)`);
       dry.setAttribute('transform', `translate(${46 + (278.9 - 46) * p} 0)`);
       dry.style.opacity = p;
     };
-    frame(0);
-    players.chart = () => run(900, frame);
+    // Health: StackedMilestonePainter on the same 900 clock, six bars ending at 1.0: each
+    // bar 0.08 behind the last, rising over 0.60 on easeOutCubic, its dot on its top, the
+    // figures in over 0.75 to 0.90. The connector and the grid stand still.
+    const bars = [...health.querySelectorAll('.hb')].map(g => ({ g, h: Number(g.dataset.h) }));
+    health.querySelectorAll('.hd').forEach((d, i) => { bars[i].d = d; });
+    const vals = health.querySelector('.hv');
+    const healthAt = ms => {
+      const p = Math.min(1, Math.max(0, ms / 900));
+      bars.forEach(({ g, d, h }, i) => {
+        const e = easeOutCubic(span(p, i * 0.08, 0.6));
+        g.setAttribute('transform', `matrix(1 0 0 ${Math.max(e, 0.0001)} 0 ${150 * (1 - e)})`);
+        d.setAttribute('transform', `translate(0 ${h * (1 - e)})`);
+        d.style.opacity = e > 0 ? 1 : 0;
+      });
+      vals.style.opacity = span(p, 0.75, 0.15);
+    };
+    const grow = [lifeAt, healthAt];
+    const held = reels(life.querySelector('[data-reel]'));
+
+    // Life and Health take turns; the incoming face grows in once the swap is done.
+    const GROW = 900;
+    let r = 0, drawn = '';
+    const draw = () => {
+      const turn = turnAt(r, 2), { k, n, p, since } = turn;
+      const settled = since > (k ? HERO_SWAP : 0) + GROW;
+      const key = `${k}${settled}`;
+      if (settled && key === drawn) return;
+      drawn = key;
+      const u = swapOf(turn);
+      crossfade(faces, turn, u);
+      grow[n](k ? since - HERO_SWAP : since);
+      if (k && u < 1) grow[p](GROW);
+    };
+    const clock = loopClock(life.closest('.card'), dt => { r += dt; draw(); });
+    lifeAt(0);
+    healthAt(0);
+    // The funds figure rolls once, on the card's entrance (AnimatedNumber's 800); a face change is a crossfade.
+    players.chart = () => { held(800); clock.start(); };
   }
 
-  // ── Growth: the orrery's entrance, then its 90s drift ───────────────────
+  // ── Growth: the orrery's entrance, its 90s drift, and the node in hand ──
   const orrery = document.querySelector('.orrery');
   if (orrery) {
     const ring = orrery.querySelector('.ring');
-    const core = orrery.querySelector('.core');
-    const sats = [...orrery.querySelectorAll('.sat')];
+    const bodies = [...orrery.querySelectorAll('.body')].map(el => ({
+      el, disc: el.querySelector('.disc'), glow: el.querySelector('.glow'), cap: el.querySelector('.cap'), bold: null,
+    }));
+    const [core, ...sats] = bodies;             // Core, Collectibles, Speculation: the panel's order
+    const views = [...document.querySelectorAll('.nhero .nv')];
+    const total = reels(views[0].querySelector('[data-reel]'));
     const seats = [0, Math.PI];                 // nodeSeatAngle for two satellites
-    const RY = 77.12;                           // orreryRadii in a 240 box
-    let rx = 0, ent = 0, drift = 0, running = false, started = false, seen = false, raf = 0, last = 0;
-    const measure = () => { rx = Math.min(orrery.clientWidth / 2 - 30.88, 154.24); };
-    sats.forEach(s => { s.style.left = '50%'; });
+    const RY = 67.12;                           // orreryRadii(328, 220)
+    let rx = 0, live = 0;                       // the entrance, the drift and the turns share one time
+    const measure = () => { rx = Math.min(parseFloat(getComputedStyle(orrery).width) / 2 - 30.88, 134.24); };
+    sats.forEach(s => { s.el.style.left = '50%'; });
+    bodies.forEach(b => b.el.classList.remove('lit'));
     const pop = (e, start, len) => easeOutBack(span(e, start, len));
-    const place = (body, popv, scale) => {
-      body.style.opacity = popv > 0 ? 1 : 0;
-      body.querySelector('.disc').style.transform = `scale(${(0.4 + 0.6 * Math.min(popv, 1.2)) * scale})`;
+    // A lit body (core_satellite_figure.dart _Body): its wash, rim and glow, a satellite 1.12
+    // larger, its caption whole and bold past half. w is orrerySelectionWeight.
+    const place = (b, popv, scale, w) => {
+      b.el.style.opacity = popv > 0 ? 1 : 0;
+      b.disc.style.transform = `scale(${(0.4 + 0.6 * Math.min(popv, 1.2)) * scale})`;
+      b.glow.style.opacity = w;
+      b.cap.style.opacity = 0.647 + 0.353 * w;
+      if (b.bold !== w > 0.5) { b.bold = w > 0.5; b.cap.style.fontWeight = b.bold ? 700 : 600; }
     };
+    // Once the entrance lands, the selection turns Core, Collectibles, Speculation: the
+    // figure crosses linearly over a selection, the hero's name, total and count as a swap.
+    let swapped = '';
     const frame = () => {
-      const e = Math.min(1, ent / 1600);
+      const e = Math.min(1, live / 1600);
       const t = easeOutCubic(span(e, 0.05, 0.45));
       ring.style.opacity = t > 0 ? 1 : 0;
       ring.style.transform = `translate(-50%, -50%) scale(${t})`;
-      place(core, pop(e, 0, 0.3), 1);
-      sats.forEach((s, i) => {
-        const angle = seats[i] + (drift / 90000) * 2 * Math.PI;
+      const turn = turnAt(Math.max(0, live - 1600), 3), { k, n, p, since } = turn;
+      const s = k ? span(since, 0, SELECT) : 1;
+      const w = j => (j === n ? s : k && j === p ? 1 - s : 0);
+      place(core, pop(e, 0, 0.3), 1, w(0));
+      sats.forEach((b, i) => {
+        const angle = seats[i] + (live / 90000) * 2 * Math.PI;
         const far = Math.sin(angle) < 0;
-        s.style.transform = `translate(${rx * Math.cos(angle)}px, ${RY * Math.sin(angle)}px)`;
-        s.style.zIndex = far ? 1 : 4;
-        s.classList.toggle('above', far);
-        place(s, pop(e, Math.min(0.42 + i * 0.06, 0.62), 0.38), (s.classList.contains('lit') ? 1.12 : 1) * (far ? 0.86 : 1));
+        b.el.style.transform = `translate(${rx * Math.cos(angle)}px, ${RY * Math.sin(angle)}px)`;
+        b.el.style.zIndex = far ? 1 : 4;
+        b.el.classList.toggle('above', far);
+        place(b, pop(e, Math.min(0.42 + i * 0.06, 0.62), 0.38), (1 + 0.12 * w(i + 1)) * (far ? 0.86 : 1), w(i + 1));
       });
+      const u = swapOf(turn);
+      const key = `${k}${u}`;
+      if (key === swapped) return;
+      swapped = key;
+      crossfade(views, turn, u);
     };
-    const tick = now => {
-      const dt = Math.min(now - last, 100);
-      last = now;
-      ent += dt;
-      drift += dt;
-      frame();
-      raf = requestAnimationFrame(tick);
-    };
-    const resume = () => { if (running || !started || !seen) return; running = true; last = performance.now(); raf = requestAnimationFrame(tick); };
-    const pause = () => { running = false; cancelAnimationFrame(raf); };
-    // The drift is the page's one idle loop, and it stops whenever the figure is off screen.
-    new IntersectionObserver(es => { seen = es[es.length - 1].isIntersecting; if (seen) resume(); else pause(); }).observe(orrery);
-    addEventListener('resize', () => { measure(); if (!running) frame(); });
+    const clock = loopClock(orrery.closest('.card'), dt => { live += dt; frame(); });
+    addEventListener('resize', () => { measure(); if (!clock.running) frame(); });
     measure();
     frame();
-    players.orrery = () => { started = true; resume(); };
+    // The total rolls once, with the entrance (AnimatedNumber's 800); a change of node is a crossfade.
+    players.orrery = () => { total(800); clock.start(); };
   }
 
-  // ── The close: Budget alone, then the pillars laid in bottom-up ─────────
-  // launch_story.dart's Laid motion: set down from 18 above on easeOutQuart
-  // over 320ms (_kLayFor), alpha over its first 35%, no bounce.
-  const closing = document.querySelector('.closing-logo');
-  if (closing) {
-    const blocks = [...closing.querySelectorAll('.cblk')].reverse();   // Cash Flow, Protection, Growth
-    const seats = blocks.map(b => b.getAttribute('transform').match(/[\d.]+/g).map(Number));
-    const PITCH = 360;                          // each block is set (320) before the next leaves
-    const frame = ms => blocks.forEach((b, k) => {
-      const at = 600 + PITCH * k;
-      const set = easeOutQuart(span(ms, at, 320));
-      b.style.opacity = span(ms, at, 320 * 0.35);
-      b.setAttribute('transform', `translate(${seats[k][0]} ${seats[k][1] - (1 - set) * 18})`);
+  // ── The four tabs, each opening in its phone ─────────────────────────────
+  // Pillar tabs step in on arrival_clock.dart ([data-b] = "at,rise[,ms]"); Budget has no clock (day_strip.dart, fadeSlideIn).
+  // A value count, not reels: months_report.dart MonthsHero, or coverage_span_hero.dart's figure x clock.
+  const count = el => {
+    const v = Number(el.dataset.v), months = el.dataset.k === 'months';
+    const w = el.querySelector('.w'), d = el.querySelector('.dec');
+    return t => {
+      const x = v * easeOutCubic(t);
+      if (months) {
+        const whole = Math.floor(x);
+        w.textContent = whole;
+        d.textContent = '.' + Math.min(9, Math.max(0, Math.round((x - whole) * 10)));
+      } else {
+        const [whole, dec] = x.toFixed(1).split('.');
+        w.textContent = whole;
+        d.textContent = '.' + dec;
+      }
+    };
+  };
+  const reelsIn = stage => [...stage.querySelectorAll('[data-reel]')].map(el => reels(el).draw);
+
+  const tabs = {
+    budget(stage) {
+      const days = [...stage.querySelectorAll('.sday, .smon')];
+      const card = stage.querySelector('.plan');
+      const [hero] = reelsIn(stage);
+      const lf = card.querySelector('.lf'), lb = card.querySelector('.lb');
+      const F = 0.54;                                    // ₱10,800 of ₱20,000 moved
+      const lift = card.offsetHeight * 0.04;             // fadeSlideIn's 4%
+      return [1200, ms => {
+        // The strip's tiles fade in 200 on easeOut, 30 apart.
+        days.forEach((d, i) => { d.style.opacity = easeOut(span(ms, i * 30, 200)); });
+        card.style.opacity = easeOut(span(ms, 0, 300));
+        card.style.transform = `translateY(${lift * (1 - easeOutCubic(span(ms, 0, 300)))}px)`;
+        hero(span(ms, 0, 800));                          // AnimatedNumber's entry, 800
+        // The ledger line: TrackFill's 1200 on easeOutCubic, its bands held in place.
+        const f = F * easeOutCubic(span(ms, 0, 1200));
+        lf.style.transform = `translateX(${(f - 1) * 100}%)`;
+        lb.style.transform = `translateX(${(1 - f) * 100}%)`;
+      }];
+    },
+    cash(stage) {
+      const bars = [...stage.querySelectorAll('.mb')];
+      const months = count(stage.querySelector('.cnt'));
+      const fill = stage.querySelector('.scale .fill');
+      return [2260, ms => {
+        // budget_bar_chart.dart: 600ms, staggered left to right over the first 30%.
+        const raw = span(ms, 460, 600);
+        bars.forEach((b, i) => {
+          b.style.transform = `${b.classList.contains('sel') ? 'scale(1.03) ' : ''}scaleY(${staggered(raw, i, bars.length, 0.3)})`;
+        });
+        months(span(ms, 760, 800));                      // kMonthsHeroCountUp
+        // The scale's fill: TrackFill's 1200 from the proof's beat.
+        fill.style.transform = `translateX(${(0.95 * easeOutCubic(span(ms, 1060, 1200)) - 1) * 100}%)`;
+      }];
+    },
+    protect(stage) {
+      const [life, health] = [...stage.querySelectorAll('.cnt')].map(count);
+      const arc = stage.querySelector('.arc');
+      const bars = [...stage.querySelectorAll('.rbars i')].map(el => ({ el, h: parseFloat(el.style.height) }));
+      // seal_reveal.dart: each card's 1200 clock counts its figure over 800, then strokes Interval(0.25, 0.87).
+      const stroke = (ms, at) => easeOutCubic(span(ms, at + 300, 744));
+      return [2404, ms => {
+        life(span(ms, 760, 800));
+        const p = stroke(ms, 760);
+        arc.style.strokeDashoffset = 1 - p;
+        arc.style.opacity = p > 0 ? 1 : 0;
+        health(span(ms, 1360, 800));
+        // RecoveryBarsPainter: each bar max(3, height × envelope).
+        const e = stroke(ms, 1360);
+        bars.forEach(({ el, h }) => { el.style.transform = `scaleY(${Math.max(3, h * e) / h})`; });
+      }];
+    },
+    growth(stage) {
+      const [wealth, rate, month, year] = reelsIn(stage);
+      const tube = [...stage.querySelectorAll('.tube i')];
+      const bars = [...stage.querySelectorAll('.sbars i')];
+      return [2260, ms => {
+        wealth(span(ms, 160, 800));                      // _kHeroEntry
+        rate(span(ms, 760, 800));
+        month(span(ms, 1060, 800));
+        year(span(ms, 1060, 800));
+        // One 600ms controller: bars staggered over 20% (progressFor), the tube on its raw value.
+        const raw = span(ms, 1660, 600);
+        bars.forEach((b, i) => { b.style.transform = `scaleY(${staggered(raw, i, bars.length, 0.2)})`; });
+        tube.forEach(t => { t.style.transform = `scaleY(${raw})`; });
+      }];
+    },
+  };
+
+  const dashes = new Map();
+  document.querySelectorAll('.dash').forEach(stage => {
+    const beats = [...stage.querySelectorAll('[data-b]')].map(el => {
+      const [at, rise, len = 440] = el.dataset.b.split(',').map(Number);
+      return { el, at, rise, len };
     });
+    const [total, own] = tabs[stage.dataset.tab](stage);
+    const frame = ms => {
+      for (const b of beats) {
+        const v = beat(ms, b.at, b.len);
+        b.el.style.opacity = v;
+        b.el.style.transform = b.rise && v < 1 ? `translateY(${b.rise * (1 - v)}px)` : '';
+      }
+      own(ms);
+    };
     frame(0);
-    players.close = () => run(600 + 2 * PITCH + 320, frame);
+    dashes.set(stage.closest('[data-play]'), () => run(total, frame));
+  });
+  // A phone plays once, when at least half of it is on screen; a looping one starts its loop then.
+  const loops = new Map();
+  players.dash = fig => {
+    const go = dashes.get(fig);
+    if (!go) return;
+    const seen = new IntersectionObserver(es => {
+      if (es.some(e => e.intersectionRatio >= 0.5)) { seen.disconnect(); go(); loops.get(fig)?.(); }
+    }, { threshold: [0, 0.5] });
+    seen.observe(fig.querySelector('.phone'));
+  };
+
+  // ── The close: the bar losing tabs until Budget is alone ─────────────────
+  // Growth, Protection, then Cash Flow fade where they stand (launch_story.dart _kFadeFor at kLaunchPace 2)
+  // and the rest re-share (shell_nav_bar.dart _kReshare); alone, Budget has no bar and the "+" floats at the
+  // endFloat seat (app_shell.dart `lone`); then all four return. A sanctioned loop: each state is a tab set.
+  const lone = document.querySelector('.dk .nav');
+  if (lone) {
+    const fig = lone.closest('[data-play]');
+    const pill = lone.querySelector('.pill'), ground = lone.querySelector('.ng');
+    const drop = lone.querySelector('.drop'), fab = lone.querySelector('.fab'), lift = lone.querySelector('.fsh');
+    const faces = [...pill.querySelectorAll('.tf')];       // Budget, Cash Flow, Protection, Growth
+    const tall = lone.closest('.stage').querySelector('.wall.tall');
+    // The words' marks, Cash Flow to Growth: each one as lit as its glyph in the bar.
+    const marks = [...document.querySelectorAll('.tabmarks .tm')].map(m => ({ on: m.querySelector('.on'), off: m.querySelector('.off') }));
+    // The pill beside the "+" (393 - 20 - 10 - 50 - 20), each face's resting centre,
+    // and the drop's clip box (Budget's share of two tabs, less its 2 + 2 inset).
+    const PILL = 293, BASE = [58.6, 146.5, 205.1, 263.7], DROP = 191.33;
+    const HOLD = 2200, FADE = 400, RESHARE = 260, SWAP = 300;   // the holds: founder, 2026-11-12; SWAP is AppDuration.normal
+    const MARK_OUT = 1200, MARK_IN = 500;                        // the words' medals fade slower than the bar, to be noticed
+    const steps = [HOLD, FADE + RESHARE, HOLD, FADE + RESHARE, HOLD, FADE + SWAP, HOLD, SWAP];
+    const CYCLE = steps.reduce((a, b) => a + b);
+    const GONE = [0, 0, 1, 1, 2, 2, 2, 0];                   // tabs gone from the end before each step
+    const AT = steps.map((_, i) => steps.slice(0, i).reduce((a, b) => a + b, 0));
+    const LEAVES = [AT[5], AT[3], AT[1]];                    // Cash Flow, Protection, Growth
+    const medal = (t, j) => {
+      const u = t % CYCLE;
+      if (u >= AT[7]) return easeInOutCubic(span(u, AT[7], MARK_IN));
+      return u < LEAVES[j] ? 1 : 1 - easeInOutCubic(span(u, LEAVES[j], MARK_OUT));
+    };
+
+    // Each tab's share (2 for the current, 1 for the rest), each glyph's
+    // opacity, and how far the bar is in (1) or gone (0).
+    const state = t => {
+      let s = 0, u = t % CYCLE;
+      while (u >= steps[s]) u -= steps[s++];
+      const w = [2, 1, 1, 1], op = [1, 1, 1, 1];
+      for (let i = 0; i < GONE[s]; i++) w[3 - i] = op[3 - i] = 0;
+      const fade = 1 - easeOutCubic(span(u, 0, FADE));
+      let bar = 1;
+      if (s === 1 || s === 3) { const i = 3 - GONE[s]; op[i] = fade; w[i] = 1 - easeOutCubic(span(u, FADE, RESHARE)); }
+      if (s === 5) { op[1] = fade; bar = 1 - easeInOutCubic(span(u, FADE, SWAP)); }
+      if (s === 6) { op[1] = 0; bar = 0; }
+      if (s === 7) bar = easeInOutCubic(span(u, 0, SWAP));
+      return { w, op, bar };
+    };
+
+    let key = '';
+    const draw = t => {
+      const { w, op, bar } = state(t);
+      const lit = marks.map((_, j) => medal(t, j));
+      const k = [...w, ...op, bar, ...lit].map(v => v.toFixed(4)).join();
+      if (k === key) return;
+      key = k;
+      const unit = PILL / (w[0] + w[1] + w[2] + w[3]);
+      let x = 0;
+      faces.forEach((f, i) => {
+        f.style.transform = `translateX(${(x + (w[i] * unit) / 2 - BASE[i]).toFixed(2)}px)`;
+        x += w[i] * unit;
+        if (i) f.style.opacity = op[i];
+      });
+      drop.style.clipPath = `inset(0 ${Math.max(0, DROP - (w[0] * unit - 4)).toFixed(2)}px 0 0 round 18px)`;
+      pill.style.opacity = ground.style.opacity = bar;
+      tall.style.opacity = lift.style.opacity = 1 - bar;
+      fab.style.transform = `translate(${(4 * (1 - bar)).toFixed(2)}px, ${(-4 * (1 - bar)).toFixed(2)}px)`;
+      // A leaving tab's medal goes quiet as its glyph fades, over a slower 1200; all three relight as the bar returns.
+      marks.forEach((m, j) => { const v = lit[j]; m.on.style.opacity = v; m.off.style.opacity = 0.7 * (1 - v); });
+    };
+
+    // The loop starts once the tab's own entrance (1200) is done.
+    let live = 0;
+    const clock = loopClock(lone.closest('.phone'), dt => { live += dt; draw(live); });
+    loops.set(fig, () => setTimeout(clock.start, 1200));
   }
 
   // ── The stepped arrival (arrival_clock.dart) ─────────────────────────────
@@ -1056,8 +2096,9 @@
       const delay = Math.max(0, clocks.get(owner) + Number(el.dataset.at) - now);
       el.style.animationDelay = `${delay}ms`;
       el.classList.add('in');
+      // An instrument starts a pitch on; a phone's tab, once the phone has landed.
       const play = players[el.dataset.play];
-      if (play) setTimeout(play, delay + 300);
+      if (play) setTimeout(() => play(el), delay + (el.dataset.play === 'dash' ? 440 : 300));
     }
   }, { rootMargin: '0px 0px -12% 0px' });
   document.querySelectorAll('[data-at]').forEach(el => io.observe(el));
