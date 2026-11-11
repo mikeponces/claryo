@@ -71,7 +71,7 @@
 
   /* Hero */
   .hero { display: grid; gap: 40px; padding: 48px 0 72px; align-items: center; }
-  @media (min-width: 880px) { .hero { grid-template-columns: 1.25fr 0.75fr; gap: 48px; padding: 72px 0 104px; } }
+  @media (min-width: 880px) { .hero { grid-template-columns: minmax(0, 1fr) auto; gap: 64px; padding: 24px 0 80px; } }
   .eyebrow { font-weight: 600; font-size: 0.9375rem; color: var(--muted); margin-bottom: 20px; }
   h1 {
     margin: 0 0 24px;
@@ -82,18 +82,125 @@
   }
   .lead { font-size: 1.1875rem; color: var(--muted); max-width: 36em; }
 
-  /* The logo story (lib/pages/auth_story.dart) and the closing logo. */
-  .story { position: relative; width: 100%; max-width: 400px; margin: 0 auto; }
-  .story svg, .closing-logo svg { display: block; width: 100%; height: auto; overflow: visible; }
-  .story .name { font-size: 12px; font-weight: 700; letter-spacing: 1.3px; fill: var(--ink); }
-  /* The replay control sits on the landed tile: 160 square, centred in 340×200, corner 45.76. */
+  /* A phone: an iPhone 16 screen (393 × 852 points). Its content is laid out
+     in points on a stage and shrunk as one picture, so it reads the same at
+     every width; --k is --sw ÷ 393, set by hand at each step. */
+  .phone {
+    --rim: 6px; --sw: 264px; --k: 0.671756;
+    width: calc(var(--sw) + 2 * var(--rim));
+    margin: 0 auto;
+    padding: var(--rim);
+    border-radius: calc(55px * var(--k) + var(--rim));
+    background: #16151B;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.11), 0 10px 33px rgba(0, 0, 0, 0.055);
+  }
+  @media (min-width: 400px) { .phone { --sw: 288px; --k: 0.732824; } }
+  @media (min-width: 880px) { .phone { --sw: 300px; --k: 0.763359; } }
+  @media (min-width: 880px) and (max-height: 860px) { .phone { --sw: 260px; --k: 0.661578; } }
+  @media (min-width: 880px) and (max-height: 740px) { .phone { --sw: 224px; --k: 0.569975; } }
+  .screen {
+    position: relative;
+    width: var(--sw); height: calc(var(--sw) * 852 / 393);
+    border-radius: calc(55px * var(--k));
+    overflow: hidden; clip-path: inset(0 round calc(55px * var(--k)));
+    background: #F2F2F7;
+  }
+  /* The island is hardware, so it sits over a screenshot too. */
+  .screen::after {
+    content: ""; position: absolute; z-index: 2;
+    left: calc(133.5px * var(--k)); top: calc(11px * var(--k));
+    width: calc(126px * var(--k)); height: calc(37px * var(--k));
+    border-radius: 999px; background: #000;
+  }
+  .stage {
+    position: absolute; left: 0; top: 0; width: 393px; height: 852px;
+    transform: scale(var(--k)); transform-origin: 0 0;
+    overflow: hidden; font-size: 16px; line-height: 1.3; color: var(--ink);
+  }
+  .stage > * { position: absolute; margin: 0; }
+  .sbar { left: 0; top: 0; width: 393px; height: 54px; color: #000; }
+  .homebar { left: 129.5px; top: 839px; width: 134px; height: 5px; border-radius: 2.5px; background: rgba(0, 0, 0, 0.85); }
+  .lt-top .sbar { color: #fff; }
+  .lt-foot .homebar { background: rgba(255, 255, 255, 0.85); }
+  .shot { position: absolute; z-index: 1; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+
+  /* The bands (tab_band_palette.dart BandPalette.of): the deep shade under
+     white ink, fading into the pillar's own light shade. */
+  .p-budget  { --band: #5B4B9E; --foot: #9575CD; --brgb: 91 75 158; }
+  .p-cash    { --band: #00796B; --foot: #4DB6AC; --brgb: 0 121 107;  --prgb: 77 182 172; }
+  .p-protect { --band: #3446FF; --foot: #7986CB; --brgb: 52 70 255;  --prgb: 121 134 203; }
+  .p-growth  { --band: #C2410C; --foot: #FFB74D; --brgb: 194 65 12;  --prgb: 255 183 77; }
+  .bandbg { left: 0; top: 0; width: 393px; height: var(--bh); background: linear-gradient(var(--band) 0, var(--band) var(--split), var(--foot) 100%); }
+  /* The wallpaper (band_wallpaper.dart): a cool base and four fixed blooms,
+     radius a fraction of the shortest side, stops 0 / .5 / 1 at a, .4a, 0. */
+  .wall {
+    inset: 0;
+    background:
+      radial-gradient(circle 373.35px at 373.35px 852px, rgb(185 166 242 / 0.45), rgb(185 166 242 / 0.18) 186.68px, rgb(185 166 242 / 0) 373.35px),
+      radial-gradient(circle 334.05px at 19.65px 745.5px, rgb(244 163 190 / 0.38), rgb(244 163 190 / 0.152) 167.03px, rgb(244 163 190 / 0) 334.05px),
+      radial-gradient(circle 334.05px at 393px 468.6px, rgb(125 185 242 / 0.35), rgb(125 185 242 / 0.14) 167.03px, rgb(125 185 242 / 0) 334.05px),
+      radial-gradient(circle 353.7px at 0 340.8px, rgb(var(--brgb) / 0.4), rgb(var(--brgb) / 0.16) 176.85px, rgb(var(--brgb) / 0) 353.7px),
+      #EEF4FB;
+  }
+
+  /* A signal page at rest (signal_page_scaffold.dart): the name at 34 on the
+     band, the first card riding 28 up over its foot. Safe top 59, bar 56. */
+  .sp .bandbg { --bh: 209px; --split: 76.56%; }
+  .bar-g { left: 0; top: 59px; width: 393px; height: 56px; color: #fff; }
+  .pname { left: 24px; top: 119px; font-weight: 700; font-size: 34px; line-height: 41px; letter-spacing: -1px; color: #fff; white-space: nowrap; }
+  .sp .card { left: 16px; top: 181px; width: 361px; }
+  /* elevatedPanelDecoration(pillarFramed): the pillar hue at 180, its halo at 40. */
+  .card.framed { border: 0.75px solid rgb(var(--prgb) / 0.706); box-shadow: 0 2px 15px rgb(var(--prgb) / 0.157), 0 3px 12px rgba(0, 0, 0, 0.11), 0 10px 33px rgba(0, 0, 0, 0.055); }
+
+  /* The Budget tutorial's beat (paycheck_actions_beat.dart in NarrativeBeat),
+     as design-refs/great-animation.png captured it. */
+  .tut-g { left: 0; top: 59px; width: 393px; height: 48px; color: #1B1830; }
+  .bh { left: 24px; top: 139px; width: 345px; font-weight: 700; font-size: 36px; line-height: 1.1; letter-spacing: -0.8px; }
+  .bh span { color: #64558A; }
+  .tut .card { left: 24px; top: 242px; width: 345px; }
+  .cta { font-style: normal; left: 24px; top: 744px; width: 345px; height: 48px; border-radius: 24px; background: #64558A; color: #fff; font-weight: 500; font-size: 16px; line-height: 48px; text-align: center; }
+  .mark { left: 188.5px; top: 806px; width: 16px; height: 4px; border-radius: 2px; background: #8E8D92; }
+
+  /* A tab's head on its band (tab_band.dart): white title and promise, the
+     band solid to the chrome's foot and reaching 96 past it. */
+  .tb .bandbg { --bh: 236px; --split: 59.3%; }
+  .tname { left: 24px; top: 71px; font-weight: 800; font-size: 34px; line-height: 1.1; letter-spacing: -0.8px; color: #fff; }
+  .tname.budget { font-size: 28px; }
+  .tline { left: 24px; top: 116px; width: 345px; font-size: 14px; line-height: 20px; color: rgb(255 255 255 / 0.941); }
+
+  /* The hero: the sign-in screen's band head (auth_page.dart, auth_story.dart),
+     the band from top to foot with its sheen, the telling over it. */
+  .hero-screen {
+    background:
+      radial-gradient(circle 510.9px at 19.65px 0, rgb(148 138 192 / 0.6), rgb(148 138 192 / 0) 510.9px),
+      linear-gradient(#5B4B9E 0, #5B4B9E 55%, #9575CD 100%);
+  }
+  .story .tell { left: 0; top: 0; width: 393px; height: 852px; overflow: visible; }
+  .story .name { font-size: 12px; font-weight: 700; letter-spacing: 1.3px; fill: #fff; fill-opacity: 0.941; }
+  .sw-words { left: 24px; top: 380px; width: 245px; color: #fff; }
+  .sw-words b { display: block; font-weight: 800; font-size: 34px; line-height: 1.1; letter-spacing: -0.8px; }
+  .sw-words span { display: block; margin-top: 6px; font-size: 16px; line-height: 24px; letter-spacing: 0.5px; color: rgb(255 255 255 / 0.941); }
+  /* The replay control sits on the landed tile: 84 square, corner 24. */
   .replay {
-    position: absolute; left: 26.47%; top: 10%; width: 47.06%; height: 80%;
-    margin: 0; padding: 0; border: 0; border-radius: 28.6%;
+    left: 285px; top: 383.7px; width: 84px; height: 84px;
+    padding: 0; border: 0; border-radius: 24px;
     background: transparent; cursor: pointer; -webkit-tap-highlight-color: transparent;
   }
   .replay:focus { outline: none; }
-  .replay:focus-visible { outline: 2px solid var(--muted); outline-offset: 4px; }
+  .replay:focus-visible { outline: 3px solid #fff; outline-offset: 5px; }
+  .closing-logo svg { display: block; width: 100%; height: auto; overflow: visible; }
+
+  /* The gallery: the four tabs in order, two by two on a phone. */
+  .gal-row { display: grid; grid-template-columns: repeat(2, auto); justify-content: center; gap: 24px 16px; }
+  @media (min-width: 640px) { .gal-row { gap: 32px 24px; } }
+  @media (min-width: 880px) { .gal-row { grid-template-columns: repeat(4, auto); } }
+  .gslot { margin: 0; }
+  .gal .phone { --rim: 4px; --sw: 124px; --k: 0.315522; }
+  @media (min-width: 360px) { .gal .phone { --sw: 140px; --k: 0.356234; } }
+  @media (min-width: 400px) { .gal .phone { --sw: 160px; --k: 0.407125; } }
+  @media (min-width: 640px) { .gal .phone { --sw: 220px; --k: 0.559796; } }
+  @media (min-width: 880px) { .gal .phone { --sw: 176px; --k: 0.447837; } }
+  @media (min-width: 1080px) { .gal .phone { --sw: 216px; --k: 0.549618; } }
 
   /* Sections */
   section { border-top: 1px solid var(--line); padding: 64px 0; }
@@ -237,6 +344,10 @@
 <symbol id="g-cycle" viewBox="0 0 1024 1024"><path d="M896 192L896 384Q896 397 886.5 406.5Q877 416 864 416L864 416L672 416Q659 416 649.5 406.5Q640 397 640 384Q640 371 649.5 361.5Q659 352 672 352L672 352L787 352L728 293Q685 250 627.5 225Q570 200 504 200L502 200Q502 200 501.5 200Q501 200 501 200Q436 200 378.5 224.5Q321 249 278 291L278 291Q274 295 268.5 297Q263 299 257 299Q243 299 234 290Q225 281 225 267Q225 261 227 255Q229 249 234 245L234 245Q286 194 355 165Q424 136 502 136Q582 136 652 166Q722 196 774 248L774 248L832 307L832 192Q832 179 841.5 169.5Q851 160 864 160Q877 160 886.5 169.5Q896 179 896 192L896 192L896 192ZM746 733Q702 775 644.5 799.5Q587 824 522 824Q456 824 397.5 799Q339 774 296 731L237 672L352 672Q365 672 374.5 662.5Q384 653 384 640Q384 627 374.5 617.5Q365 608 352 608L352 608L160 608Q147 608 137.5 617.5Q128 627 128 640L128 640L128 832Q128 845 137.5 854.5Q147 864 160 864Q173 864 182.5 854.5Q192 845 192 832L192 832L192 717L251 776Q302 828 371.5 858Q441 888 520 888L522 888Q522 888 522.5 888Q523 888 523 888Q601 888 670 859Q739 830 790 779L790 779Q795 775 797.5 769Q800 763 800 757Q800 743 790.5 734Q781 725 768 725Q761 725 755.5 727Q750 729 746 733L746 733L746 733Z"/></symbol>
 <symbol id="g-target" viewBox="0 0 1024 1024"><path d="M887 333Q907 372 917.5 417.5Q928 463 928 512Q928 598 895 674Q863 750 806.5 806.5Q750 863 674 896Q598 929 512 929Q426 929 350 896Q274 863 217.5 806.5Q161 750 128 674Q95 598 95 512Q95 426 128 350Q161 274 217.5 217.5Q274 161 350 129Q426 96 512 96Q590 96 659.5 122.5Q729 149 783 196L783 196L873 105Q878 101 883.5 98.5Q889 96 896 96Q909 96 918.5 105.5Q928 115 928 128Q928 135 925.5 140.5Q923 146 919 151L919 151L535 535Q530 539 524.5 541.5Q519 544 512 544Q499 544 489.5 534.5Q480 525 480 512Q480 505 482.5 499.5Q485 494 489 489L600 378Q582 366 559.5 359Q537 352 512 352Q446 352 399 399Q352 446 352 512Q352 578 399 625Q446 672 512 672Q578 672 625 625Q672 578 672 512Q672 509 672 507Q672 505 672 502L672 503Q672 502 672 501.5Q672 501 672 501Q672 488 681 478.5Q690 469 704 469Q717 469 726 477.5Q735 486 736 499L736 499Q736 502 736 505.5Q736 509 736 512Q736 558 718 599Q701 640 670.5 670.5Q640 701 599 718Q558 736 512 736Q466 736 425 718Q384 701 353.5 670.5Q323 640 306 599Q288 558 288 512Q288 466 306 425Q323 384 353.5 353.5Q384 323 425 306Q466 288 512 288Q550 288 584.5 300Q619 312 647 333L646 333L737 242Q692 204 634.5 182Q577 160 513 160Q440 160 376 188Q312 216 264 263.5Q216 311 189 375Q161 439 161 512Q161 585 189 649Q216 713 264 760.5Q312 808 376 836Q440 864 513 864Q585 864 649 836Q714 808 761.5 760.5Q809 713 837 649Q864 585 864 512Q864 471 855 432Q846 393 829 358L830 360Q828 357 827.5 353.5Q827 350 827 346Q827 333 836 323.5Q845 314 859 314Q868 314 876 319Q884 324 887 332L887 333L887 333Z"/></symbol>
 <symbol id="g-wallet" viewBox="0 0 1024 1024"><path d="M864 256L224 256Q211 256 201.5 246.5Q192 237 192 224Q192 211 201.5 201.5Q211 192 224 192L224 192L768 192Q781 192 790.5 182.5Q800 173 800 160Q800 147 790.5 137.5Q781 128 768 128L768 128L224 128Q184 128 156 156Q128 184 128 224L128 224L128 736Q128 776 156 804Q184 832 224 832L224 832L864 832Q891 832 909.5 813.5Q928 795 928 768L928 768L928 320Q928 293 909.5 274.5Q891 256 864 256L864 256ZM864 768L224 768Q211 768 201.5 758.5Q192 749 192 736L192 736L192 315Q199 317 207 318.5Q215 320 224 320Q224 320 224 320Q224 320 224 320L864 320L864 768ZM672 528Q672 508 686 494Q700 480 720 480Q740 480 754 494Q768 508 768 528Q768 548 754 562Q740 576 720 576L720 576Q700 576 686 562Q672 548 672 528L672 528Z"/></symbol>
+<!-- Phone chrome, in points on a 393-wide screen, inked in currentColor. -->
+<symbol id="g-sbar" viewBox="0 0 393 54"><text x="66" y="31" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="600" letter-spacing="-0.3" fill="currentColor">9:41</text><g fill="currentColor"><rect x="294" y="32" width="3" height="4" rx="1"/><rect x="298.6" y="29.6" width="3" height="6.4" rx="1"/><rect x="303.2" y="27.2" width="3" height="8.8" rx="1"/><rect x="307.8" y="24.8" width="3" height="11.2" rx="1"/><circle cx="325" cy="34.4" r="1.9"/><rect x="343" y="27.5" width="21" height="8" rx="2"/><rect x="367.4" y="29.5" width="1.6" height="4" rx="0.8" opacity="0.45"/></g><g fill="none" stroke="currentColor" stroke-linecap="round"><path d="M317.2 28.7A11 11 0 0 1 332.8 28.7M320.05 31.55A7 7 0 0 1 329.95 31.55" stroke-width="2.1"/><rect x="341" y="25.5" width="25" height="12" rx="3.6" stroke-width="1" opacity="0.4"/></g></symbol>
+<symbol id="g-pagebar" viewBox="0 0 393 56"><g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M31.5 20.5L24 28L31.5 35.5" stroke-width="2.2"/><circle cx="369" cy="28" r="10" stroke-width="1.6"/><path d="M369 27v6" stroke-width="1.8"/></g><circle cx="369" cy="23.4" r="1.25" fill="currentColor"/></symbol>
+<symbol id="g-walkbar" viewBox="0 0 393 48"><path d="M32 16.5L24.5 24L32 31.5M358 17l14 14M372 17l-14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></symbol>
 </svg>
 
 <div class="wrap">
@@ -252,34 +363,45 @@
     <div class="hero">
       <div>
         <p class="eyebrow">Claryo: Paycheck System</p>
-        <h1>Plan your paycheck. Secure your financial future — in the right order.</h1>
-        <p class="lead">Income arrives, expenses take it, and nothing builds. In Claryo you plan each paycheck before it arrives: cash first, then protection, then growth.</p>
+        <h1>Plan your paycheck. Secure your future.</h1>
+        <p class="lead">Have a plan before payday arrives. Then build these pillars in order:<br /> cash reserves, protection, growth.</p>
       </div>
-      <!-- The sign-in logo story (lib/pages/auth_story.dart): blocks set down
-           bottom-up and named, then gathered into the logo. Tile 160, centred.
-           The image role sits on the svg so the script's replay button stays outside it. -->
-      <div class="story">
-        <svg viewBox="0 0 340 200" role="img" aria-label="Four steps, built from the bottom up: plan your paycheck, build your cash, protect your household, then grow." focusable="false">
-          <defs>
-            <filter id="lift" x="-25%" y="-25%" width="150%" height="150%">
-              <feDropShadow dx="0" dy="4" stdDeviation="9.74" flood-color="#1E1838" flood-opacity="0.078"/>
-              <feDropShadow dx="0" dy="1" stdDeviation="1.65" flood-color="#000" flood-opacity="0.051"/>
-            </filter>
-            <clipPath id="nc0"><rect class="nclip" x="0" y="36" width="230" height="32" transform="translate(106 0)"/></clipPath>
-            <clipPath id="nc1"><rect class="nclip" x="0" y="68" width="230" height="32" transform="translate(106 0)"/></clipPath>
-            <clipPath id="nc2"><rect class="nclip" x="0" y="100" width="230" height="32" transform="translate(106 0)"/></clipPath>
-            <clipPath id="nc3"><rect class="nclip" x="0" y="132" width="230" height="32" transform="translate(106 0)"/></clipPath>
-          </defs>
-          <rect class="ground" x="-80" y="-80" width="160" height="160" rx="45.76" fill="#F5F2FA" filter="url(#lift)" transform="translate(170 100)"/>
-          <rect class="blk" width="85.94" height="23.01" rx="5.63" fill="#FFB74D" transform="translate(127.02 50.94)"/>
-          <rect class="blk" width="85.94" height="23.01" rx="5.63" fill="#7986CB" transform="translate(127.02 75.98)"/>
-          <rect class="blk" width="85.94" height="23.01" rx="5.63" fill="#4DB6AC" transform="translate(127.02 101.02)"/>
-          <rect class="blk" width="85.94" height="23.01" rx="5.63" fill="#7B6BAE" transform="translate(127.02 126.06)"/>
-          <text class="name" x="106" y="52" dominant-baseline="central" clip-path="url(#nc0)" opacity="0">THEN GROW</text>
-          <text class="name" x="106" y="84" dominant-baseline="central" clip-path="url(#nc1)" opacity="0">PROTECT YOUR HOUSEHOLD</text>
-          <text class="name" x="106" y="116" dominant-baseline="central" clip-path="url(#nc2)" opacity="0">BUILD YOUR CASH</text>
-          <text class="name" x="106" y="148" dominant-baseline="central" clip-path="url(#nc3)" opacity="0">PLAN YOUR PAYCHECK</text>
-        </svg>
+      <!-- The sign-in screen's band head (auth_page.dart, auth_story.dart):
+           blocks set down bottom-up and named in white, then gathered into the
+           84 tile beside the name. The sheet and its form are left out, so the
+           name and tile rest at the screen's centre with the telling above.
+           The image role sits on the svg so the replay button stays outside it. -->
+      <div class="phone">
+        <div class="screen">
+          <div class="stage story hero-screen lt-top lt-foot">
+            <svg class="tell" viewBox="0 0 393 852" role="img" aria-label="Four steps, built from the bottom up: plan your paycheck, build your cash, protect your household, then grow." focusable="false">
+              <defs>
+                <filter id="lift" x="-25%" y="-25%" width="150%" height="150%">
+                  <feDropShadow dx="0" dy="4" stdDeviation="9.74" flood-color="#1E1838" flood-opacity="0.078"/>
+                  <feDropShadow dx="0" dy="1" stdDeviation="1.65" flood-color="#000" flood-opacity="0.051"/>
+                </filter>
+                <clipPath id="nc0"><rect class="nclip" x="0" y="212" width="230" height="32" transform="translate(130 0)"/></clipPath>
+                <clipPath id="nc1"><rect class="nclip" x="0" y="244" width="230" height="32" transform="translate(130 0)"/></clipPath>
+                <clipPath id="nc2"><rect class="nclip" x="0" y="276" width="230" height="32" transform="translate(130 0)"/></clipPath>
+                <clipPath id="nc3"><rect class="nclip" x="0" y="308" width="230" height="32" transform="translate(130 0)"/></clipPath>
+              </defs>
+              <rect class="ground" x="-42" y="-42" width="84" height="84" rx="24.02" fill="#F5F2FA" filter="url(#lift)" transform="translate(327 425.7)"/>
+              <g stroke="#fff" stroke-width="1.25" stroke-opacity="0">
+                <rect class="blk" vector-effect="non-scaling-stroke" width="45.12" height="12.08" rx="2.956" fill="#FFB74D" transform="translate(304.44 399.95)"/>
+                <rect class="blk" vector-effect="non-scaling-stroke" width="45.12" height="12.08" rx="2.956" fill="#7986CB" transform="translate(304.44 413.09)"/>
+                <rect class="blk" vector-effect="non-scaling-stroke" width="45.12" height="12.08" rx="2.956" fill="#4DB6AC" transform="translate(304.44 426.24)"/>
+                <rect class="blk" vector-effect="non-scaling-stroke" width="45.12" height="12.08" rx="2.956" fill="#7B6BAE" transform="translate(304.44 439.39)"/>
+              </g>
+              <text class="name" x="130" y="228" dominant-baseline="central" clip-path="url(#nc0)" opacity="0">THEN GROW</text>
+              <text class="name" x="130" y="260" dominant-baseline="central" clip-path="url(#nc1)" opacity="0">PROTECT YOUR HOUSEHOLD</text>
+              <text class="name" x="130" y="292" dominant-baseline="central" clip-path="url(#nc2)" opacity="0">BUILD YOUR CASH</text>
+              <text class="name" x="130" y="324" dominant-baseline="central" clip-path="url(#nc3)" opacity="0">PLAN YOUR PAYCHECK</text>
+            </svg>
+            <p class="sw-words"><b>Claryo</b><span>The breadwinner's<br>paycheck system</span></p>
+            <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+            <i class="homebar"></i>
+          </div>
+        </div>
       </div>
     </div>
 
@@ -298,6 +420,12 @@
           <p class="intro" data-at="80">Each paycheck goes to five uses until nothing is left unplanned: Save, Repay, Spend, Earmark, Invest.</p>
         </div>
         <figure class="fig" data-at="160" data-play="actions">
+          <div class="phone">
+            <div class="screen">
+              <div class="stage tut">
+              <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+              <svg class="tut-g" aria-hidden="true" focusable="false"><use href="#g-walkbar"/></svg>
+              <p class="bh">One paycheck,<br><span>five actions.</span></p>
           <div class="card actions">
             <div class="strip" aria-hidden="true">
               <div class="bar">
@@ -318,6 +446,12 @@
               <li class="row" style="--hue: #7986CB"><span class="wash"></span><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-invest"/></svg></span><span class="words"><span class="t">Invest</span><span class="g">Assets that build future income</span></span></div></li>
             </ul>
           </div>
+              <i class="cta" aria-hidden="true">Continue</i>
+              <i class="mark"></i>
+              <i class="homebar"></i>
+              </div>
+            </div>
+          </div>
         </figure>
       </div>
     </section>
@@ -333,7 +467,15 @@
           <p class="intro" data-at="80">Every cash account sits in one of four purposes: your emergency fund, recurring expenses, one-off goals, or cash with no purpose yet.</p>
         </div>
         <figure class="fig" data-at="160" data-play="cash">
-          <div class="card cashcard">
+          <div class="phone">
+            <div class="screen">
+              <div class="stage sp p-cash lt-top">
+              <i class="wall"></i>
+              <i class="bandbg"></i>
+              <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+              <svg class="bar-g" aria-hidden="true" focusable="false"><use href="#g-pagebar"/></svg>
+              <p class="pname">Cash Reserves</p>
+          <div class="card framed cashcard">
             <div class="cash" aria-hidden="true">
               <div class="cbars">
                 <div class="crules"><i style="top: 0"></i><i style="top: 60px"></i></div>
@@ -352,6 +494,10 @@
               <li class="row" style="--hue: #B0BEC5"><div class="rin"><span class="chip"><svg aria-hidden="true"><use href="#g-wallet"/></svg></span><span class="words"><span class="t">Unassigned</span><span class="g">No purpose yet</span></span><span class="amt">₱75,000</span></div></li>
             </ul>
           </div>
+              <i class="homebar"></i>
+              </div>
+            </div>
+          </div>
         </figure>
       </div>
     </section>
@@ -365,7 +511,15 @@
           <p class="intro" data-at="80">A household spending ₱900K a year for 20 years needs ₱13.9M of cover in today's money. Ten times income, ₱12.0M, covers 16½ of those years; red marks the rest.</p>
         </div>
         <figure class="fig" data-at="160" data-play="chart">
-          <div class="card chartbox">
+          <div class="phone">
+            <div class="screen">
+              <div class="stage sp p-protect lt-top">
+              <i class="wall"></i>
+              <i class="bandbg"></i>
+              <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+              <svg class="bar-g" aria-hidden="true" focusable="false"><use href="#g-pagebar"/></svg>
+              <p class="pname">Life Coverage</p>
+          <div class="card framed chartbox">
             <!-- Data: growingAnnuityDue + drawdownSeries (lib/core/life_coverage.dart)
                  for need 900,000 a year, return 6%, inflation 3%, span 20, rule
                  12,000,000: need 13,891,702 at year 0, the rule dry at year 17
@@ -414,6 +568,10 @@
             </svg>
             <div class="legend" aria-hidden="true"><span><i class="sw need"></i>Household need</span><span><i class="sw held"></i>Your cover</span><span><i class="sw dry"></i>Not funded</span></div>
           </div>
+              <i class="homebar"></i>
+              </div>
+            </div>
+          </div>
         </figure>
       </div>
     </section>
@@ -428,12 +586,99 @@
           <p class="intro" data-at="80">Your holdings sit in the core. Move the ones you treat differently, such as collectibles or speculation, into satellites around it.</p>
         </div>
         <figure class="fig" data-at="160" data-play="orrery">
-          <div class="card orbitbox">
+          <div class="phone">
+            <div class="screen">
+              <div class="stage sp p-growth lt-top">
+              <i class="wall"></i>
+              <i class="bandbg"></i>
+              <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+              <svg class="bar-g" aria-hidden="true" focusable="false"><use href="#g-pagebar"/></svg>
+              <p class="pname">Investment Portfolio</p>
+          <div class="card framed orbitbox">
             <div class="orrery" role="img" aria-label="A core holding at the center, with two satellites around it: Collectibles and Speculation.">
               <div class="ring" aria-hidden="true"></div>
               <div class="body core" aria-hidden="true"><span class="disc"><svg><use href="#g-sun"/></svg></span><span class="cap">Core</span></div>
               <div class="body sat s0 lit" aria-hidden="true"><span class="disc"><svg><use href="#g-diamond"/></svg></span><span class="cap">Collectibles</span></div>
               <div class="body sat s1" aria-hidden="true"><span class="disc"><svg><use href="#g-rocket"/></svg></span><span class="cap">Speculation</span></div>
+            </div>
+          </div>
+              <i class="homebar"></i>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </div>
+    </section>
+
+    <!-- The gallery: the four tabs in order, as real screenshots. Until a
+         tab's file exists its phone shows the tab's head on its band (each
+         line is the app's own, its source noted beside it). To drop one in,
+         save the screenshot as assets/screens/<name>.png (portrait iPhone,
+         393 : 852, e.g. 1179 x 2556) and uncomment that slot's img line.
+         Nothing is requested before then, so a missing file costs no 404. -->
+    <section class="gal" data-clock>
+      <div class="gal-row">
+        <figure class="gslot" data-at="160">
+          <div class="phone">
+            <div class="screen">
+              <div class="stage tb p-budget lt-top">
+                <i class="wall"></i>
+                <i class="bandbg"></i>
+                <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+                <p class="tname budget">Budget</p>
+                <!-- auth_page.dart, the sign-up line: the Budget tab's head is a greeting, with no line of its own -->
+                <p class="tline">Plan every paycheck before it arrives.</p>
+                <i class="homebar"></i>
+              </div>
+              <!-- <img class="shot" src="assets/screens/budget-month.png" width="1179" height="2556" alt="" loading="lazy" decoding="async"> -->
+            </div>
+          </div>
+        </figure>
+        <figure class="gslot" data-at="460">
+          <div class="phone">
+            <div class="screen">
+              <div class="stage tb p-cash lt-top">
+                <i class="wall"></i>
+                <i class="bandbg"></i>
+                <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+                <p class="tname">Cash Flow</p>
+                <!-- cash_flow_pillar_page.dart _cashFlowPromise, in pesos -->
+                <p class="tline">What comes in, and the job every peso has.</p>
+                <i class="homebar"></i>
+              </div>
+              <!-- <img class="shot" src="assets/screens/cash-flow.png" width="1179" height="2556" alt="" loading="lazy" decoding="async"> -->
+            </div>
+          </div>
+        </figure>
+        <figure class="gslot" data-at="760">
+          <div class="phone">
+            <div class="screen">
+              <div class="stage tb p-protect lt-top">
+                <i class="wall"></i>
+                <i class="bandbg"></i>
+                <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+                <p class="tname">Protection</p>
+                <!-- protection_pillar_page.dart kProtectionPromise -->
+                <p class="tline">Insurance for you and your household.</p>
+                <i class="homebar"></i>
+              </div>
+              <!-- <img class="shot" src="assets/screens/protection.png" width="1179" height="2556" alt="" loading="lazy" decoding="async"> -->
+            </div>
+          </div>
+        </figure>
+        <figure class="gslot" data-at="1060">
+          <div class="phone">
+            <div class="screen">
+              <div class="stage tb p-growth lt-top">
+                <i class="wall"></i>
+                <i class="bandbg"></i>
+                <svg class="sbar" aria-hidden="true" focusable="false"><use href="#g-sbar"/></svg>
+                <p class="tname">Growth</p>
+                <!-- growth_pillar_page.dart kGrowthPromise -->
+                <p class="tline">Income turned into assets that earn for you.</p>
+                <i class="homebar"></i>
+              </div>
+              <!-- <img class="shot" src="assets/screens/growth.png" width="1179" height="2556" alt="" loading="lazy" decoding="async"> -->
             </div>
           </div>
         </figure>
@@ -566,13 +811,15 @@
   const players = {};
 
   // ── Hero: the logo story (auth_story.dart) ───────────────────────────────
-  const story = document.querySelector('.story svg');
+  const story = document.querySelector('.story .tell');
   if (story) {
     const blocks = [...story.querySelectorAll('.blk')];      // Growth at the top
     const names = [...story.querySelectorAll('.name')];
     const clips = [...story.querySelectorAll('.nclip')];
     const ground = story.querySelector('.ground');
-    const T = 160, CX = 170, CY = 100;
+    // The 84 tile beside the name, centred on the screen; the told rows above
+    // it from 216, names at 130 (auth_story.dart).
+    const T = 84, CX = 327, CY = 425.7, TX = 44, TY = 216, NX = 130;
     const logo = i => ({ x: CX - T / 2 + T * 0.2314, y: CY - T / 2 + T * (0.1934 + i * (0.1438 + 0.0127)), w: T * 0.5371, h: T * 0.1438 });
     const frame = ms => {
       const s = ms / 1000;
@@ -587,13 +834,15 @@
         const land = easeOutQuart(span(s, start, 0.42));
         const gather = easeInOutCubic(span(s, 3.0 + fromBottom * 0.08, 0.75));
         const to = logo(i);
-        const x = lerp(20, to.x, gather);
-        const y = lerp(40 + 32 * i - (1 - land) * 22, to.y, gather);
+        const x = lerp(TX, to.x, gather);
+        const y = lerp(TY + 32 * i - (1 - land) * 22, to.y, gather);
         b.style.opacity = span(s, start, 0.42 * 0.35);
+        // A white edge holds each block on the band until the tile's ground takes over.
+        b.style.strokeOpacity = 0.4 * (1 - gather);
         b.setAttribute('transform', `translate(${x} ${y}) scale(${lerp(72, to.w, gather) / to.w} ${lerp(24, to.h, gather) / to.h})`);
         const named = easeOutCubic(span(s, start + 0.3, 0.4));
         names[i].style.opacity = Math.min(1, named * 3) * (1 - namesOut);
-        clips[i].setAttribute('transform', `translate(106 0) scale(${Math.max(named, 0.0001)} 1)`);
+        clips[i].setAttribute('transform', `translate(${NX} 0) scale(${Math.max(named, 0.0001)} 1)`);
       });
     };
     frame(0);
@@ -614,7 +863,12 @@
     // once it lands; load() asks for their face outright, as ready alone may not.
     const fonts = document.fonts ? document.fonts.load('700 12px Figtree').then(() => document.fonts.ready) : Promise.resolve();
     fonts.then(measure);
-    Promise.race([fonts, new Promise(r => setTimeout(r, 1000))]).then(() => { measure(); play(); });
+    // Below the words on a phone, so it starts when its band is in view.
+    const seen = new Promise(r => {
+      const o = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { o.disconnect(); r(); } }, { threshold: 0.3 });
+      o.observe(story.parentElement);
+    });
+    Promise.all([Promise.race([fonts, new Promise(r => setTimeout(r, 1000))]), seen]).then(() => { measure(); play(); });
 
     // A tap on the landed tile tells the story again (auth_story.dart _replay):
     // ignored mid-story, the picture fades over _kCloseUp (450ms), then restarts.
