@@ -13,8 +13,11 @@
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <script>
-  // Motion only enhances: without this class every picture shows its landed state.
-  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion');
+  // Motion only enhances: without this class every picture shows its landed state. The test is the
+  // CSS's own, and a browser without the motion script's APIs keeps the still page (tech-website §5).
+  if (matchMedia('(prefers-reduced-motion: no-preference)').matches && 'IntersectionObserver' in window && 'requestAnimationFrame' in window) {
+    document.documentElement.classList.add('motion');
+  }
 </script>
 <style>
   @font-face { font-family: Figtree; font-weight: 400; font-display: swap; src: url("assets/fonts/Figtree-Regular.ttf") format("truetype"); }
@@ -553,6 +556,37 @@
   .reel .rs { display: block; margin-top: calc((1.1em - var(--lh)) / 2); }
   .reel .rs b { display: block; height: var(--lh); line-height: var(--lh); font-weight: inherit; text-align: center; }
 
+  /* ── Questions ── */
+  /* Hairline-divided rows, never boxes (house-rules: content zones are rows). Wide, the heading
+     sits beside the list; narrow, above it. */
+  .faq h2 { text-wrap: balance; margin-bottom: 24px; }
+  @media (min-width: 880px) {
+    .faq { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 64px; align-items: start; }
+  }
+  .qs { border-top: 1px solid var(--line); }
+  .qs details { border-bottom: 1px solid var(--line); }
+  .qs summary {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: 20px;
+    padding: 20px 0; cursor: pointer; list-style: none;
+    font-weight: 600; font-size: 1.125rem; line-height: 1.4; text-wrap: pretty;
+  }
+  .qs summary::-webkit-details-marker { display: none; }
+  /* A chevron drawn from two borders: down when closed, up when open. */
+  .qs summary::after {
+    content: ""; flex: none; width: 9px; height: 9px; margin: 0.4em 4px 0 0;
+    border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted);
+    transform: rotate(45deg);
+  }
+  .qs details[open]:not(.closing) summary::after { transform: translateY(4px) rotate(-135deg); }
+  .qs summary:focus-visible { outline: 2px solid var(--purple); outline-offset: 4px; border-radius: 4px; }
+  .qs .a { max-width: 40em; color: var(--muted); text-wrap: pretty; }
+  /* The bottom space is a block, not padding: border-box padding would stop the closing height at 24. */
+  .qs .a::after { content: ""; display: block; height: 24px; }
+  .qs .a p + p { margin-top: 12px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .qs summary::after { transition: transform 250ms cubic-bezier(0.645, 0.045, 0.355, 1); } /* Curves.easeInOutCubic */
+  }
+
   /* ── Footer ── */
   footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--muted); font-size: 0.9375rem; }
   footer .wrap { display: grid; gap: 16px; }
@@ -905,7 +939,7 @@
                 <i class="bandbg" aria-hidden="true"></i>
                 <!-- pillar_header.dart: title at 0, promise at 80 (arrival_clock.dart) -->
                 <p class="d-title" data-b="0,12">Cash Flow<svg aria-hidden="true"><use href="#g-info"/></svg></p>
-                <p class="d-prom" data-b="80,6">What comes in, and the job every peso has.</p>
+                <p class="d-prom" data-b="80,6">What comes in, and the job every <span data-unit>peso</span> has.</p>
                 <svg class="d-glyph" data-b="0,12" style="left:344px;top:86.3px" aria-hidden="true"><use href="#g-gear"/></svg>
                 <!-- cash_flow_budget_panel.dart: card 0 at 160, its bars and legend (the proof) at 460. -->
                 <div class="dc" data-b="160,12" style="top:146px;height:291.7px">
@@ -1340,6 +1374,50 @@
         </figure>
       </div>
     </section>
+
+    <!-- Questions: every answer stays in the markup and opens in place (tech-website §2). -->
+    <section class="faq" aria-labelledby="faq" data-clock>
+      <h2 id="faq" data-at="0">Questions</h2>
+      <div class="qs" data-at="80">
+        <details>
+          <summary>How is Claryo different from a budgeting or expense-tracking app?</summary>
+          <div class="a">
+            <p>Most apps record each purchase after it happens. In Claryo, you plan each paycheck before it arrives and track your balances once a month, which keeps the bigger picture in view. You direct your money instead of letting it direct you.</p>
+            <p>Claryo also goes past the budget. It covers three pillars, built in order: Cash Flow (your cash reserves and debt), Protection (life, health and medical insurance) and Growth (your investments and the income they pay). Together they show whether all your household's financial bases are covered.</p>
+          </div>
+        </details>
+        <details>
+          <summary>If Claryo is for breadwinners, can I use it if I'm single or have no dependents?</summary>
+          <div class="a">
+            <p>Yes. To us, a breadwinner is anyone who takes responsibility for their household's financial future, and a household can be just you. If you put in the effort, think long-term and want to keep improving, Claryo is for you.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Do I need to know a lot about finance to use it?</summary>
+          <div class="a">
+            <p>No. Claryo tracks the few numbers that matter most to your household, in order: plan your paycheck first, then build Cash Flow, Protection and Growth one at a time, moving on as your understanding grows. Each tab also has a short tutorial. You don't need to know a lot today, but you will learn as you go.</p>
+          </div>
+        </details>
+        <details>
+          <summary>Is my financial data safe?</summary>
+          <div class="a">
+            <p>Claryo never asks for bank logins, account or card numbers, or government IDs. There are no ads and no tracking, and your data is never sold. What you enter is stored on Supabase servers, encrypted in transit and at rest, and each account can read only its own data.</p>
+          </div>
+        </details>
+        <details>
+          <summary>How do I get help, report a bug or suggest a feature?</summary>
+          <div class="a">
+            <p>Email us at <a href="mailto:claryoapp@gmail.com">claryoapp@gmail.com</a>, or post on the feedback board in Settings › Support, where you can also vote on other people's posts. Other users can see board posts, but not who wrote them.</p>
+          </div>
+        </details>
+        <details>
+          <summary>How much does Claryo cost?</summary>
+          <div class="a">
+            <p>You pay once when you download it, and every feature is open from the first launch. There's no subscription, no in-app purchases, and no free version or trial. Updates are included. The App Store and Google Play show the price for your country.</p>
+          </div>
+        </details>
+      </div>
+    </section>
   </main>
 </div>
 
@@ -1355,9 +1433,141 @@
 </footer>
 
 <script>
+// The household is authored in pesos. Elsewhere it is shown in the visitor's currency,
+// scaled by one factor so every ratio stays true; unsupported currencies get dollars
+// (founder, 2026-11-13). Location is the browser's time zone, never a request (tech-website §2).
+// Runs apart from the motion script, which returns under reduce motion, and before its reels read the digits.
+(() => {
+  try {
+    // Symbol and unit word are the app's Currency enum (lib/domain/enums.dart); the symbol always leads.
+    // AED's trailing LRM: without it, bidi moves a plain-text figure in front of the Arabic symbol.
+    const CUR = {
+      PHP: ['₱', 1, 'peso'], USD: ['$', 10, 'dollar'], EUR: ['€', 10, 'euro'], GBP: ['£', 10, 'pound'],
+      CAD: ['CA$', 10, 'dollar'], AUD: ['A$', 10, 'dollar'], SGD: ['S$', 10, 'dollar'], AED: ['د.إ\u200E', 2.5, 'dirham'],
+    };
+    const ZONES = {
+      PHP: 'Asia/Manila',
+      SGD: 'Asia/Singapore Singapore',
+      AED: 'Asia/Dubai',
+      GBP: 'Europe/London Europe/Belfast Europe/Jersey Europe/Guernsey Europe/Isle_of_Man GB GB-Eire',
+      CAD: 'America/St_Johns America/Halifax America/Glace_Bay America/Moncton America/Goose_Bay America/Blanc-Sablon ' +
+        'America/Toronto America/Montreal America/Nipigon America/Thunder_Bay America/Iqaluit America/Pangnirtung ' +
+        'America/Atikokan America/Winnipeg America/Rainy_River America/Resolute America/Rankin_Inlet America/Regina ' +
+        'America/Swift_Current America/Edmonton America/Cambridge_Bay America/Yellowknife America/Inuvik America/Creston ' +
+        'America/Dawson_Creek America/Fort_Nelson America/Whitehorse America/Dawson America/Vancouver',
+      EUR: 'Europe/Vienna Europe/Brussels Europe/Sofia Europe/Zagreb Europe/Nicosia Asia/Nicosia Asia/Famagusta ' +
+        'Europe/Tallinn Europe/Helsinki Europe/Mariehamn Europe/Paris Europe/Berlin Europe/Busingen Europe/Athens ' +
+        'Europe/Dublin Eire Europe/Rome Europe/Riga Europe/Vilnius Europe/Luxembourg Europe/Malta Europe/Amsterdam ' +
+        'Europe/Lisbon Portugal Atlantic/Azores Atlantic/Madeira Europe/Bratislava Europe/Ljubljana Europe/Madrid ' +
+        'Atlantic/Canary Africa/Ceuta Europe/Andorra Europe/Monaco Europe/San_Marino Europe/Vatican Europe/Podgorica',
+    };
+    const COUNTRIES = {
+      PHP: 'PH', SGD: 'SG', AED: 'AE', GBP: 'GB', CAD: 'CA', AUD: 'AU',
+      EUR: 'AT BE BG HR CY EE FI FR DE GR IE IT LV LT LU MT NL PT SK SI ES AD MC SM VA ME',
+    };
+    const find = (table, key) => Object.keys(table).find(c => table[c].split(' ').includes(key)) || 'USD';
+    const fromZone = z => /^Australia\//.test(z) ? 'AUD' : /^Canada\//.test(z) ? 'CAD' : find(ZONES, z);
+    const region = l => { try { return new Intl.Locale(l).region; } catch { return undefined; } };
+
+    const asked = (new URLSearchParams(location.search).get('cur') || '').toUpperCase();
+    let code = CUR[asked] ? asked : '';
+    if (!code) {
+      const zone = Intl.DateTimeFormat().resolvedOptions().timeZone || '';
+      // A privacy browser reports UTC; only then does the language's region stand in for the zone.
+      if (zone && !/^(Etc\/|UTC$|UCT$|GMT$|Universal$|Zulu$)/.test(zone)) code = fromZone(zone);
+      else {
+        const tag = (navigator.languages || [navigator.language]).find(region);
+        code = tag ? find(COUNTRIES, region(tag)) : 'USD';
+      }
+    }
+    document.documentElement.dataset.cur = code;
+    if (code === 'PHP') return;
+
+    const [sym, factor, unit] = CUR[code];
+    for (const el of document.querySelectorAll('[data-unit]')) el.textContent = unit;
+    const group = (v, d) => v.toLocaleString('en-US', { minimumFractionDigits: d, maximumFractionDigits: d });
+    // formatCompact (lib/core/number_format.dart): millions to one decimal, thousands to none.
+    const compact = v => v >= 1e6 ? [(v / 1e6).toFixed(1), 'M'] : v >= 1e3 ? [(v / 1e3).toFixed(0), 'K'] : [group(v, 0), ''];
+    const scale = (num, mag, decimals) => {
+      const v = Number(num.replace(/,/g, '')) * (mag === 'M' ? 1e6 : mag === 'K' ? 1e3 : 1) / factor;
+      return mag ? compact(v) : [group(v, decimals), ''];
+    };
+    const places = num => num.includes('.') ? num.length - num.indexOf('.') - 1 : 0;
+    const RE = /₱(\d[\d,]*(?:\.\d+)?)([KM]?)/g;
+    const inline = (_, num, mag) => sym + scale(num, mag, places(num)).join('');
+
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+    const texts = [];
+    while (walker.nextNode()) if (walker.currentNode.data.includes('₱')) texts.push(walker.currentNode);
+    for (const t of texts) {
+      t.data = t.data.replace(RE, (all, num, mag, at, s) => {
+        // A hero splits its figure: "₱12.0" + <span class="mag">M</span>, "₱20,000" + <span class="dec">.00</span>.
+        const next = !mag && at + all.length === s.length && t.nextSibling && t.nextSibling.classList;
+        if (next && next.contains('mag')) {
+          const [digits, suffix] = scale(num, t.nextSibling.textContent, 0);
+          t.nextSibling.textContent = suffix;
+          return sym + digits;
+        }
+        if (next && next.contains('dec')) {
+          const [whole, frac] = scale(num, '', t.nextSibling.textContent.length - 1)[0].split('.');
+          t.nextSibling.textContent = '.' + frac;
+          return sym + whole;
+        }
+        return inline(all, num, mag);
+      });
+    }
+    for (const el of document.querySelectorAll('[aria-label*="₱"]')) {
+      el.setAttribute('aria-label', el.getAttribute('aria-label').replace(RE, inline));
+    }
+
+    // A longer symbol must fit where ₱ did, so two of the app's fitting rules come along.
+    const inked = el => { const r = document.createRange(); r.selectNodeContents(el); return r.getBoundingClientRect().width; };
+    // income_planning_panel.dart _fmtLegendAmount: K and M, one decimal only below 10M.
+    const legendCompact = v => v >= 1e6 ? (v / 1e6).toFixed(v >= 1e7 ? 0 : 1).replace(/\.0$/, '') + 'M'
+      : v >= 1e3 ? group(Math.round(v / 1e3), 0) + 'K' : group(v, 0);
+    const fit = () => {
+      // protection_policies_panel.dart: FittedBox(scaleDown), so CA$400K shrinks rather than meeting CA$25K.
+      for (const p of document.querySelectorAll('.pcol.h-num')) {
+        p.style.transform = '';
+        const room = p.getBoundingClientRect().width * 0.92, need = inked(p);
+        if (need > room && room > 0) p.style.transform = `scale(${(room / need).toFixed(3)})`;
+      }
+      // _legendNeedsCompact: when any row cannot hold its label and full figure 6px apart,
+      // the whole block abbreviates, so a column never mixes units.
+      const rows = [...document.querySelectorAll('.lg')].filter(p => p.offsetWidth);
+      for (const p of rows) { const b = p.querySelector('b'); b.dataset.full ??= b.textContent; b.textContent = b.dataset.full; }
+      const tight = rows.some(p => {
+        const b = p.querySelector('b');
+        b.style.marginLeft = '0';
+        const need = inked(p) * p.offsetWidth / p.getBoundingClientRect().width;
+        b.style.marginLeft = '';
+        return need + 6 > p.offsetWidth;
+      });
+      if (tight) for (const p of rows) {
+        const b = p.querySelector('b');
+        b.textContent = sym + legendCompact(Number(b.dataset.full.match(/\d[\d,]*(?:\.\d+)?/)[0].replace(/,/g, '')));
+      }
+    };
+    document.fonts.ready.then(fit);
+    addEventListener('resize', fit);
+  } catch {
+    // Pesos, exactly as authored.
+  }
+})();
+</script>
+
+<script>
 (() => {
   // Reduce motion (no class) leaves every picture in its landed state.
   if (!document.documentElement.classList.contains('motion')) return;
+
+  // A throw while setting up lands the page instead of leaving it half hidden (tech-website §5):
+  // the catch at the end puts back every attribute snapped here and each reel's own text.
+  const ATTRS = ['style', 'transform', 'class'];
+  const snap = [...document.body.querySelectorAll('*')].map(el => [el, ATTRS.map(a => el.getAttribute(a))]);
+  const settles = [];
+  let dead = false;
+  try {
 
   // Flutter's curves, exactly (tech-website §3), solved by bisection as Cubic is.
   const cubic = (x1, y1, x2, y2) => {
@@ -1379,15 +1589,24 @@
   const span = (t, start, len) => Math.min(1, Math.max(0, (t - start) / len));
   const lerp = (a, b, t) => a + (b - a) * t;
 
-  // One timeline: frame(ms) on each animation frame up to ms, then done().
+  // One timeline: frame(ms) on each animation frame up to ms, then done(). A timer lands it
+  // too, so frames iOS throttles or pauses mid-scroll never leave it part-way (tech-website §5).
   const run = (ms, frame, done) => {
     const t0 = performance.now();
+    let over = false;
+    const end = () => {
+      if (over) return;
+      over = true;
+      frame(ms);
+      if (done) done();
+    };
     const tick = now => {
+      if (over) return;
       const t = Math.min(now - t0, ms);
-      frame(t);
-      if (t < ms) requestAnimationFrame(tick); else if (done) done();
+      if (t < ms) { frame(t); requestAnimationFrame(tick); } else end();
     };
     requestAnimationFrame(tick);
+    setTimeout(end, ms + 250);
   };
   // An arrival beat (arrival_clock.dart): 440 on easeOutCubic from `at`.
   const beat = (ms, at, len = 440) => easeOutCubic(span(ms, at, len));
@@ -1408,6 +1627,7 @@
     };
     const go = () => { if (started && seen && !raf) { last = -1; raf = requestAnimationFrame(tick); } };
     new IntersectionObserver(es => {
+      if (dead) return;
       const en = es[es.length - 1];
       seen = en.isIntersecting;
       if (!seen && raf) { cancelAnimationFrame(raf); raf = 0; }
@@ -1441,6 +1661,7 @@
   // 780/950 of it on easeOutCubic; the low places spin a turn further.
   const reels = el => {
     // One element is one AnimatedNumber: its digits, across commas and a split decimal, are one figure.
+    const orig = [...el.childNodes];
     const sr = document.createElement('span');
     sr.className = 'sr';
     sr.textContent = el.textContent;
@@ -1453,8 +1674,8 @@
     const all = texts.map(t => t.data).join('');
     const digits = all.replace(/\D/g, '');
     const value = Number(digits);
-    const dot = all.indexOf('.');
-    const decimals = dot < 0 ? 0 : (all.slice(dot + 1).match(/^\d*/) || [''])[0].length;
+    // The decimal point is the one after a digit: a symbol can carry a dot (د.إ).
+    const decimals = (all.match(/\d\.(\d+)/) || ['', ''])[1].length;
     const n = digits.length;
     const startPlaces = decimals + 1;
     const pitch = n > 1 ? Math.min(30 / 950, (1 - 780 / 950) / (n - 1)) : 0;
@@ -1488,8 +1709,21 @@
       }
       t.replaceWith(out);
     }
-    el.replaceChildren(sr, shown);
+    el.textContent = '';
+    el.append(sr, shown);
+    // Landed, the reels give way to the figure's own text: WebKit can miss the last frame or
+    // its paint inside the clip, which froze a figure half-turned on iPhone (founder, 2026-11-13).
+    let settled = false;
+    const settle = () => {
+      if (settled) return;
+      settled = true;
+      el.textContent = '';
+      el.append(...orig);
+    };
+    settles.push(settle);
     const draw = t => {
+      if (settled) return;
+      if (t >= 1) { settle(); return; }
       for (const c of cols) {
         const e = easeOutCubic((t - c.fromLeft * pitch) / (780 / 950));
         c.strip.style.transform = `translateY(calc(${-c.steps * e} * var(--lh)))`;
@@ -1689,7 +1923,7 @@
     // once it lands; load() asks for their face outright, as ready alone may not.
     // On a phone the hero's phone sits below the words, so it starts when seen.
     const fonts = document.fonts ? document.fonts.load('700 12px Figtree').then(() => document.fonts.ready) : Promise.resolve();
-    fonts.then(measure);
+    fonts.then(() => { if (!dead) measure(); });
     Promise.race([fonts, new Promise(r => setTimeout(r, 1000))]).then(() => { fontsIn = true; maybeStart(); });
 
     // A tap on the core tells the whole story again (auth_story.dart _replay):
@@ -1882,7 +2116,7 @@
       crossfade(views, turn, u);
     };
     const clock = loopClock(orrery.closest('.card'), dt => { live += dt; frame(); });
-    addEventListener('resize', () => { measure(); if (!clock.running) frame(); });
+    addEventListener('resize', () => { if (dead) return; measure(); if (!clock.running) frame(); });
     measure();
     frame();
     // The total rolls once, with the entrance (AnimatedNumber's 800); a change of node is a crossfade.
@@ -2003,7 +2237,12 @@
     const go = dashes.get(fig);
     if (!go) return;
     const seen = new IntersectionObserver(es => {
-      if (es.some(e => e.intersectionRatio >= 0.5)) { seen.disconnect(); go(); loops.get(fig)?.(); }
+      if (es.some(e => e.intersectionRatio >= 0.5)) {
+        seen.disconnect();
+        go();
+        const loop = loops.get(fig);
+        if (loop) loop();
+      }
     }, { threshold: [0, 0.5] });
     seen.observe(fig.querySelector('.phone'));
   };
@@ -2102,6 +2341,67 @@
     }
   }, { rootMargin: '0px 0px -12% 0px' });
   document.querySelectorAll('[data-at]').forEach(el => io.observe(el));
+
+  } catch (err) {
+    dead = true;
+    settles.forEach(s => s());
+    snap.forEach(([el, vals]) => ATTRS.forEach((a, i) => { if (vals[i] === null) el.removeAttribute(a); else el.setAttribute(a, vals[i]); }));
+    const replay = document.querySelector('.replay');
+    if (replay) replay.remove();
+    document.documentElement.classList.remove('motion');
+    console.error(err);
+  }
+})();
+</script>
+<script>
+// A question opens in place: the answer's height on easeOutCubic, its paragraphs rising 6 on the
+// 440 beat, 80 apart (ConceptRow). It closes on easeInCubic. A second tap mid-flight turns it from
+// where it stands. Without the motion class (reduce motion, or a failed motion script) the native toggle runs.
+(() => {
+  const OUT = 'cubic-bezier(0.215, 0.61, 0.355, 1)';   // Curves.easeOutCubic
+  const IN = 'cubic-bezier(0.55, 0.055, 0.675, 0.19)'; // Curves.easeInCubic
+  document.querySelectorAll('.qs details').forEach(d => {
+    const a = d.querySelector('.a');
+    const ps = [...a.querySelectorAll('p')];
+    let run = null;
+    // Each paragraph's opacity as it stands, before its animations are dropped.
+    const settle = () => ps.map(p => { const o = getComputedStyle(p).opacity; p.getAnimations().forEach(x => x.cancel()); return o; });
+    d.querySelector('summary').addEventListener('click', e => {
+      if (!document.documentElement.classList.contains('motion')) return;
+      e.preventDefault();
+      const opening = !d.open || d.classList.contains('closing');
+      const from = d.open ? a.getBoundingClientRect().height : 0;
+      if (run) { run.cancel(); run = null; }
+      const fades = settle();
+      a.style.overflow = 'hidden';
+      if (opening) {
+        d.classList.remove('closing');
+        d.open = true;
+        const to = a.getBoundingClientRect().height;
+        const anim = run = a.animate([{ height: `${from}px` }, { height: `${to}px` }], { duration: 300, easing: OUT });
+        ps.forEach((p, i) => p.animate(
+          from === 0
+            ? [{ opacity: 0, transform: 'translateY(6px)' }, { opacity: 1, transform: 'none' }]
+            : [{ opacity: fades[i] }, { opacity: 1 }],
+          { duration: from === 0 ? 440 : 250, delay: from === 0 ? 80 + 80 * i : 0, easing: OUT, fill: 'backwards' }));
+        // A finish event can land after a newer tap has taken over; only the current run settles.
+        anim.onfinish = () => { if (run !== anim) return; a.style.overflow = ''; run = null; };
+      } else {
+        d.classList.add('closing');
+        ps.forEach((p, i) => p.animate([{ opacity: fades[i] }, { opacity: 0 }], { duration: 150, easing: IN, fill: 'forwards' }));
+        const anim = run = a.animate([{ height: `${from}px` }, { height: '0px' }], { duration: 250, easing: IN, fill: 'forwards' });
+        anim.onfinish = () => {
+          if (run !== anim) return;
+          d.open = false;
+          d.classList.remove('closing');
+          settle();
+          anim.cancel();
+          a.style.overflow = '';
+          run = null;
+        };
+      }
+    });
+  });
 })();
 </script>
 </body>
