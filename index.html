@@ -556,6 +556,228 @@
   .reel .rs { display: block; margin-top: calc((1.1em - var(--lh)) / 2); }
   .reel .rs b { display: block; height: var(--lh); line-height: var(--lh); font-weight: inherit; text-align: center; }
 
+  /* ── iPad: the app on a tablet (house-rules §14), drawn like the phones ── */
+  /* An iPad Air 11" standing (820 × 1180 points) laid out in points on a stage and shrunk as one picture;
+     --k is the screen's width ÷ its points. One screen holds the four tabs and the shell's bar twice, light and dark. */
+  .ipads { text-align: center; }
+  .ipads h2 { text-wrap: balance; }
+  .ipads .intro { margin: 0 auto; text-wrap: pretty; }
+  .pad-fig { margin: 48px 0 0; }
+  /* --k is the smaller of what the column's width allows (--kw) and what the window's height allows (--kh):
+     never a sideways scroll, and from 892 tall the strip's head and the whole iPad share one screen. */
+  .pad {
+    --W: 820; --H: 1180; --kw: 0.33; --kh: 0.57; --k: min(var(--kw), var(--kh));
+    width: calc((var(--W) + 52) * var(--k) * 1px);
+    margin: 0 auto;
+    padding: calc(26px * var(--k));
+    border-radius: calc(44px * var(--k));
+    background: #16151B;
+    box-shadow: 0 3px 12px rgba(0, 0, 0, 0.11), 0 10px 33px rgba(0, 0, 0, 0.055);
+    text-align: left;
+  }
+  @media (min-width: 360px) { .pad { --kw: 0.376; } }
+  @media (min-width: 400px) { .pad { --kw: 0.422; } }
+  @media (min-width: 480px) { .pad { --kw: 0.513; } }
+  @media (min-width: 560px) { .pad { --kw: 0.605; } }
+  @media (min-width: 640px) { .pad { --kw: 0.66; } }
+  @media (min-height: 1000px) { .pad { --kh: 0.66; } }
+  @media (max-height: 891px) { .pad { --kh: 0.52; } }
+  @media (max-height: 831px) { .pad { --kh: 0.48; } }
+  @media (max-height: 780px) { .pad { --kh: 0.44; } }
+  @media (max-height: 731px) { .pad { --kh: 0.4; } }
+  @media (max-height: 682px) { .pad { --kh: 0.36; } }
+  @media (max-height: 633px) { .pad { --kh: 0.32; } }
+  @media (max-height: 583px) { .pad { --kh: 0.28; } }
+  @media (max-height: 534px) { .pad { --kh: 0.24; } }
+  .pscreen {
+    position: relative;
+    width: calc(var(--W) * var(--k) * 1px); height: calc(var(--H) * var(--k) * 1px);
+    border-radius: calc(18px * var(--k));
+    overflow: hidden; clip-path: inset(0 round calc(18px * var(--k)));
+    background: #F2F2F7;
+  }
+  .pstage, .pchrome {
+    position: absolute; left: 0; top: 0; width: calc(var(--W) * 1px); height: calc(var(--H) * 1px);
+    transform: scale(var(--k)); transform-origin: 0 0;
+    overflow: hidden; font-size: 16px; line-height: 1.2; color: rgb(var(--irgb));
+    --lift: 0 3px 12.5px rgb(var(--brgb) / 0.11), 0 10px 33.3px rgb(var(--brgb) / 0.055);
+    --surf: #fff;
+  }
+  .pchrome { z-index: 3; pointer-events: none; }
+  .pstage > *, .pchrome > * { position: absolute; margin: 0; }
+  .pstage p, .pchrome p { white-space: nowrap; }
+  .pstage svg, .pchrome svg { fill: currentColor; }
+  .pstage [data-reel] { --lh: 1.2em; }
+  /* Without script, or with less motion, Budget alone shows, in light. */
+  .pscreen .pstage + .pstage, .pchrome.drk { visibility: hidden; }
+  /* band_wallpaper.dart and the band at an iPad's size: the blooms' radii from its 820 short side. */
+  .pstage .wall {
+    background:
+      radial-gradient(circle 779px at 95% 100%, rgb(185 166 242 / 0.45), rgb(185 166 242 / 0.18) 389.5px, rgb(185 166 242 / 0) 779px),
+      radial-gradient(circle 697px at 5% 87.5%, rgb(244 163 190 / 0.38), rgb(244 163 190 / 0.152) 348.5px, rgb(244 163 190 / 0) 697px),
+      radial-gradient(circle 697px at 100% 55%, rgb(125 185 242 / 0.35), rgb(125 185 242 / 0.14) 348.5px, rgb(125 185 242 / 0) 697px),
+      radial-gradient(circle 738px at 0 40%, rgb(var(--brgb) / 0.4), rgb(var(--brgb) / 0.16) 369px, rgb(var(--brgb) / 0) 738px),
+      #EEF4FB;
+  }
+  .pstage .bandbg { width: auto; right: 0; background: radial-gradient(circle calc(1.3 * var(--bh)) at calc(var(--W) * 0.05px) 0, rgb(var(--lrgb) / 0.6), rgb(var(--lrgb) / 0)), linear-gradient(var(--band) 0, var(--band) var(--split), var(--foot) 100%); }
+  /* The iPad's status bar: time and date at the left, Wi-Fi and battery at the right. */
+  .psb { left: 20px; top: 0; height: 24px; display: flex; align-items: center; gap: 6px; font-size: 15px; font-weight: 600; letter-spacing: -0.2px; color: #fff; }
+  .psbr { top: 0; width: 52px; height: 24px; color: #fff; }
+  /* app_shell.dart's bar as one pill: it re-shares, the "+" leaves beside Budget, the drop travels. */
+  .pnav .pps { position: absolute; top: 8px; width: 400px; height: 50px; filter: drop-shadow(0 6px 14.35px rgb(0 0 0 / 0.196)); }
+  .pnav .pp { position: absolute; inset: 0; border-radius: 20px; background: #fff; overflow: hidden; }
+  .pnav .pdrop { position: absolute; left: 0; top: 7px; width: 400px; height: 36px; }
+  .pnav .pf { position: absolute; left: 0; top: 0; width: 0; height: 50px; }
+  .pnav .pf > span { position: absolute; left: 0; top: 0; height: 50px; display: flex; align-items: center; gap: 8px; transform: translateX(-50%); font-size: 12.5px; font-weight: 600; color: #49454E; white-space: nowrap; }
+  .pnav .pf svg { width: 24px; height: 24px; }
+  .pnav .pf .on { color: #fff; opacity: 0; }
+  .pnav .pf.lit .on { opacity: 1; }
+  .pnav .pf.lit .o { opacity: 0; }
+
+  /* budget_calendar.dart in the split's month pane: the full grid, the selected day solid. */
+  .cal-t { left: 12px; right: 12px; top: 16px; height: 44px; display: flex; align-items: center; justify-content: center; font-size: 17px; letter-spacing: -0.15px; }
+  .cal-t i { flex: none; width: 32px; height: 44px; display: grid; place-items: center; }
+  .cal-t svg { width: 14px; height: 14px; color: rgb(73 69 78 / 0.51); }
+  .cal-t b { margin: 0 4px 0 2px; font-weight: 700; }
+  .cal-t .cd { width: 10px; height: 10px; margin-right: 2px; color: rgb(73 69 78 / 0.392); }
+  .dow { left: 12px; right: 12px; height: 12px; }
+  .dow b, .crow b { position: absolute; top: 0; text-align: center; }
+  .dow b { font-size: 10px; font-weight: 600; letter-spacing: 0.5px; line-height: 12px; color: rgb(73 69 78 / 0.431); }
+  .dow b.we { color: rgb(73 69 78 / 0.275); }
+  .crow { left: 12px; right: 12px; height: 60px; }
+  .cel { height: 56px; padding-top: 14.5px; border-radius: 10px; font-size: 13px; font-weight: 400; line-height: 1; font-variant-numeric: tabular-nums; color: rgb(var(--irgb) / 0.549); }
+  .cel.q { color: rgb(var(--irgb) / 0.451); }
+  .cel.pd, .cel.sel { padding-top: 14px; font-size: 14px; font-weight: 700; }
+  .cel.pd { background: rgb(123 107 174 / 0.086); color: rgb(123 107 174 / 0.824); }
+  .cel.sel { background: #7B6BAE; color: #fff; }
+  /* month_breakdown_panel.dart: the hero, its caption, the month's composition, then the receipt. */
+  .rcap { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 500; color: rgb(var(--irgb) / 0.549); }
+  .rcap svg { width: 14px; height: 14px; color: rgb(var(--irgb) / 0.392); }
+  .sbar4 { left: 0; right: 0; height: 4px; }
+  .sbar4 i { position: absolute; top: 0; height: 4px; border-radius: 2px; }
+  .rsh { font-weight: 600; letter-spacing: -0.22px; color: rgb(var(--irgb) / 0.549); }
+  .rsa { right: 24px; font-size: 13px; font-weight: 600; letter-spacing: -0.22px; font-variant-numeric: tabular-nums; }
+  .rln { left: 60px; right: 24px; display: flex; font-size: 12.5px; color: rgb(var(--irgb) / 0.549); }
+  .rln b { margin-left: auto; font-weight: 600; letter-spacing: -0.22px; color: rgb(var(--irgb) / 0.647); font-variant-numeric: tabular-nums; }
+
+  /* protection_policies_panel.dart on iPad: the covers as rows, then the premium calendar. */
+  .hl { left: 24px; right: 24px; height: 0.5px; background: rgb(122 117 127 / 0.353); }
+  .cvg { left: 24px; width: 16px; height: 16px; color: #3F4A9E; }
+  .cvw { left: 48px; font-size: 14px; font-weight: 600; color: rgb(var(--irgb) / 0.647); }
+  .cvf { right: 24px; font-size: 22px; letter-spacing: -0.37px; }
+  .cvf .unit { margin-left: 4px; font-size: 10px; }
+  .pdg { left: 24px; width: 14px; height: 14px; color: #3F4A9E; }
+  .pdh { left: 44px; font-size: 13px; font-weight: 600; color: rgb(var(--irgb) / 0.647); }
+  .pdt { right: 24px; font-size: 12px; color: rgb(var(--irgb) / 0.647); }
+  .pbars, .pmi { left: 24px; }
+  .pbars { height: 74px; }
+  .pbars i { position: absolute; bottom: 0; border-radius: 3px; background: rgb(121 134 203 / 0.431); transform-origin: 50% 100%; }
+  .pbars i.now { background: #7986CB; }
+  .pbars i.nil { background: rgb(var(--irgb) / 0.11); }
+  .pbars b { position: absolute; text-align: center; font-size: 9.5px; font-weight: 600; color: rgb(var(--irgb) / 0.647); }
+  .pbars .yt { position: absolute; top: 0; height: 74px; padding-left: 3px; border-left: 1px solid rgb(122 117 127 / 0.431); font-style: normal; font-size: 9px; line-height: 1.2; color: rgb(var(--irgb) / 0.353); }
+  .pmi { height: 19px; }
+  .pmi b { position: absolute; top: 3px; text-align: center; font-size: 11px; font-weight: 500; color: rgb(var(--irgb) / 0.353); }
+  .pmi b.now { font-weight: 700; color: rgb(var(--irgb)); }
+  .pdate { left: 24px; width: 40px; height: 42px; border-radius: 10px; background: rgb(var(--brgb) / 0.055); display: flex; flex-direction: column; align-items: center; justify-content: center; line-height: 1.1; }
+  .pdate b { font-size: 9.5px; font-weight: 600; letter-spacing: 0.4px; color: rgb(var(--irgb) / 0.647); }
+  .pdate span { font-size: 16px; font-weight: 700; }
+  .pnm { left: 80px; font-size: 14px; font-weight: 600; }
+  .pins { left: 80px; display: flex; align-items: center; gap: 6px; font-size: 12px; color: rgb(var(--irgb) / 0.647); }
+  .pins i { width: 16px; height: 16px; border-radius: 4.7px; display: grid; place-items: center; font-style: normal; font-size: 7.5px; font-weight: 700; }
+  .pamt { right: 24px; text-align: right; font-size: 14px; font-weight: 700; font-variant-numeric: tabular-nums; }
+  .pamt span { display: block; font-size: 12px; font-weight: 400; color: rgb(var(--irgb) / 0.647); }
+  .pamt span.soon { font-weight: 600; color: #F57C00; }      /* signalCaution inside the 30-day window */
+  .lchart { overflow: visible; }
+
+  /* Growth on iPad: the dial's four years, the rate chart resting open, every holding listed. */
+  .yrl { left: 0; right: 0; height: 1px; background: rgb(202 196 208 / 0.157); }
+  .yr { left: 24px; right: 24px; display: flex; align-items: baseline; gap: 8px; font-size: 12px; font-weight: 500; color: rgb(var(--irgb) / 0.451); }
+  .yr b { font-size: 14px; font-weight: 500; color: rgb(var(--irgb) / 0.549); }
+  .yr em { margin: 0 8px 0 auto; font-style: normal; font-weight: 600; }
+  .yr strong { font-size: 15px; font-weight: 600; letter-spacing: -0.2px; color: rgb(var(--irgb) / 0.549); font-variant-numeric: tabular-nums; }
+  .yr.on b, .yr.on strong { font-weight: 700; color: rgb(var(--irgb)); }
+  .fig { font-weight: 700; color: rgb(var(--irgb)); text-decoration: underline dotted 2px #B45309; text-underline-offset: 2px; }
+  .tchart { overflow: visible; }
+  .hg { left: 24px; font-size: 11px; font-weight: 600; color: rgb(var(--irgb) / 0.451); }
+  .hr { left: 39px; right: 24px; height: 36px; display: flex; align-items: center; gap: 10px; }
+  .hr > i { flex: none; width: 26px; height: 26px; border-radius: 7.7px; display: grid; place-items: center; font-style: normal; font-size: 11px; font-weight: 700; color: #1A1A1A; }
+  .hr span { flex: 1; min-width: 0; font-size: 12px; font-weight: 500; line-height: 1.2; }
+  .hr small { display: block; font-size: 10px; color: rgb(var(--irgb) / 0.451); }
+  .hr b { margin-left: 8px; font-size: 12px; font-weight: 600; letter-spacing: -0.15px; font-variant-numeric: tabular-nums; }
+  .hr svg { flex: none; width: 18px; height: 18px; margin: 0 9px; color: rgb(var(--irgb) / 0.47); }
+
+  /* cash_flow_pillar_page.dart on iPad: the ledger under the taller chart, the fund's accounts, the debt rows. */
+  .led { left: 24px; right: 24px; height: 37.6px; display: flex; align-items: center; font-size: 13px; font-weight: 500; }
+  .led i { flex: none; width: 8px; height: 8px; margin-right: 10px; border-radius: 50%; }
+  .led span { margin-left: 5px; letter-spacing: -0.22px; color: rgb(var(--irgb) / 0.549); }
+  .led b { margin-left: auto; font-weight: 600; letter-spacing: -0.22px; font-variant-numeric: tabular-nums; }
+  .hl.wide { left: 0; right: 0; height: 1px; }
+  .acct { left: 24px; right: 24px; height: 46px; display: flex; align-items: center; gap: 8px; }
+  .acct > i, .drow > i { flex: none; display: grid; place-items: center; font-style: normal; font-weight: 700; color: #1A1A1A; }
+  .acct > i { width: 28px; height: 28px; border-radius: 8.3px; font-size: 11px; }
+  .acct span { flex: 1; min-width: 0; font-size: 13px; font-weight: 600; line-height: 1.2; }
+  .acct small { display: block; font-size: 11px; font-weight: 400; color: rgb(var(--irgb) / 0.431); }
+  .acct b { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+  .acnt { left: 24px; font-size: 13px; font-weight: 500; color: rgb(var(--irgb) / 0.549); }
+  /* month_cells.dart: a year of income as twelve cells, one coral cell per month owed. */
+  .mcells { left: 24px; height: 16px; }
+  .mcells i { position: absolute; top: 0; height: 16px; border-radius: 3px; overflow: hidden; background: rgb(var(--brgb) / 0.118); }
+  .mcells b { display: block; height: 100%; background: #E07B54; transform-origin: 0 50%; }
+  .drow { left: 24px; right: 24px; height: 46px; display: flex; align-items: center; font-size: 13px; font-weight: 500; }
+  .drow > i { width: 22px; height: 22px; margin: 0 13px 0 1px; border-radius: 6.5px; font-size: 8.5px; }
+  .drow span { margin-left: 4px; font-size: 11px; color: #49454E; }
+  .drow b { margin-left: auto; font-weight: 600; letter-spacing: -0.22px; color: #B5471F; font-variant-numeric: tabular-nums; }
+  /* SignalAttentionPulse: a live debt's edge, signalDanger breathing to its 110 alpha over 900 on easeInOut. */
+  .dc.alm, .drk .dc.alm { border: 1.5px solid rgb(198 40 40 / 0.431); }
+  .alarm { pointer-events: none; }
+  .alarm::after { content: ""; position: absolute; inset: 0; border: 1.5px solid #C62828; border-radius: 26px; }
+  @media (prefers-reduced-motion: no-preference) {
+    .motion .alarm::after { animation: breath 900ms cubic-bezier(0.42, 0, 0.58, 1) infinite alternate; }
+    .motion .pad.off .alarm::after { animation-play-state: paused; }
+  }
+  @keyframes breath { to { opacity: 0; } }
+
+  /* The dark theme (app_theme.dart _buildDark), as the close's phone draws it: the band, its white head and the
+     hues hold; the panels, recesses, hairlines and wallpaper take the dark scheme. */
+  .pstage.drk { --irgb: 231 224 232; --lift: 0 3px 12.5px rgb(0 0 0 / 0.11), 0 10px 33.3px rgb(0 0 0 / 0.055); --surf: #211F24; }
+  .pstage.drk .wall {
+    background:
+      radial-gradient(circle 779px at 95% 100%, rgb(185 166 242 / 0.16), rgb(185 166 242 / 0.064) 389.5px, rgb(185 166 242 / 0) 779px),
+      radial-gradient(circle 697px at 5% 87.5%, rgb(244 163 190 / 0.16), rgb(244 163 190 / 0.064) 348.5px, rgb(244 163 190 / 0) 697px),
+      radial-gradient(circle 697px at 100% 55%, rgb(125 185 242 / 0.16), rgb(125 185 242 / 0.064) 348.5px, rgb(125 185 242 / 0) 697px),
+      radial-gradient(circle 738px at 0 40%, rgb(var(--brgb) / 0.16), rgb(var(--brgb) / 0.064) 369px, rgb(var(--brgb) / 0) 738px),
+      #1D1B20;
+  }
+  .drk .dc { background: #211F24; border-color: #948F99; }                    /* panelSurface, outline */
+  .drk .dl > i { background: rgb(var(--brgb) / 0.3); color: var(--chip); }    /* TabBand.labelChip on dark */
+  .drk.p-cash { --chip: #66AFA6; }
+  .drk.p-growth { --chip: #DA8D6D; }
+  .drk .rule, .drk .yrl, .drk .vrule { background: rgb(73 69 78 / 0.235); }  /* outlineVariant at 60 */
+  .drk .hl { background: rgb(148 143 153 / 0.353); }                         /* outline at 90 */
+  .drk .scale { background: rgb(0 0 0 / 0.176); }                             /* panelRecess: black, not the band's hue */
+  .drk .tube { background: rgb(0 0 0 / 0.118); }
+  .drk .scale .zone { background: rgb(0 0 0 / 0.314); }
+  .drk .scale .tick { background: #211F24; }
+  .drk .mcells i { background: rgb(0 0 0 / 0.118); }
+  .drk .mb.nil { background: #2B292F; }                                        /* surfaceContainerHigh */
+  .drk .dial { background: rgb(231 224 232 / 0.11); }                         /* controlRecess on dark */
+  .drk .fig { text-decoration-color: #FFB74D; }                                /* growthTextOn(dark) */
+  .drk .drow span { color: #CBC4CF; }
+  .drk .drow b { color: #E07B54; }                                             /* textOn(debts, dark) */
+  .tdin { fill: var(--surf); }
+  .pchrome.drk .pnav { background: #1D1B20; }
+  .pchrome.drk .pp { background: #2B292F; }
+  .pchrome.drk .pf > span { color: #CBC4CF; }
+  .pchrome.drk .pf .on { color: #fff; }
+  .pchrome.drk .fab { box-shadow: none; }
+  .pchrome.drk .homebar { background: rgba(255, 255, 255, 0.85); }
+
+  /* Before a tab opens: what its first visit steps in (arrival_clock.dart, fadeSlideIn on Budget). */
+  @media (prefers-reduced-motion: no-preference) {
+    .motion .pstage [data-b], .motion .pstage .crow, .motion .pstage .plan { opacity: 0; }
+  }
+
   /* ── Questions ── */
   /* Hairline-divided rows, never boxes (house-rules: content zones are rows). Wide, the heading
      sits beside the list; narrow, above it. */
@@ -666,6 +888,12 @@
 <symbol id="g-heart-f" viewBox="0 0 1024 1024"><path d="M960 408Q960 513 895 605Q830 698 750.5 767.5Q671 837 602 879Q534 920 527 924Q524 926 520 927Q516 928 512 928Q508 928 504 927Q500 926 497 924L497 924Q490 920 422 879Q353 837 273.5 767.5Q194 698 129 605Q64 513 64 408Q64 357 84 312Q103 266 136.5 232.5Q170 199 216 180Q261 160 312 160L312 160Q374 160 426 185.5Q478 211 512 256Q546 211 598 185.5Q650 160 712 160Q763 160 808 180Q854 199 887.5 232.5Q921 266 940 312Q960 357 960 408L960 408L960 408Z"/></symbol>
 <symbol id="g-aid-f" viewBox="0 0 1024 1024"><path d="M864 224L704 224L704 192Q704 152 676 124Q648 96 608 96L608 96L416 96Q376 96 348 124Q320 152 320 192L320 192L320 224L160 224Q133 224 114.5 242.5Q96 261 96 288L96 288L96 800Q96 827 114.5 845.5Q133 864 160 864L160 864L864 864Q891 864 909.5 845.5Q928 827 928 800L928 800L928 288Q928 261 909.5 242.5Q891 224 864 224L864 224ZM608 576L544 576L544 640Q544 653 534.5 662.5Q525 672 512 672Q499 672 489.5 662.5Q480 653 480 640L480 640L480 576L416 576Q403 576 393.5 566.5Q384 557 384 544Q384 531 393.5 521.5Q403 512 416 512L416 512L480 512L480 448Q480 435 489.5 425.5Q499 416 512 416Q525 416 534.5 425.5Q544 435 544 448L544 448L544 512L608 512Q621 512 630.5 521.5Q640 531 640 544Q640 557 630.5 566.5Q621 576 608 576L608 576ZM640 224L384 224L384 192Q384 179 393.5 169.5Q403 160 416 160L416 160L608 160Q621 160 630.5 169.5Q640 179 640 192L640 192L640 224Z"/></symbol>
 <symbol id="g-plus" viewBox="0 0 1024 1024"><path d="M912 512Q912 532 898 546Q884 560 864 560L864 560L560 560L560 864Q560 884 546 898Q532 912 512 912Q492 912 478 898Q464 884 464 864L464 864L464 560L160 560Q140 560 126 546Q112 532 112 512Q112 492 126 478Q140 464 160 464L160 464L464 464L464 160Q464 140 478 126Q492 112 512 112Q532 112 546 126Q560 140 560 160L560 160L560 464L864 464Q884 464 898 478Q912 492 912 512L912 512Z"/></symbol>
+<!-- The iPad's glyphs (Phosphor regular), and its status bar's Wi-Fi and battery. -->
+<symbol id="g-cal-d" viewBox="0 0 1024 1024"><path d="M832 128H736V96Q736 83 726.5 73.5Q717 64 704 64Q691 64 681.5 73.5Q672 83 672 96V128H352V96Q352 83 342.5 73.5Q333 64 320 64Q307 64 297.5 73.5Q288 83 288 96V128H192Q165 128 146.5 146.5Q128 165 128 192V832Q128 859 146.5 877.5Q165 896 192 896H832Q859 896 877.5 877.5Q896 859 896 832V192Q896 165 877.5 146.5Q859 128 832 128ZM288 192V224Q288 237 297.5 246.5Q307 256 320 256Q333 256 342.5 246.5Q352 237 352 224V192H672V224Q672 237 681.5 246.5Q691 256 704 256Q717 256 726.5 246.5Q736 237 736 224V192H832V320H192V192ZM832 832H192V384H832ZM560 528Q560 548 546 562Q532 576 512 576Q492 576 478 562Q464 548 464 528Q464 508 478 494Q492 480 512 480Q532 480 546 494Q560 508 560 528ZM736 528Q736 548 722 562Q708 576 688 576Q668 576 654 562Q640 548 640 528Q640 508 654 494Q668 480 688 480Q708 480 722 494Q736 508 736 528ZM384 688Q384 708 370 722Q356 736 336 736Q316 736 302 722Q288 708 288 688Q288 668 302 654Q316 640 336 640Q356 640 370 654Q384 668 384 688ZM560 688Q560 708 546 722Q532 736 512 736Q492 736 478 722Q464 708 464 688Q464 668 478 654Q492 640 512 640Q532 640 546 654Q560 668 560 688ZM736 688Q736 708 722 722Q708 736 688 736Q668 736 654 722Q640 708 640 688Q640 668 654 654Q668 640 688 640Q708 640 722 654Q736 668 736 688Z"/></symbol>
+<symbol id="g-minus" viewBox="0 0 1024 1024"><path d="M704 512Q704 525 694.5 534.5Q685 544 672 544H352Q339 544 329.5 534.5Q320 525 320 512Q320 499 329.5 489.5Q339 480 352 480H672Q685 480 694.5 489.5Q704 499 704 512ZM928 512Q928 598 895 674Q863 750 806.5 806.5Q750 863 674 895Q598 928 512 928Q426 928 350 895Q274 863 217.5 806.5Q161 750 129 674Q96 598 96 512Q96 426 129 350Q161 274 217.5 217.5Q274 161 350 129Q426 96 512 96Q598 96 674 129Q750 162 806 218Q862 274 895 350Q928 426 928 512ZM864 512Q864 439 836 375Q809 311 761 263Q713 215 649 188Q585 160 512 160Q439 160 375 188Q311 215 263 263Q215 311 188 375Q160 439 160 512Q160 585 188 649Q215 713 263 761Q311 809 375 836Q439 864 512 864Q585 864 649 836Q713 809 761 761Q809 713 836 649Q864 585 864 512Z"/></symbol>
+<symbol id="g-left" viewBox="0 0 1024 1024"><path d="M663 809Q667 814 669.5 819.5Q672 825 672 832Q672 845 662.5 854.5Q653 864 640 864Q633 864 627.5 861.5Q622 859 617 855L297 535Q293 530 290.5 524.5Q288 519 288 512Q288 505 290.5 499.5Q293 494 297 489L617 169Q622 165 627.5 162.5Q633 160 640 160Q653 160 662.5 169.5Q672 179 672 192Q672 199 669.5 204.5Q667 210 663 215L365 512Z"/></symbol>
+<symbol id="g-up" viewBox="0 0 1024 1024"><path d="M855 663Q850 667 844.5 669.5Q839 672 832 672Q825 672 819.5 669.5Q814 667 809 663L512 365L215 663Q210 667 204.5 669.5Q199 672 192 672Q179 672 169.5 662.5Q160 653 160 640Q160 633 162.5 627.5Q165 622 169 617L489 297Q494 293 499.5 290.5Q505 288 512 288Q519 288 524.5 290.5Q530 293 535 297L855 617Q859 622 861.5 627.5Q864 633 864 640Q864 647 861.5 652.5Q859 658 855 663Z"/></symbol>
+<symbol id="g-psb" viewBox="0 0 52 24"><g fill="currentColor"><circle cx="9" cy="16.2" r="1.7"/><rect x="22" y="9.5" width="21" height="8" rx="2"/><rect x="47.4" y="11.5" width="1.6" height="4" rx="0.8" opacity="0.45"/></g><g fill="none" stroke="currentColor" stroke-linecap="round"><path d="M1.6 10.6A10.4 10.4 0 0 1 16.4 10.6M4.3 13.3A6.6 6.6 0 0 1 13.7 13.3" stroke-width="2"/><rect x="20" y="7.5" width="25" height="12" rx="3.6" stroke-width="1" opacity="0.4"/></g></symbol>
 <!-- Phone chrome, in points on a 393-wide screen, inked in currentColor. -->
 <symbol id="g-sbar" viewBox="0 0 393 54"><text x="66" y="31" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="600" letter-spacing="-0.3" fill="currentColor">9:41</text><g fill="currentColor"><rect x="294" y="32" width="3" height="4" rx="1"/><rect x="298.6" y="29.6" width="3" height="6.4" rx="1"/><rect x="303.2" y="27.2" width="3" height="8.8" rx="1"/><rect x="307.8" y="24.8" width="3" height="11.2" rx="1"/><circle cx="325" cy="34.4" r="1.9"/><rect x="343" y="27.5" width="21" height="8" rx="2"/><rect x="367.4" y="29.5" width="1.6" height="4" rx="0.8" opacity="0.45"/></g><g fill="none" stroke="currentColor" stroke-linecap="round"><path d="M317.2 28.7A11 11 0 0 1 332.8 28.7M320.05 31.55A7 7 0 0 1 329.95 31.55" stroke-width="2.1"/><rect x="341" y="25.5" width="25" height="12" rx="3.6" stroke-width="1" opacity="0.4"/></g></symbol>
 </svg>
@@ -1377,6 +1605,25 @@
       </div>
     </section>
 
+    <!-- The app on iPad (house-rules §14): each tab drawn from its tablet layout, one iPad turning through all four. -->
+    <section class="ipads" aria-labelledby="ipad" data-clock>
+      <h2 id="ipad" data-at="0">Also on iPad</h2>
+      <p class="intro" data-at="80">Every tab keeps its phone layout. The extra room becomes columns and a second pane.</p>
+    <!-- The iPad Air 11" standing: Budget, Cash Flow, Protection, Growth, light and dark in turn. -->
+    <figure class="pad-fig" data-at="160" data-play="ipad">
+      <div class="pad" role="img" aria-label="Claryo on an 11-inch iPad standing upright, turning through its four tabs and switching between light and dark. Budget: the November calendar beside Wednesday the 11th’s ₱20,000 paycheck, 3 of 5 done, above a ₱40,000 month. Cash Flow: ₱40,000 of income in November, 11.4 months of expenses in cash reserves, and a credit card of ₱83,000, 1.2 months of income. Protection for Juan: ₱15.0M life, ₱4.0M health and ₱250K a year medical cover, ₱44,000 of premiums a year with ₱5,000 due November 28; life cover funds 26.7 years against a 20-year goal and health cover 23.3 months off work. Growth: ₱32.4M projected by 2056, a 20.8% investment rate against a 15% target, and ₱10,448 a month of portfolio income.">
+        <div class="pscreen">
+          <div class="pstage p-budget" data-pad="budget"><i class="wall" aria-hidden="true"></i><i class="bandbg" aria-hidden="true" style="--bh:191.2px;--split:49.79%"></i><p class="d-eye" style="left:24px;top:39.7px">Your plan</p><p class="d-name" style="left:24px;top:53.3px">Juan &amp; Maria<svg aria-hidden="true"><use href="#g-info"/></svg></p><svg class="d-glyph" style="left:727px;top:53px" aria-hidden="true"><use href="#g-search"/></svg><svg class="d-glyph" style="left:771px;top:53px" aria-hidden="true"><use href="#g-gear"/></svg><div class="dc cal" style="left:16px;top:111.2px;width:378px;height:400px"><p class="cal-t"><i><svg aria-hidden="true"><use href="#g-left"/></svg></i><b>November&nbsp; 2026</b><svg class="cd" aria-hidden="true"><use href="#g-down"/></svg><i><svg aria-hidden="true"><use href="#g-right"/></svg></i></p><p class="dow" style="top:68px"><b class="we" style="left:0px;width:50.57px">S</b><b style="left:50.57px;width:50.57px">M</b><b style="left:101.14px;width:50.57px">T</b><b style="left:151.71px;width:50.57px">W</b><b style="left:202.29px;width:50.57px">T</b><b style="left:252.86px;width:50.57px">F</b><b class="we" style="left:303.43px;width:50.57px">S</b></p><p class="crow" style="top:84px"><b class="cel q" style="left:1.5px;width:47.57px">1</b><b class="cel q" style="left:52.07px;width:47.57px">2</b><b class="cel q" style="left:102.64px;width:47.57px">3</b><b class="cel q" style="left:153.21px;width:47.57px">4</b><b class="cel q" style="left:203.79px;width:47.57px">5</b><b class="cel q" style="left:254.36px;width:47.57px">6</b><b class="cel q" style="left:304.93px;width:47.57px">7</b></p><p class="crow" style="top:144px"><b class="cel q" style="left:1.5px;width:47.57px">8</b><b class="cel q" style="left:52.07px;width:47.57px">9</b><b class="cel q" style="left:102.64px;width:47.57px">10</b><b class="cel sel" style="left:153.21px;width:47.57px">11</b><b class="cel" style="left:203.79px;width:47.57px">12</b><b class="cel q" style="left:254.36px;width:47.57px">13</b><b class="cel q" style="left:304.93px;width:47.57px">14</b></p><p class="crow" style="top:204px"><b class="cel" style="left:1.5px;width:47.57px">15</b><b class="cel" style="left:52.07px;width:47.57px">16</b><b class="cel" style="left:102.64px;width:47.57px">17</b><b class="cel" style="left:153.21px;width:47.57px">18</b><b class="cel" style="left:203.79px;width:47.57px">19</b><b class="cel q" style="left:254.36px;width:47.57px">20</b><b class="cel q" style="left:304.93px;width:47.57px">21</b></p><p class="crow" style="top:264px"><b class="cel" style="left:1.5px;width:47.57px">22</b><b class="cel" style="left:52.07px;width:47.57px">23</b><b class="cel" style="left:102.64px;width:47.57px">24</b><b class="cel pd" style="left:153.21px;width:47.57px">25</b><b class="cel" style="left:203.79px;width:47.57px">26</b><b class="cel q" style="left:254.36px;width:47.57px">27</b><b class="cel q" style="left:304.93px;width:47.57px">28</b></p><p class="crow" style="top:324px"><b class="cel" style="left:1.5px;width:47.57px">29</b><b class="cel" style="left:52.07px;width:47.57px">30</b></p></div><div class="dc" style="left:16px;top:527.2px;width:378px;height:476px"><p class="h-num" style="left:24px;top:16px;font-size:32px;letter-spacing:-1px">₱40,000<span class="dec">.00</span></p><p class="rcap" style="left:24px;top:58px">November · 2 paychecks · 3 of 9 done<svg aria-hidden="true"><use href="#g-down"/></svg></p><p class="sbar4" style="top:88.4px" aria-hidden="true"><i style="left:0px;width:93px;background:#E07B54"></i><i style="left:95px;width:91.14px;background:#E57373"></i><i style="left:188.14px;width:93px;background:#81C784"></i><i style="left:283.14px;width:94.86px;background:#7986CB"></i></p><i class="rule" style="top:104.4px"></i><svg class="bk" style="left:28px;top:117.4px;color:#E07B54" aria-hidden="true"><use href="#g-repay"/></svg><p class="b-head" style="top:117.6px">Repay<span class="rsh"> · 25%</span></p><p class="rsa" style="top:117.6px">₱10,000</p><p class="rln" style="top:146.4px">Credit card<b>₱10,000</b></p><i class="rule" style="top:176.4px"></i><svg class="bk" style="left:28px;top:189.4px;color:#E57373" aria-hidden="true"><use href="#g-spend"/></svg><p class="b-head" style="top:189.6px">Spend<span class="rsh"> · 25%</span></p><p class="rsa" style="top:189.6px">₱9,800</p><p class="rln" style="top:218.4px">Electricity<b>₱4,000</b></p><p class="rln" style="top:243.4px">Vitamins &amp; Medicines<b>₱3,000</b></p><p class="rln" style="top:268.4px">Internet<b>₱1,800</b></p><p class="rln" style="top:293.4px">Water<b>₱1,000</b></p><i class="rule" style="top:323.4px"></i><svg class="bk" style="left:28px;top:336.4px;color:#81C784" aria-hidden="true"><use href="#g-earmark"/></svg><p class="b-head" style="top:336.6px">Earmark<span class="rsh"> · 25%</span></p><p class="rsa" style="top:336.6px">₱10,000</p><p class="rln" style="top:365.4px">Christmas gifts<b>₱10,000</b></p><i class="rule" style="top:395.4px"></i><svg class="bk" style="left:28px;top:408.4px;color:#7986CB" aria-hidden="true"><use href="#g-invest"/></svg><p class="b-head" style="top:408.6px">Invest<span class="rsh"> · 25%</span></p><p class="rsa" style="top:408.6px">₱10,200</p><p class="rln" style="top:437.4px">Stocks<b>₱10,200</b></p></div><div class="dc plan" style="left:426px;top:111.2px;width:378px;height:460.5px"><p class="h-num" style="left:24px;top:20.2px;font-size:32px;letter-spacing:-1px"><span data-reel>₱20,000<span class="dec">.00</span></span></p><p style="left:24px;top:72.55px;font-size:13px;font-weight:600;letter-spacing:-0.1px">Employment</p><p class="k-muted" style="left:24px;top:93.5px;font-size:12px;font-weight:500">Payday · 3 of 5 done</p><div class="ledger" style="top:124.8px" aria-hidden="true"><i class="lf" style="transform:translateX(-46%)"><i class="lb" style="transform:translateX(46%)"><i style="width:25%;background:#E07B54"></i><i style="width:29%;background:#E57373"></i></i></i></div><svg class="bk" style="left:28px;top:141.5px;color:#E57373" aria-hidden="true"><use href="#g-spend"/></svg><p class="b-head" style="top:140.25px">Spend</p><i class="chk on" style="top:177px"></i><p class="b-name k-var" style="top:178.75px">Electricity</p><p class="b-amt k-var" style="top:178.75px">₱4,000.00</p><i class="hair" style="top:213.3px"></i><i class="chk on" style="top:226px"></i><p class="b-name k-var" style="top:227.75px">Internet</p><p class="b-amt k-var" style="top:227.75px">₱1,800.00</p><i class="hair" style="top:262.3px"></i><i class="chk" style="top:275px"></i><p class="b-name" style="top:276.75px">Vitamins &amp; Medicines</p><p class="b-amt" style="top:276.75px">₱3,000.00</p><i class="rule" style="top:319.5px"></i><svg class="bk" style="left:28px;top:331.75px;color:#7986CB" aria-hidden="true"><use href="#g-invest"/></svg><p class="b-head" style="top:332px">Invest</p><i class="chk" style="top:368px"></i><p class="b-name" style="top:369.75px">Stocks</p><p class="b-amt" style="top:369.75px">₱6,200.00</p><i class="rule" style="top:412.2px"></i><i class="chk on" style="top:425px"></i><p class="b-head k-var" style="top:428.55px">Repay</p><p class="b-amt k-var" style="top:428.55px;right:46px;font-size:13px">₱5,000.00</p><svg class="car" style="left:340px;top:430px" aria-hidden="true"><use href="#g-down"/></svg></div></div>
+          <div class="pstage p-cash drk" data-pad="cash"><i class="wall" aria-hidden="true"></i><i class="bandbg" aria-hidden="true" style="--bh:198px;--split:51.52%"></i><p class="d-title" data-b="0,12" style="left:24px;top:38.7px">Cash Flow<svg aria-hidden="true"><use href="#g-info"/></svg></p><p class="d-prom" data-b="80,6" style="left:24px;top:80.25px">What comes in, and the job every <span data-unit>peso</span> has.</p><svg class="d-glyph" data-b="0,12" style="left:771px;top:51.3px" aria-hidden="true"><use href="#g-gear"/></svg><div class="dc" data-b="160,12" style="left:24px;top:111px;width:378px;height:449.4px"><p class="dl"><i><svg aria-hidden="true"><use href="#g-wallet"/></svg></i>Monthly Budget<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p><p class="h-num" style="left:24px;top:43.7px;font-size:36px;letter-spacing:-1px">₱40,000</p><p style="left:24px;top:89px;font-size:12px;color:rgb(var(--irgb) / 0.51)">income in November</p><div class="mchart" data-b="460,8" aria-hidden="true"><i class="mb" style="left:25.5px;top:170.77px;height:77.23px;width:24.5px"><i style="height:2.39px;background:#26A69A"></i><i style="height:3.23px;background:#5C6BC0"></i><i style="height:71.62px;background:#EF5350"></i></i><i class="mb" style="left:53px;top:166.97px;height:81.03px;width:24.5px"><i style="height:81.03px;background:#EF5350"></i></i><i class="mb" style="left:80.5px;top:167.54px;height:80.46px;width:24.5px"><i style="height:9.83px;background:#26A69A"></i><i style="height:15.87px;background:#5C6BC0"></i><i style="height:54.77px;background:#EF5350"></i></i><i class="mb" style="left:108px;top:117.4px;height:130.6px;width:24.5px"><i style="height:7.44px;background:#26A69A"></i><i style="height:54.77px;background:#5C6BC0"></i><i style="height:68.39px;background:#EF5350"></i></i><i class="mb" style="left:135.5px;top:190px;height:58px;width:24.5px"><i style="height:31.31px;background:#5C6BC0"></i><i style="height:7.02px;background:#66BB6A"></i><i style="height:19.66px;background:#EF5350"></i></i><i class="mb" style="left:163px;top:205.87px;height:42.13px;width:24.5px"><i style="height:8.43px;background:#26A69A"></i><i style="height:18.26px;background:#5C6BC0"></i><i style="height:15.45px;background:#EF5350"></i></i><i class="mb" style="left:190.5px;top:209.1px;height:38.9px;width:24.5px"><i style="height:15.87px;background:#26A69A"></i><i style="height:2.81px;background:#66BB6A"></i><i style="height:20.22px;background:#EF5350"></i></i><i class="mb" style="left:218px;top:232.13px;height:15.87px;width:24.5px"><i style="height:5.2px;background:#C3C8D0"></i><i style="height:2.39px;background:#26A69A"></i><i style="height:8.29px;background:#5C6BC0"></i></i><i class="mb" style="left:245.5px;top:196.46px;height:51.54px;width:24.5px"><i style="height:16.85px;background:#C3C8D0"></i><i style="height:19.24px;background:#5C6BC0"></i><i style="height:7.02px;background:#66BB6A"></i><i style="height:8.43px;background:#EF5350"></i></i><i class="mb" style="left:273px;top:197.45px;height:50.55px;width:24.5px"><i style="height:23.87px;background:#26A69A"></i><i style="height:11.66px;background:#5C6BC0"></i><i style="height:8.85px;background:#66BB6A"></i><i style="height:6.18px;background:#EF5350"></i></i><i class="mb sel" style="left:300.5px;top:217.11px;height:30.89px;width:24.5px"><i style="height:7.88px;background:#5C6BC0"></i><i style="height:7.72px;background:#66BB6A"></i><i style="height:15.29px;background:#EF5350"></i></i><i class="mb nil" style="left:328px;top:244px;height:4px;width:24.5px"></i><p class="mlab"><b style="left:22.75px;top:252.15px">2026</b><b style="left:50.25px;top:252.15px">F</b><b style="left:77.75px;top:252.15px">M</b><b style="left:105.25px;top:252.15px">A</b><b style="left:132.75px;top:252.15px">M</b><b style="left:160.25px;top:252.15px">J</b><b style="left:187.75px;top:252.15px">J</b><b style="left:215.25px;top:252.15px">A</b><b style="left:242.75px;top:252.15px">S</b><b style="left:270.25px;top:252.15px">O</b><b class="on" style="left:297.75px;top:252.15px">N</b><b style="left:325.25px;top:252.15px">D</b></p></div><div class="proof" data-b="460,8"><p class="led" style="top:276px"><i style="background:#26A69A"></i>Savings<span>· 0%</span><b>₱0</b></p><i class="rule" style="top:313.6px;left:24px;right:24px"></i><p class="led" style="top:314.6px"><i style="background:#5C6BC0"></i>Investments<span>· 25%</span><b>₱10,200</b></p><i class="rule" style="top:352.2px;left:24px;right:24px"></i><p class="led" style="top:353.2px"><i style="background:#66BB6A"></i>Earmark<span>· 25%</span><b>₱10,000</b></p><i class="rule" style="top:390.8px;left:24px;right:24px"></i><p class="led" style="top:391.8px"><i style="background:#EF5350"></i>Expenses<span>· 50%</span><b>₱19,800</b></p></div></div><div class="dc" data-b="760,12" style="left:418px;top:111px;width:378px;height:376.3px"><p class="dl"><i><svg aria-hidden="true"><use href="#g-piggy"/></svg></i>Cash Reserves<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p><p class="h-num" style="left:24px;top:48.4px;font-size:32px;letter-spacing:-1.3px"><span class="cnt" data-v="11.4" data-k="months"><span class="w">11</span><span class="dec">.4</span></span><span class="unit" style="margin-left:2.42px;font-size:14.08px"> months of expenses</span></p><div class="proof" data-b="1060,8"><p class="basis" style="left:24px;top:97.45px">₱466,013 reserved · avg ₱40,900/mo<svg aria-hidden="true"><use href="#g-info"/></svg></p><div class="scale" style="left:24px;top:126.7px;width:330px" aria-hidden="true"><i class="zone"></i><i class="fill" style="transform:translateX(-5%)"></i><i class="tick" style="left:25%"></i><i class="tick" style="left:50%"></i><i class="tick" style="left:75%"></i></div><p class="slab" style="top:152.5px"><b style="left:82.5px">3 mo</b><b style="left:165px">6 mo</b><b style="left:247.5px">9 mo</b><b style="left:306px">12 mo</b></p><i class="hl wide" style="top:195.7px"></i><p class="acct" style="top:200.7px"><i style="background:#7BE0D5">GT</i><span>Emergency fund<small>Savings</small></span><b>₱250,000</b></p><p class="acct" style="top:246.7px"><i style="background:#9575CD">T</i><span>6-month deposit<small>Time deposit</small></span><b>₱150,000</b></p><p class="acct" style="top:292.7px"><i style="background:#000;color:#3DDC84">M</i><span>Backup savings<small>Savings</small></span><b>₱66,013</b></p><p class="acnt" style="top:344.7px">Cash accounts · 8</p></div></div><div class="dc alm" data-b="1360,12" style="left:418px;top:503.3px;width:378px;height:187.4px"><p class="dl"><i><svg aria-hidden="true"><use href="#g-coins"/></svg></i>Consumer Debt<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p><p class="h-num" style="left:24px;top:48.4px;font-size:32px;letter-spacing:-1.3px"><span class="cnt" data-v="1.2" data-k="months"><span class="w">1</span><span class="dec">.2</span></span><span class="unit" style="margin-left:2.42px;font-size:14.08px"> months of income</span></p><div class="proof" data-b="1660,8"><p class="mcells" style="top:100.4px;width:330px" aria-hidden="true"><i style="left:0px;width:23.83px"><b style="transform:scaleX(1)"></b></i><i style="left:27.83px;width:23.83px"><b style="transform:scaleX(0.2)"></b></i><i style="left:55.67px;width:23.83px"><b style="transform:scaleX(0)"></b></i><i style="left:83.5px;width:23.83px"><b style="transform:scaleX(0)"></b></i><i style="left:111.33px;width:23.83px"><b style="transform:scaleX(0)"></b></i><i style="left:139.17px;width:23.83px"><b style="transform:scaleX(0)"></b></i><i style="left:167px;width:23.83px"><b style="transform:scaleX(0)"></b></i><i style="left:194.83px;width:23.83px"><b style="transform:scaleX(0)"></b></i><i style="left:222.67px;width:23.83px"><b style="transform:scaleX(0)"></b></i><i style="left:250.5px;width:23.83px"><b style="transform:scaleX(0)"></b></i><i style="left:278.33px;width:23.83px"><b style="transform:scaleX(0)"></b></i><i style="left:306.17px;width:23.83px"><b style="transform:scaleX(0)"></b></i></p><i class="hl wide" style="top:132.4px"></i><p class="drow" style="top:133.4px"><i style="background:#283593;color:#FFE135">B</i>Credit card<span>· 36% APR</span><b>₱83,000</b></p></div></div><i class="alarm" data-b="1360,12" style="left:418px;top:503.3px;width:378px;height:187.4px" aria-hidden="true"></i></div>
+          <div class="pstage p-protect" data-pad="protect"><i class="wall" aria-hidden="true"></i><i class="bandbg" aria-hidden="true" style="--bh:258px;--split:62.79%"></i><p class="d-title" data-b="0,12" style="left:24px;top:38.7px">Protection<svg aria-hidden="true"><use href="#g-info"/></svg></p><p class="d-prom" data-b="80,6" style="left:24px;top:80.25px">Insurance for you and your household.</p><svg class="d-glyph" data-b="0,12" style="left:771px;top:51.3px" aria-hidden="true"><use href="#g-gear"/></svg><div class="mem" data-b="80,6" style="left:190px;top:118.8px;width:440px"><p style="left:0;width:220px"><i style="background:#CF7515">J</i>Me</p><p class="off" style="left:220px;width:220px"><i>M</i>Spouse</p><i class="rule" style="width:220px"></i></div><div class="dc" data-b="160,12" style="left:16px;top:186px;width:386px;height:553.3px"><p class="dl"><i><svg aria-hidden="true"><use href="#g-umbrella"/></svg></i>Insurance Products<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p><svg class="cvg" style="top:69px" aria-hidden="true"><use href="#g-heart"/></svg><p class="cvw" style="top:68.6px">Life</p><p class="cvf h-num" style="top:64px">₱15.0M</p><i class="hl" style="top:106px"></i><svg class="cvg" style="top:127.5px" aria-hidden="true"><use href="#g-aid"/></svg><p class="cvw" style="top:127.1px">Health</p><p class="cvf h-num" style="top:122.5px">₱4.0M</p><i class="hl" style="top:164.5px"></i><svg class="cvg" style="top:186px" aria-hidden="true"><use href="#g-hospital"/></svg><p class="cvw" style="top:185.6px">Medical</p><p class="cvf h-num" style="top:181px">₱250K<span class="unit">/yr</span></p><i class="hl" style="top:224px"></i><svg class="pdg" style="top:242px" aria-hidden="true"><use href="#g-cal-d"/></svg><p class="pdh" style="top:241px">Premiums due</p><p class="pdt" style="top:241.5px">₱44,000 a year</p><p class="pbars" style="top:273px;width:338px" aria-hidden="true"><b style="left:0px;width:28.17px;bottom:14.67px" data-bare="5000">5K</b><i class="now" style="left:5.97px;width:16.22px;height:11.67px"></i><i class="nil" style="left:34.14px;width:16.22px;height:3px"></i><em class="yt" style="left:57.33px">2027</em><i class="nil" style="left:62.31px;width:16.22px;height:3px"></i><b style="left:84.5px;width:28.17px;bottom:14.67px" data-bare="5000">5K</b><i style="left:90.47px;width:16.22px;height:11.67px"></i><b style="left:112.67px;width:28.17px;bottom:59px" data-bare="24000">24K</b><i style="left:118.64px;width:16.22px;height:56px"></i><i class="nil" style="left:146.81px;width:16.22px;height:3px"></i><b style="left:169px;width:28.17px;bottom:14.67px" data-bare="5000">5K</b><i style="left:174.97px;width:16.22px;height:11.67px"></i><i class="nil" style="left:203.14px;width:16.22px;height:3px"></i><i class="nil" style="left:231.31px;width:16.22px;height:3px"></i><b style="left:253.5px;width:28.17px;bottom:14.67px" data-bare="5000">5K</b><i style="left:259.47px;width:16.22px;height:11.67px"></i><i class="nil" style="left:287.64px;width:16.22px;height:3px"></i><i class="nil" style="left:315.81px;width:16.22px;height:3px"></i></p><p class="pmi" style="top:351px;width:338px" aria-hidden="true"><b class="now" style="left:0px;width:28.17px">N</b><b style="left:28.17px;width:28.17px">D</b><b style="left:56.33px;width:28.17px">J</b><b style="left:84.5px;width:28.17px">F</b><b style="left:112.67px;width:28.17px">M</b><b style="left:140.83px;width:28.17px">A</b><b style="left:169px;width:28.17px">M</b><b style="left:197.17px;width:28.17px">J</b><b style="left:225.33px;width:28.17px">J</b><b style="left:253.5px;width:28.17px">A</b><b style="left:281.67px;width:28.17px">S</b><b style="left:309.83px;width:28.17px">O</b></p><i class="hl" style="top:378px"></i><p class="pdate" style="top:395px"><b>NOV</b><span>28</span></p><p class="pnm" style="top:398.1px">Critical illness plan</p><p class="pins" style="top:417.9px"><i style="background:#F6E714;color:#fff">S</i>Summit Life</p><p class="pamt" style="top:400.4px">₱5,000<span class="soon">in 17 days</span></p><p class="pdate" style="top:453px"><b>MAR</b><span>15</span></p><p class="pnm" style="top:456.1px">Term life</p><p class="pins" style="top:475.9px"><i style="background:#F6E714;color:#fff">S</i>Summit Life</p><p class="pamt" style="top:458.4px">₱24,000<span>in 4 months</span></p><div class="foot" data-b="460,8" style="top:511px"><span>Products · 5</span><span class="marks" aria-hidden="true"><i style="background:#F6E714;color:#fff">S</i><i style="background:#EE7623;color:#fff">I</i><i style="background:#7986CB;color:#fff">M</i><i style="background:#4DB6AC">N</i></span></div></div><div class="dc" data-b="760,12" style="left:418px;top:186px;width:386px;height:249.9px"><p class="dl"><i><svg aria-hidden="true"><use href="#g-heart-f"/></svg></i>Life Coverage<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p><p class="h-num" style="left:24px;top:46px;font-size:32px;letter-spacing:-1.3px"><span class="cnt" data-v="26.7"><span class="w">26</span><span class="dec">.7</span></span><span class="unit" style="margin-left:2.56px;font-size:14.08px"> years funded</span></p><p class="k-muted" data-b="1060,8" style="left:24px;top:87.45px;font-size:13px;font-weight:500">Goal 20 years, to 2046</p><svg class="gring" data-b="1060,8" style="left:290px;top:43.9px" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="28.5" fill="none" stroke="rgb(22 27 61 / 0.11)" stroke-width="7"/><circle class="arc" cx="32" cy="32" r="28.5" fill="none" stroke="#7986CB" stroke-width="7" stroke-linecap="round" pathLength="1" stroke-dasharray="1 1" transform="rotate(-90 32 32)"/><path d="M22.27 32.51L29.44 39.17L41.73 25.34" fill="none" stroke="#10B981" stroke-width="4.8" stroke-linecap="round" stroke-linejoin="round"/></svg><svg class="lchart" data-b="1060,8" style="left:24px;top:123.9px;width:338.0px;height:110px" viewBox="0 0 338.0 110" aria-hidden="true"><g stroke="currentColor" stroke-opacity=".11" stroke-width="0.8"><line x1="46" x2="338.0" y1="65.75" y2="65.75"/><line x1="46" x2="338.0" y1="39.5" y2="39.5"/><line x1="46" x2="338.0" y1="13.25" y2="13.25"/></g><g font-size="9" font-weight="500" fill="currentColor" fill-opacity=".55" text-anchor="end"><text x="42" y="65.75" dominant-baseline="central">₱5M</text><text x="42" y="39.5" dominant-baseline="central">₱10M</text><text x="42" y="13.25" dominant-baseline="central">₱15M</text></g><path fill="#7986CB" fill-opacity="0.275" d="M46 92L46 27.17L60.6 27.73L75.2 28.46L89.8 29.37L104.4 30.48L119 31.8L133.6 33.35L148.2 35.15L162.8 37.21L177.4 39.56L192 42.23L206.6 45.22L221.2 48.58L235.8 52.32L250.4 56.48L265 61.08L279.6 66.16L294.2 71.76L308.8 77.9L323.4 84.64L338 92L338.0 92Z"/><path fill="none" stroke="#7986CB" stroke-width="2" stroke-linejoin="round" d="M46 27.17L60.6 27.73L75.2 28.46L89.8 29.37L104.4 30.48L119 31.8L133.6 33.35L148.2 35.15L162.8 37.21L177.4 39.56L192 42.23L206.6 45.22L221.2 48.58L235.8 52.32L250.4 56.48L265 61.08L279.6 66.16L294.2 71.76L308.8 77.9L323.4 84.64L338 92"/><path fill="none" stroke="currentColor" stroke-opacity=".3" stroke-width="1.2" stroke-dasharray="5 4" d="M46 12.55L60.6 12.24L75.2 12.04L89.8 11.96L104.4 12.03L119 12.24L133.6 12.62L148.2 13.17L162.8 13.91L177.4 14.87L192 16.05L206.6 17.47L221.2 19.17L235.8 21.14L250.4 23.43L265 26.05L279.6 29.03L294.2 32.39L308.8 36.18L323.4 40.41L338 45.12"/><g font-size="10" fill="currentColor" fill-opacity=".55"><text x="46" y="103" dominant-baseline="central">Now</text><text x="119" y="103" dominant-baseline="central" text-anchor="middle">Yr 5</text><text x="192" y="103" dominant-baseline="central" text-anchor="middle">Yr 10</text><text x="265" y="103" dominant-baseline="central" text-anchor="middle">Yr 15</text><text x="338" y="103" dominant-baseline="central" text-anchor="end">Yr 20</text></g></svg></div><div class="dc" data-b="1360,12" style="left:418px;top:451.9px;width:386px;height:249.2px"><p class="dl"><i><svg aria-hidden="true"><use href="#g-aid-f"/></svg></i>Health Coverage<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p><p class="h-num" style="left:24px;top:41.2px;font-size:32px;letter-spacing:-1.3px"><span class="cnt" data-v="23.3"><span class="w">23</span><span class="dec">.3</span></span><span class="unit" style="margin-left:2.56px;font-size:14.08px"> months off work</span></p><div class="proof" data-b="1660,8"><p class="k-muted" style="left:24px;top:80.55px;font-size:13px;font-weight:500">After the hospital bill is paid</p><div class="rbars" style="left:24px;top:105.2px;width:338px;height:110px" aria-hidden="true"><i class="bill" style="left:0px;width:22.31px;height:110px"></i><i style="left:26.31px;width:22.31px;height:61.12px"></i><i style="left:52.62px;width:22.31px;height:56.02px"></i><i style="left:78.92px;width:22.31px;height:50.93px"></i><i style="left:105.23px;width:22.31px;height:45.82px"></i><i style="left:131.54px;width:22.31px;height:40.75px"></i><i style="left:157.85px;width:22.31px;height:35.65px"></i><i style="left:184.15px;width:22.31px;height:30.55px"></i><i style="left:210.46px;width:22.31px;height:25.47px"></i><i style="left:236.77px;width:22.31px;height:20.38px"></i><i style="left:263.08px;width:22.31px;height:15.28px"></i><i style="left:289.38px;width:22.31px;height:10.18px"></i><i style="left:315.69px;width:22.31px;height:3px"></i></div><p class="k-faint" style="left:24px;top:219.7px;font-size:10px">Bill</p><p class="k-faint" style="right:24px;top:219.7px;font-size:10px">23 mo</p></div></div></div>
+          <div class="pstage p-growth drk" data-pad="growth"><i class="wall" aria-hidden="true"></i><i class="bandbg" aria-hidden="true" style="--bh:201px;--split:52.24%"></i><p class="d-title" data-b="0,12" style="left:24px;top:38.7px">Growth<svg aria-hidden="true"><use href="#g-info"/></svg></p><p class="d-prom" data-b="80,6" style="left:24px;top:80.45px;font-size:13px">Income turned into assets that earn for you.</p><svg class="d-glyph" data-b="0,12" style="left:771px;top:51.3px" aria-hidden="true"><use href="#g-gear"/></svg><div class="dc" data-b="160,12" style="left:24px;top:114px;width:378px;height:291.7px"><p class="dl"><i><svg aria-hidden="true"><use href="#g-plant-f"/></svg></i>Projected Wealth<svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p><p class="h-num" style="left:23px;top:46.3px;font-size:28px;letter-spacing:-1px"><span data-reel>₱32.4<span class="mag">M</span></span></p><p class="k-muted" data-b="960,0,250" style="left:24px;top:86.05px;font-size:13px;font-weight:500"><b class="k-ink">4.4×</b> what you put in</p><p class="dial" style="right:24px;top:55.6px"><svg aria-hidden="true"><use href="#g-cal"/></svg>By 2056</p><i class="rule" style="top:119.7px"></i><p class="yr" style="top:130.7px"><b>2036</b>in 10 years<em>1.7×</em><strong>₱6.0M</strong></p><i class="yrl" style="top:158.7px"></i><p class="yr" style="top:169.7px"><b>2046</b>in 20 years<em>2.7×</em><strong>₱14.7M</strong></p><i class="yrl" style="top:197.7px"></i><p class="yr on" style="top:208.7px"><b>2056</b>in 30 years<em>4.4×</em><strong>₱32.4M</strong></p><i class="yrl" style="top:236.7px"></i><p class="yr" style="top:247.7px"><b>2066</b>in 40 years<em>8.9×</em><strong>₱65.1M</strong></p></div><div class="dc" data-b="760,12" style="left:24px;top:421.7px;width:378px;height:444.4px"><p class="dl"><i><svg aria-hidden="true"><use href="#g-trend"/></svg></i>Investment Rate<svg class="car" aria-hidden="true"><use href="#g-up"/></svg></p><p class="h-num" style="left:24px;top:43px;font-size:30px;letter-spacing:-1px;line-height:1.2"><span data-reel>20<span class="dec">.8</span></span><span class="unit" style="font-size:13.2px">%</span></p><p class="k-sec" style="left:24px;top:80px;font-size:12px;font-weight:500">Against a <u class="fig">15%</u> target.</p><p class="dial rng" style="right:24px;top:50px">Last 12 months<svg aria-hidden="true"><use href="#g-down"/></svg></p><svg class="tchart" data-b="1060,8" style="left:24px;top:100.4px;width:330px;height:320px" viewBox="0 0 330 320" aria-hidden="true"><defs><linearGradient id="tf-g" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFB74D" stop-opacity=".28"/><stop offset="1" stop-color="#FFB74D" stop-opacity="0"/></linearGradient></defs><g stroke="currentColor" stroke-opacity=".11" stroke-width="0.8"><line x1="40" x2="330" y1="222.7" y2="222.7"/><line x1="40" x2="330" y1="149.4" y2="149.4"/><line x1="40" x2="330" y1="76.1" y2="76.1"/><line x1="40" x2="40" y1="16" y2="296"/><line x1="92.73" x2="92.73" y1="16" y2="296"/><line x1="145.45" x2="145.45" y1="16" y2="296"/><line x1="198.18" x2="198.18" y1="16" y2="296"/><line x1="250.91" x2="250.91" y1="16" y2="296"/><line x1="303.64" x2="303.64" y1="16" y2="296"/></g><g font-size="9" font-weight="500" fill="currentColor" fill-opacity=".353" text-anchor="end"><text x="34" y="222.7" dominant-baseline="central">₱250K</text><text x="34" y="149.4" dominant-baseline="central">₱500K</text><text x="34" y="76.1" dominant-baseline="central">₱750K</text></g><g class="tlines"><path class="tarea" fill="url(#tf-g)" d="M40 293.51L66.36 292.55L92.73 292.55L119.09 287.85L145.45 271.63L171.82 262.36L198.18 256.96L224.55 256.96L250.91 254.5L277.27 248.81L303.64 245.36L330 245.36L330 296L40 296Z"/><path class="tdraw" fill="none" stroke="currentColor" stroke-opacity=".451" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" d="M40 272.5L66.36 246.65L92.73 219.53L119.09 192.59L145.45 148.88L171.82 129.47L198.18 115.37L224.55 102.35L250.91 97.03L277.27 79.78L303.64 62.86L330 52.52"/><path class="tdash" fill="none" stroke="currentColor" stroke-opacity=".784" stroke-width="1.2" stroke-dasharray="4 4" d="M40 292.47L66.36 288.6L92.73 284.53L119.09 280.49L145.45 273.93L171.82 271.02L198.18 268.9L224.55 266.95L250.91 266.16L277.27 263.57L303.64 261.03L330 259.48"/><path class="tdraw" fill="none" stroke="#FFB74D" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" pathLength="1" stroke-dasharray="1 1" d="M40 293.51L66.36 292.55L92.73 292.55L119.09 287.85L145.45 271.63L171.82 262.36L198.18 256.96L224.55 256.96L250.91 254.5L277.27 248.81L303.64 245.36L330 245.36"/><g class="tdot"><circle cx="330" cy="245.36" r="4.5" fill="#FFB74D"/><circle cx="330" cy="245.36" r="2.5" class="tdin"/></g></g><g font-size="10" fill="currentColor" fill-opacity=".353"><text x="40" y="313" dominant-baseline="central" text-anchor="middle">Dec</text><text x="92.73" y="313" dominant-baseline="central" text-anchor="middle">Feb</text><text x="145.45" y="313" dominant-baseline="central" text-anchor="middle">Apr</text><text x="198.18" y="313" dominant-baseline="central" text-anchor="middle">Jun</text><text x="250.91" y="313" dominant-baseline="central" text-anchor="middle">Aug</text><text x="303.64" y="313" dominant-baseline="central" text-anchor="middle">Oct</text></g></svg></div><div class="dc" data-b="1360,12" style="left:418px;top:114px;width:378px;height:704px"><p class="dl"><i><svg aria-hidden="true"><use href="#g-pie"/></svg></i>Portfolio Income<svg class="inf" aria-hidden="true"><use href="#g-info"/></svg><svg class="car" aria-hidden="true"><use href="#g-right"/></svg></p><p class="h-num" style="left:24px;top:46.5px;font-size:34px;letter-spacing:-1.2px">₱10,448<span class="unit" style="margin-left:6.46px;font-size:14.96px">/month</span></p><p class="k-sec" style="left:24px;top:99.7px;font-size:12px;font-weight:500">Plus ₱3,445/month at <u class="fig">4% a year</u></p><div class="proof" data-b="1660,8"><i class="rule" style="top:133.5px"></i><p class="tl" style="right:322px;top:150.95px">100%</p><p class="tl" style="right:322px;top:203.25px">75%</p><p class="tl" style="right:322px;top:255.55px">50%</p><p class="tl" style="right:322px;top:307.95px">25%</p><div class="tube" aria-hidden="true"><i class="ghost"></i><i class="fill"></i></div><i class="vrule"></i><div class="sbars" style="width:245px" aria-hidden="true"><i style="left:8.62px;height:50.6px;background:#DB8200"></i><i style="left:69.88px;height:2.3px;background:#FFA41F"></i><i style="left:131.12px;height:64px;background:#FFC36B"></i><i class="gh" style="left:192.38px;height:37.8px"></i></div><p class="srow" style="top:238.7px;width:245px"><i style="background:#DB8200"></i>Dividends<span>&nbsp;· 44%</span><b>₱4,615</b></p><p class="srow" style="top:270px;width:245px"><i style="background:#FFA41F"></i>Interest<b class="nil">—</b></p><p class="srow" style="top:301.7px;width:245px"><i style="background:#FFC36B"></i>Rental Income<span>&nbsp;· 56%</span><b>₱5,833</b></p><p class="srow" style="top:333.7px;width:245px"><i class="gh"></i>4% withdrawal<b>₱3,445</b></p><i class="rule" style="top:372px"></i><p class="hg" style="top:388px">Dividends</p><p class="hr" style="top:405.2px"><i style="background:#4DB6AC">F</i><span>Dividend stocks<small>Stocks</small></span><b>₱2,915</b></p><p class="hr" style="top:441.2px"><i style="background:#283593;color:#FFE135">B</i><span>Index fund<small>Mutual fund</small></span><b>₱1,700</b></p><p class="hg" style="top:493.2px">Rental Income</p><p class="hr" style="top:510.4px"><i></i><span>Condo unit<small>Real estate</small></span><b>₱5,833</b></p><p class="hg" style="top:562.4px">4% withdrawal</p><p class="hr" style="top:579.6px"><i></i><span>Gold<small>Precious metals</small></span><b>₱2,000</b><svg aria-hidden="true"><use href="#g-minus"/></svg></p><p class="hr" style="top:615.6px"><i></i><span>Watch collection<small>Collectible</small></span><b>₱600</b><svg aria-hidden="true"><use href="#g-minus"/></svg></p><p class="hr" style="top:651.6px"><i></i><span>Crypto<small>Speculation</small></span><b>₱845</b><svg aria-hidden="true"><use href="#g-minus"/></svg></p></div></div></div>
+          <div class="pchrome"><div class="nav pnav" aria-hidden="true" style="top:1090px;width:820px;height:90px"><div class="pps" style="left:210px"><div class="pp" style="clip-path:inset(0 60px 0 0 round 20px)"><i class="pdrop" style="background:#7B6BAE;clip-path:inset(0 266px 0 2px round 18px)"></i><span class="pf lit" style="transform:translateX(68px)"><span class="o"><svg><use href="#g-cal"/></svg></span><span class="on"><svg><use href="#g-cal-f"/></svg>Budget</span></span><span class="pf" style="transform:translateX(170px)"><span class="o"><svg><use href="#g-money"/></svg></span><span class="on"><svg><use href="#g-money-f"/></svg>Cash Flow</span></span><span class="pf" style="transform:translateX(238px)"><span class="o"><svg><use href="#g-shield"/></svg></span><span class="on"><svg><use href="#g-shield-f"/></svg>Protection</span></span><span class="pf" style="transform:translateX(306px)"><span class="o"><svg><use href="#g-plant"/></svg></span><span class="on"><svg><use href="#g-plant-f"/></svg>Growth</span></span></div></div><i class="fab" style="left:560px"><svg><use href="#g-plus"/></svg></i></div><p class="psb">9:41 AM<span>Wed Nov 11</span></p><svg class="psbr" style="left:748px" aria-hidden="true"><use href="#g-psb"/></svg><i class="homebar" style="left:252.5px;top:1167px;width:315px"></i></div>
+          <div class="pchrome drk"><div class="nav pnav" aria-hidden="true" style="top:1090px;width:820px;height:90px"><div class="pps" style="left:210px"><div class="pp" style="clip-path:inset(0 60px 0 0 round 20px)"><i class="pdrop" style="background:#7B6BAE;clip-path:inset(0 266px 0 2px round 18px)"></i><span class="pf lit" style="transform:translateX(68px)"><span class="o"><svg><use href="#g-cal"/></svg></span><span class="on"><svg><use href="#g-cal-f"/></svg>Budget</span></span><span class="pf" style="transform:translateX(170px)"><span class="o"><svg><use href="#g-money"/></svg></span><span class="on"><svg><use href="#g-money-f"/></svg>Cash Flow</span></span><span class="pf" style="transform:translateX(238px)"><span class="o"><svg><use href="#g-shield"/></svg></span><span class="on"><svg><use href="#g-shield-f"/></svg>Protection</span></span><span class="pf" style="transform:translateX(306px)"><span class="o"><svg><use href="#g-plant"/></svg></span><span class="on"><svg><use href="#g-plant-f"/></svg>Growth</span></span></div></div><i class="fab" style="left:560px"><svg><use href="#g-plus"/></svg></i></div><p class="psb">9:41 AM<span>Wed Nov 11</span></p><svg class="psbr" style="left:748px" aria-hidden="true"><use href="#g-psb"/></svg><i class="homebar" style="left:252.5px;top:1167px;width:315px"></i></div>
+        </div>
+      </div>
+    </figure>
+    </section>
+
     <!-- Questions: every answer stays in the markup and opens in place (tech-website §2). -->
     <section class="faq" aria-labelledby="faq" data-clock>
       <h2 id="faq" data-at="0">Questions</h2>
@@ -1529,6 +1776,8 @@
       el.setAttribute('aria-label', el.getAttribute('aria-label').replace(RE, inline));
     }
 
+    // A premium bar's figure carries no symbol (premium_calendar_section.dart), so it is scaled here.
+    for (const el of document.querySelectorAll('[data-bare]')) el.textContent = compact(Number(el.dataset.bare) / factor).join('');
     // A longer symbol must fit where ₱ did, so two of the app's fitting rules come along.
     const inked = el => { const r = document.createRange(); r.selectNodeContents(el); return r.getBoundingClientRect().width; };
     // income_planning_panel.dart _fmtLegendAmount: K and M, one decimal only below 10M.
@@ -2255,6 +2504,194 @@
     }, { threshold: [0, 0.5] });
     seen.observe(fig.querySelector('.phone'));
   };
+
+  // ── iPad: one tablet turning through the four tabs ──────────────────────
+  // Each tab opens with its phone's beats, read off the iPad cards; padStage(stage) hands back
+  // play() for a first visit and land() for a tab already seen.
+  const padTabs = {
+    budget(stage) {
+      const rows = [...stage.querySelectorAll('.crow')];
+      const card = stage.querySelector('.plan');
+      const [hero] = reelsIn(stage);
+      const lf = card.querySelector('.lf'), lb = card.querySelector('.lb');
+      const lift = card.offsetHeight * 0.04;             // fadeSlideIn's 4%
+      return [1200, ms => {
+        // budget_calendar.dart _WeekRow: each week fades in 200 on easeOut, 30 apart.
+        rows.forEach((r, i) => { r.style.opacity = easeOut(span(ms, i * 30, 200)); });
+        card.style.opacity = easeOut(span(ms, 0, 300));
+        card.style.transform = `translateY(${lift * (1 - easeOutCubic(span(ms, 0, 300)))}px)`;
+        hero(span(ms, 0, 800));
+        const f = 0.54 * easeOutCubic(span(ms, 0, 1200));
+        lf.style.transform = `translateX(${(f - 1) * 100}%)`;
+        lb.style.transform = `translateX(${(1 - f) * 100}%)`;
+      }];
+    },
+    cash(stage) {
+      const bars = [...stage.querySelectorAll('.mb')];
+      const [reserves, debt] = [...stage.querySelectorAll('.cnt')].map(count);
+      const fill = stage.querySelector('.scale .fill');
+      const cells = [...stage.querySelectorAll('.mcells b')];
+      return [2460, ms => {
+        const raw = span(ms, 460, 600);
+        bars.forEach((b, i) => {
+          b.style.transform = `${b.classList.contains('sel') ? 'scale(1.03) ' : ''}scaleY(${staggered(raw, i, bars.length, 0.3)})`;
+        });
+        reserves(span(ms, 760, 800));
+        fill.style.transform = `translateX(${(0.95 * easeOutCubic(span(ms, 1060, 1200)) - 1) * 100}%)`;
+        debt(span(ms, 1360, 800));
+        // month_cells.dart: the cells fill over kMonthsHeroCountUp as the proof lands.
+        const v = 1.2 * easeOutCubic(span(ms, 1660, 800));
+        cells.forEach((c, i) => { c.style.transform = `scaleX(${Math.min(1, Math.max(0, v - i))})`; });
+      }];
+    },
+    protect(stage) {
+      const [life, health] = [...stage.querySelectorAll('.cnt')].map(count);
+      const arc = stage.querySelector('.arc');
+      const bars = [...stage.querySelectorAll('.rbars i')].map(el => ({ el, h: parseFloat(el.style.height) }));
+      const stroke = (ms, at) => easeOutCubic(span(ms, at + 300, 744));
+      return [2404, ms => {
+        life(span(ms, 760, 800));
+        const p = stroke(ms, 760);
+        arc.style.strokeDashoffset = 1 - p;
+        arc.style.opacity = p > 0 ? 1 : 0;
+        health(span(ms, 1360, 800));
+        const e = stroke(ms, 1360);
+        bars.forEach(({ el, h }) => { el.style.transform = `scaleY(${Math.max(3, h * e) / h})`; });
+      }];
+    },
+    growth(stage) {
+      const [wealth, rate] = reelsIn(stage);
+      const draws = [...stage.querySelectorAll('.tdraw')];
+      const fades = [...stage.querySelectorAll('.tdash, .tarea, .tdot')];
+      const tube = [...stage.querySelectorAll('.tube i')];
+      const bars = [...stage.querySelectorAll('.sbars i')];
+      return [2260, ms => {
+        wealth(span(ms, 160, 800));
+        rate(span(ms, 760, 800));
+        // The chart's own sweep, a pitch after its card: lines draw on, the target and fill follow.
+        const t = easeOutCubic(span(ms, 1060, 900));
+        draws.forEach(d => { d.style.strokeDashoffset = 1 - t; });
+        fades.forEach(d => { d.style.opacity = t; });
+        const raw = span(ms, 1660, 600);
+        bars.forEach((b, i) => { b.style.transform = `scaleY(${staggered(raw, i, bars.length, 0.2)})`; });
+        tube.forEach(x => { x.style.transform = `scaleY(${raw})`; });
+      }];
+    },
+  };
+  const padStage = stage => {
+    const beats = [...stage.querySelectorAll('[data-b]')].map(el => {
+      const [at, rise, len = 440] = el.dataset.b.split(',').map(Number);
+      return { el, at, rise, len };
+    });
+    const [total, own] = padTabs[stage.dataset.pad](stage);
+    const frame = ms => {
+      for (const b of beats) {
+        const v = beat(ms, b.at, b.len);
+        b.el.style.opacity = v;
+        b.el.style.transform = b.rise && v < 1 ? `translateY(${b.rise * (1 - v)}px)` : '';
+      }
+      own(ms);
+    };
+    frame(0);
+    return { play: () => run(total, frame), land: () => frame(total) };
+  };
+
+  // A sanctioned loop of real tab sets, like the close's: each tab holds a turn, the bar's drop travels
+  // (selection_drop.dart, AppSpring.dropLand*), and a tab plays its arrival on its first visit only, as
+  // the app does once per launch. Light and dark alternate (founder, 2026-11-15): the incoming tab, in its
+  // theme, crossfades over the last one with the bar's own theme, 300 on easeInOutCubic.
+  const pad = document.querySelector('.pad');
+  if (pad) {
+    const layers = [...pad.querySelectorAll('.pstage')];      // Budget, Cash Flow, Protection, Growth
+    const opened = layers.map(padStage);
+    const visited = layers.map(() => false);
+    const dark = pad.querySelector('.pchrome.drk');
+    const bars = [...pad.querySelectorAll('.pnav')].map(nav => {
+      const faces = [...nav.querySelectorAll('.pf')];
+      return {
+        pp: nav.querySelector('.pp'), drop: nav.querySelector('.pdrop'), fab: nav.querySelector('.fab'), faces,
+        ons: faces.map(f => f.querySelector('.on')), offs: faces.map(f => f.querySelector('.o')),
+      };
+    });
+    const DARK = [0, 1, 0, 1];
+    const HUE = [[123, 107, 174], [77, 182, 172], [121, 134, 203], [255, 183, 77]];
+    const PILL = [340, 400, 400, 400];                         // the "+" holds 60 beside Budget alone
+    const TURN_A = 5000, FLIP = 300;
+    // The bar for tab n: each face's share (2 for the tab in hand) along a pill this wide.
+    const layout = (pill, sh) => {
+      const u = pill / sh.reduce((a, b) => a + b);
+      let x = 0;
+      return sh.map(s => { const a = x; x += s * u; return [a, x]; });
+    };
+    const shareOf = n => [0, 1, 2, 3].map(i => (i === n ? 2 : 1));
+    const dropOf = n => { const [a, b] = layout(PILL[n], shareOf(n))[n]; return [a + 2, b - 2]; };
+    // SpringDescription.withDurationAndBounce: zeta = 1 - bounce, omega = 2 pi / duration; from rest.
+    const spring = (ms, bounce) => {
+      const w = (2 * Math.PI) / (ms / 1000), z = 1 - bounce, wd = w * Math.sqrt(1 - z * z);
+      return t => { const s = t / 1000; return 1 - Math.exp(-z * w * s) * (Math.cos(wd * s) + ((z * w) / wd) * Math.sin(wd * s)); };
+    };
+    const lead = spring(300, 0.3), trail = spring(450, 0.2);
+    let at = 0, edges = dropOf(0);
+    dark.style.visibility = 'visible';
+    dark.style.opacity = 0;
+    const go = n => {
+      const from = at;
+      at = n;
+      layers.forEach((l, i) => { l.style.visibility = i === n || i === from ? 'visible' : 'hidden'; l.style.zIndex = i === n ? 2 : ''; });
+      layers[n].style.opacity = 0;
+      if (visited[n]) opened[n].land(); else { visited[n] = true; opened[n].play(); }
+      const [l0, r0] = edges, [l1, r1] = dropOf(n);
+      const right = l1 > l0;                                   // the edge in front leads
+      const s0 = shareOf(from), s1 = shareOf(n);
+      bars.forEach(b => b.faces.forEach((f, i) => f.classList.toggle('lit', i === n)));
+      run(900, t => {
+        const x = easeInOutCubic(span(t, 0, FLIP));
+        layers[n].style.opacity = x;
+        dark.style.opacity = lerp(DARK[from], DARK[n], x);
+        const p = lerp(PILL[from], PILL[n], easeOutCubic(span(t, 0, 220)));
+        const q = easeOutCubic(span(t, 0, 260));
+        const pos = layout(p, s0.map((v, i) => lerp(v, s1[i], q)));
+        const a = (right ? trail : lead)(t), b = (right ? lead : trail)(t);
+        edges = [lerp(l0, l1, a), lerp(r0, r1, b)];
+        const c = easeOutCubic(span(t, 0, 300));
+        const hue = `rgb(${HUE[from].map((v, i) => Math.round(lerp(v, HUE[n][i], c))).join(' ')})`;
+        const plus = lerp(from === 0 ? 1 : 0, n === 0 ? 1 : 0, easeOutCubic(span(t, 0, 180)));
+        bars.forEach(bar => {
+          bar.faces.forEach((f, i) => {
+            f.style.transform = `translateX(${((pos[i][0] + pos[i][1]) / 2).toFixed(2)}px)`;
+            // The glyph swaps on its own AnimatedSwitcher: in over 200, out over 150.
+            const v = i === n ? easeOutCubic(span(t, 0, 200)) : i === from ? 1 - easeInCubic(span(t, 0, 150)) : 0;
+            bar.ons[i].style.opacity = v;
+            bar.offs[i].style.opacity = 1 - v;
+          });
+          bar.drop.style.clipPath = `inset(0 ${(400 - edges[1]).toFixed(2)}px 0 ${edges[0].toFixed(2)}px round 18px)`;
+          bar.drop.style.background = hue;
+          bar.pp.style.clipPath = `inset(0 ${(400 - p).toFixed(2)}px 0 0 round 20px)`;
+          bar.fab.style.transform = `translateX(${(p - 340).toFixed(2)}px)`;
+          bar.fab.style.opacity = plus;
+        });
+      }, () => {
+        edges = dropOf(n);
+        layers[from].style.visibility = 'hidden';
+        layers[n].style.zIndex = '';
+      });
+    };
+    let live = 0;
+    const clock = loopClock(pad, dt => {
+      live += dt;
+      const n = Math.floor(live / TURN_A) % 4;
+      if (n !== at) go(n);
+    }, { seen: en => { pad.classList.toggle('off', !en.isIntersecting); } });
+    const halfSeen = new IntersectionObserver(es => {
+      if (dead || !es.some(e => e.intersectionRatio >= 0.5)) return;
+      halfSeen.disconnect();
+      visited[0] = true;
+      opened[0].play();
+      clock.start();
+    }, { threshold: [0, 0.5] });
+    // An iPad opens once half of it is on screen, as a phone's tab does.
+    players.ipad = () => halfSeen.observe(pad);
+  }
 
   // ── The close: the bar losing tabs until Budget is alone ─────────────────
   // Growth, Protection, then Cash Flow fade where they stand (launch_story.dart _kFadeFor at kLaunchPace 2)
