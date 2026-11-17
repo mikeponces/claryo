@@ -1,0 +1,12 @@
+# Every page but the hand-written landing page (index.html, no front matter, served as is)
+# renders through _layouts/default.html. The legal texts carry no front matter because they
+# are byte-for-byte copies of the app's assets/legal/*.md, so their titles live here.
+defaults:
+  - scope:
+      path: "privacy"
+    values:
+      title: "Privacy Policy"
+  - scope:
+      path: "terms"
+    values:
+      title: "Terms of Use"
