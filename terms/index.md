@@ -52,4 +52,4 @@ These terms are governed by the laws of the Republic of the Philippines.
 
 ## Contact
 
-Questions about these terms: claryoapp@gmail.com.
+Questions about these terms: hello@claryoapp.com.

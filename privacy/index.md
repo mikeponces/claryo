@@ -69,7 +69,7 @@ Each user's rows are protected by database row-level security: a signed-in accou
 
 Settings › Delete Account deletes your login record and every row of your data at once. Nothing is kept and nothing is soft-deleted.
 
-**Without the app:** email claryoapp@gmail.com from the address you sign in with, with the subject "Delete my account". Your account and all its data are deleted the same way within 30 days, and you get a reply when it is done. If you signed in with Apple and chose Hide My Email, write from any address and include your relay address. It ends in @privaterelay.appleid.com and is listed in your Apple account settings under Sign in with Apple.
+**Without the app:** email hello@claryoapp.com from the address you sign in with, with the subject "Delete my account". Your account and all its data are deleted the same way within 30 days, and you get a reply when it is done. If you signed in with Apple and chose Hide My Email, write from any address and include your relay address. It ends in @privaterelay.appleid.com and is listed in your Apple account settings under Sign in with Apple.
 
 Crash reports already sent to Sentry are kept for up to 90 days, then deleted. Data stored only on your phone goes when you remove the app.
 
@@ -79,7 +79,7 @@ You can correct anything by editing it in the app. You can delete everything fro
 
 Settings › Account › Export my data gives you a copy of everything Claryo stores for you on its servers, as spreadsheet files in one .zip.
 
-For any privacy question, contact claryoapp@gmail.com.
+For any privacy question, contact hello@claryoapp.com.
 
 ## Children
 
