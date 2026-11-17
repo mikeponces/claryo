@@ -130,7 +130,7 @@ style: |
       <h2 tabindex="-1">Your result</h2>
       <div class="result">
         <p class="hero-num" id="ci-hero"><span class="fig" id="ci-fig">5<span class="dec">.0</span></span> <span class="unit" id="ci-unit">months of income while you recover</span></p>
-        <p class="basis" id="ci-basis">₱500,000 left after the hospital bill · ₱100,000 a month</p>
+        <p class="basis" id="ci-basis">₱500,000 left after the bill · ₱100,000/mo</p>
         <div class="bar" id="ci-bar" role="img" aria-label=""></div>
         <ul class="legend one" id="ci-legend"></ul>
         <dl class="facts" id="ci-facts"></dl>
@@ -263,12 +263,12 @@ document.addEventListener('DOMContentLoaded', function () {
       dec.textContent = '.' + parts[1];
       fig.appendChild(dec);
       $('ci-unit').textContent = 'months of income while you recover';
-      $('ci-basis').textContent = M.money(h.capital) + ' left after the hospital bill · ' + M.money(h.recoveryPerMonth) + ' a month';
+      $('ci-basis').textContent = M.money(h.capital) + ' left after the bill · ' + M.money(h.recoveryPerMonth) + '/mo';
     }
 
     var parts2 = [
       { label: 'Medical insurance', value: h.limitPaid, hue: HUE.limit },
-      { label: 'Lump sum and emergency fund', value: toBill, hue: HUE.pot },
+      { label: 'Lump sum, emergency fund', value: toBill, hue: HUE.pot },
       { label: 'What is left', value: h.capital, hue: HUE.left },
       { label: 'Not covered', value: h.billShortfall, hue: HUE.short },
     ];

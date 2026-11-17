@@ -15,6 +15,10 @@ style: |
   .result .basis + p { margin-top: 4px; }
   .rows .g + .g { margin-top: 0; }
   .rows .chip { color: var(--on-mark); }
+  /* debt_row: the rate rides the name line, the payment sits under the balance. */
+  .rows .t .rate { font-weight: 500; font-size: 0.8125rem; letter-spacing: 0; color: var(--muted); }
+  .rows .amt { text-align: right; }
+  .rows .amt small { display: block; margin-top: 2px; font-size: 0.8125rem; font-weight: 500; letter-spacing: 0; color: var(--muted); }
   /* The debts: one answer band per debt, its own small head with Remove, then Add a debt. */
   .debts { display: grid; gap: 16px; margin-top: 20px; }
   .debts > .q { margin: 0; }
@@ -41,7 +45,7 @@ style: |
   <ul>
     <li>When any debt has a rate, the order is <b>highest rate first</b>. With no rates at all, it is <b>smallest balance first</b>.</li>
     <li>When a debt is paid off, its payment moves to the first card in that order that still has a balance. A loan keeps its fixed payment and never takes extra.</li>
-    <li>A debt with no monthly payment is left out and named. A debt whose payment never clears it, within 50 years, is never paid off at that payment.</li>
+    <li>A debt with no monthly payment is left out and named. If a payment cannot clear its debt within 50 years, that debt is never paid off at that payment.</li>
   </ul>
   <p>Each debt also falls into one of four kinds, by rate and size. A rate of 20% or more is costly, and a balance of <span data-noscale><span data-sym>₱</span>31,623</span> or more is big. Those lines are the same in every currency.</p>
 </section>
@@ -52,10 +56,10 @@ style: |
   <div class="result" data-noscale>
     <p class="panel-label">The four debts, in the order they are paid</p>
     <ul class="rows" id="dp-ex-rows">
-      <li style="--c:#E07B54"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-wallet"/></svg></span><span class="words"><b class="t">Store card</b><span class="g">Card · 36% APR · ₱1,900 a month</span><span class="g">Paid off in month 12 · 1 · Small &amp; costly</span></span><span class="amt">₱18,000</span></li>
-      <li style="--c:#E07B54"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-repay"/></svg></span><span class="words"><b class="t">Personal loan</b><span class="g">Loan · 24% APR · ₱9,500 a month</span><span class="g">Paid off in month 36 · 3 · Big &amp; costly</span></span><span class="amt">₱240,000</span></li>
-      <li style="--c:#E07B54"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-repay"/></svg></span><span class="words"><b class="t">Car loan</b><span class="g">Loan · 7% APR · ₱17,000 a month</span><span class="g">Paid off in month 57 · 4 · Big &amp; cheap</span></span><span class="amt">₱820,000</span></li>
-      <li style="--c:#E07B54"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-repay"/></svg></span><span class="words"><b class="t">Family loan</b><span class="g">Loan · 0% APR · ₱1,000 a month</span><span class="g">Paid off in month 12 · 2 · Small &amp; cheap</span></span><span class="amt">₱12,000</span></li>
+      <li style="--c:#E07B54"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-wallet"/></svg></span><span class="words"><b class="t">Store card<span class="rate"> · 36% APR</span></b><span class="g">Paid off in month 12</span><span class="g">1 · Small &amp; costly</span></span><span class="amt">₱18,000<small>₱1,900/mo</small></span></li>
+      <li style="--c:#E07B54"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-repay"/></svg></span><span class="words"><b class="t">Personal loan<span class="rate"> · 24% APR</span></b><span class="g">Paid off in month 36</span><span class="g">3 · Big &amp; costly</span></span><span class="amt">₱240,000<small>₱9,500/mo</small></span></li>
+      <li style="--c:#E07B54"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-repay"/></svg></span><span class="words"><b class="t">Car loan<span class="rate"> · 7% APR</span></b><span class="g">Paid off in month 57</span><span class="g">4 · Big &amp; cheap</span></span><span class="amt">₱820,000<small>₱17,000/mo</small></span></li>
+      <li style="--c:#E07B54"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-repay"/></svg></span><span class="words"><b class="t">Family loan<span class="rate"> · 0% APR</span></b><span class="g">Paid off in month 12</span><span class="g">2 · Small &amp; cheap</span></span><span class="amt">₱12,000<small>₱1,000/mo</small></span></li>
     </ul>
     <dl class="facts" id="dp-ex-facts">
       <div><dt>Order</dt><dd>Highest rate first</dd></div>
@@ -166,20 +170,29 @@ document.addEventListener('DOMContentLoaded', function () {
     var t = document.createElement('b');
     t.className = 't';
     t.textContent = d.name;
-    var terms = document.createElement('span');
-    terms.className = 'g';
-    terms.textContent = (d.kind === 'card' ? 'Card' : 'Loan') + ' · ' +
-      (d.apr === null ? 'No rate' : C.debtRateLabel(d.apr)) + ' · ' +
-      (d.payment > 0 ? M.money(d.payment) + ' a month' : 'No payment');
+    if (d.apr !== null) {
+      var rate = document.createElement('span');
+      rate.className = 'rate';
+      rate.textContent = ' \u00B7 ' + C.debtRateLabel(d.apr);
+      t.appendChild(rate);
+    }
+    words.appendChild(t);
     var result = document.createElement('span');
     result.className = 'g';
-    result.textContent = outcomeLine(d) + (d.zone ? ' · ' + d.zone.rankedLabel : '');
-    words.appendChild(t);
-    words.appendChild(terms);
+    result.textContent = outcomeLine(d);
     words.appendChild(result);
+    if (d.zone) {
+      var zone = document.createElement('span');
+      zone.className = 'g';
+      zone.textContent = d.zone.rankedLabel;
+      words.appendChild(zone);
+    }
     var amt = document.createElement('span');
     amt.className = 'amt';
     amt.textContent = M.money(d.balance);
+    var pay = document.createElement('small');
+    pay.textContent = d.payment > 0 ? M.money(d.payment) + '/mo' : 'No payment';
+    amt.appendChild(pay);
     li.appendChild(chip);
     li.appendChild(words);
     li.appendChild(amt);
@@ -349,11 +362,13 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     var hasCard = debts.some(function (d) { return d.kind === 'card'; });
+    var hasLoan = debts.some(function (d) { return d.kind === 'loan'; });
     document.getElementById('dp-strategy').textContent = STRATEGY[plan.strategy];
     var explain = plan.strategy === 'avalanche'
       ? 'When a debt is paid off, its payment moves to the card with the highest rate still owing.'
       : 'No rates were entered, so the order is by balance. When a debt is paid off, its payment moves to the card with the smallest balance still owing.';
-    explain = hasCard ? explain + ' A loan keeps its fixed payment.' : 'Each loan is paid by its own payment, and none takes extra.';
+    if (!hasCard) explain = 'Each loan is paid by its own payment, and none takes extra.';
+    else if (hasLoan) explain += ' A loan keeps its fixed payment.';
     if (never.length) {
       explain += ' At these payments, ' + never.map(function (d) { return d.name; }).join(' and ') +
         (never.length === 1 ? ' is' : ' are') + ' never paid off.';

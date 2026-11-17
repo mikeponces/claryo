@@ -199,7 +199,7 @@
   function places(num) {
     return num.indexOf('.') >= 0 ? num.length - num.indexOf('.') - 1 : 0;
   }
-  var RE = /\u20B1(\d[\d,]*(?:\.\d+)?)([KM]?)/g;
+  var RE = /\u20B1(\d+(?:,\d{3})*(?:\.\d+)?)([KM]?)/g;   // a comma joins digit groups only, so a figure keeps the comma after it
   function inline(all, num, mag) {
     return symbol + scaleText(num, mag, places(num)).join('');
   }

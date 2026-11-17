@@ -1797,6 +1797,7 @@
           <li><a href="tools/life-cover/">Life cover calculator</a></li>
           <li><a href="tools/critical-illness/">Critical illness calculator</a></li>
           <li><a href="tools/investment-rate/">Investment rate calculator</a></li>
+          <li><a href="tools/projected-wealth/">Projected wealth calculator</a></li>
           <li><a href="tools/debt-payoff/">Debt payoff calculator</a></li>
         </ul>
       </nav>
@@ -1882,7 +1883,7 @@
       return mag ? compact(v) : [group(v, decimals), ''];
     };
     const places = num => num.includes('.') ? num.length - num.indexOf('.') - 1 : 0;
-    const RE = /₱(\d[\d,]*(?:\.\d+)?)([KM]?)/g;
+    const RE = /₱(\d+(?:,\d{3})*(?:\.\d+)?)([KM]?)/g;   // a comma joins digit groups only, so a figure keeps the comma after it
     const inline = (_, num, mag) => sym + scale(num, mag, places(num)).join('');
 
     const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
