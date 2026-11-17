@@ -1,0 +1,49 @@
+<!doctype html>
+<!-- Source of assets/og-image.png, the 1200×630 link preview (Story L.9, idea 21). Not published: Jekyll skips
+     folders starting with "_". Re-render from the site root (fonts load over http, not file://):
+       python3 -I -m http.server 8799 --bind 127.0.0.1 &
+       "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless=new --hide-scrollbars \
+         --force-device-scale-factor=1 --window-size=1200,630 --virtual-time-budget=3000 \
+         --screenshot="$PWD/assets/og-image.png" http://127.0.0.1:8799/_og/og-image.html
+     The blocks are the app icon's (assets/icon-512.png), named as the sign-in story names them. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Claryo link preview</title>
+<style>
+  @font-face { font-family: Figtree; font-weight: 600; src: url("../assets/fonts/Figtree-SemiBold.woff2") format("woff2"); }
+  @font-face { font-family: Figtree; font-weight: 700; src: url("../assets/fonts/Figtree-Bold.woff2") format("woff2"); }
+  @font-face { font-family: Figtree; font-weight: 800; src: url("../assets/fonts/Figtree-ExtraBold.woff2") format("woff2"); }
+  html, body { margin: 0; }
+  body {
+    width: 1200px; height: 630px; overflow: hidden;
+    background: #F5F2F8; color: #1B1830;
+    font-family: Figtree, sans-serif; -webkit-font-smoothing: antialiased;
+    display: grid; grid-template-columns: 1fr 380px; align-items: center; gap: 72px;
+    padding: 0 88px; box-sizing: border-box;
+  }
+  .brand { display: flex; align-items: center; gap: 14px; font-weight: 700; font-size: 34px; letter-spacing: -0.01em; }
+  .brand img { width: 52px; height: 52px; border-radius: 13px; }
+  .eyebrow { margin: 44px 0 18px; font-weight: 600; font-size: 25px; color: #5E5A70; }
+  h1 { margin: 0; font-weight: 800; font-size: 68px; line-height: 1.04; letter-spacing: -0.035em; }
+  .blocks { display: grid; gap: 14px; }
+  .b { height: 92px; border-radius: 22px; display: flex; align-items: center; padding: 0 28px;
+       font-weight: 700; font-size: 26px; letter-spacing: -0.01em; color: #1B1830; }
+  .g { background: #FFB74D; } .p { background: #7986CB; } .c { background: #4DB6AC; }
+  .u { background: #7B6BAE; color: #fff; }
+</style>
+</head>
+<body>
+  <div>
+    <div class="brand"><img src="../assets/icon-512.png" alt="">Claryo</div>
+    <p class="eyebrow">For Filipino breadwinners, at home and abroad</p>
+    <h1>Plan your paycheck. Secure your future.</h1>
+  </div>
+  <div class="blocks" aria-hidden="true">
+    <div class="b g">Growth</div>
+    <div class="b p">Protection</div>
+    <div class="b c">Cash Flow</div>
+    <div class="b u">Budget</div>
+  </div>
+</body>
+</html>

@@ -1,0 +1,52 @@
+---
+layout: default
+---
+{%- comment -%}
+  A calculator (tools/<slug>/index.html). The page writes its sections and its hidden form; this
+  layout writes the head, the line about the app, the door to the paired guide and the other
+  calculators, then the scripts. Front matter: title, description, order, pillar, guide_url,
+  guide_title, guide_line, doc: false. The page's own inline script runs inside
+  DOMContentLoaded: inline scripts run before these deferred ones.
+{%- endcomment -%}
+{% include glyphs.html %}
+<article class="kit tool{% if page.pillar %} c-{{ page.pillar }}{% endif %}">
+  <div class="page-head">
+    <p class="eyebrow">Free calculator</p>
+    <h1>{{ page.title | escape }}</h1>
+    <p class="lead">{{ page.description | escape }}</p>
+  </div>
+
+{{ content }}
+
+  <div class="about">
+    <p>In Claryo you keep this number for your household and update it from your own accounts each month.</p>
+    <p><a href="{{ '/' | relative_url }}">See how Claryo works</a></p>
+  </div>
+
+  {%- if page.guide_url %}
+  <a class="door" href="{{ page.guide_url | relative_url }}">
+    <span class="k">Read the guide</span>
+    <span class="t">{{ page.guide_title | escape }}</span>
+    {%- if page.guide_line %}
+    <span class="g">{{ page.guide_line | escape }}</span>
+    {%- endif %}
+  </a>
+  {%- endif %}
+
+  {%- assign tools = site.pages | where: "layout", "tool" | sort: "order" %}
+  {%- if tools.size > 1 %}
+  <nav class="more-list" aria-labelledby="more-tools">
+    <h2 id="more-tools">More calculators</h2>
+    <ul>
+      {%- for t in tools %}
+      {%- unless t.url == page.url %}
+      <li><a href="{{ t.url | relative_url }}">{{ t.title | escape }}</a></li>
+      {%- endunless %}
+      {%- endfor %}
+    </ul>
+  </nav>
+  {%- endif %}
+</article>
+<script defer src="{{ '/assets/js/money.js' | relative_url }}"></script>
+<script defer src="{{ '/assets/js/calc-math.js' | relative_url }}"></script>
+<script defer src="{{ '/assets/js/steps.js' | relative_url }}"></script>

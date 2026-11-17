@@ -1,0 +1,91 @@
+---
+layout: guide
+title: How critical illness cover is used
+description: How the lump sum is used after a diagnosis
+date: 2026-11-18 09:04:00 +0800
+pillar: protect
+doc: false
+feed: true
+tool_url: /tools/critical-illness/
+tool_title: Critical illness calculator
+style: |
+  /* The Protection tutorial's third walk (health_recovery_beats.dart) on its sample, from calc-math.js's
+     samples.health: a 1M bill, a 400K medical limit, a 1M lump sum, a 100K emergency fund, 100K a
+     month of income (the Life walk's 1.2M a year). Medical insurance pays the bill first; the lump
+     sum and the fund pay the rest; the 500K left lasts 5 months. The bill's second share wears
+     kBillSlabFill, what the bill takes out of the household's own pile. A step's bar lights its share
+     and steps the other back to 0.45. */
+  .bar .seg.off { opacity: 0.45; }
+  .legend li.slab > i { background: #ABAFC4; }
+---
+<div class="steps" data-steps="guide">
+  <ol class="chapters" aria-label="In this guide">
+    <li><a href="#step-1">Critical illness cover</a></li>
+    <li><a href="#step-2">Medical insurance first</a></li>
+    <li><a href="#step-3">Lump sum, emergency fund</a></li>
+    <li><a href="#step-4">What is left</a></li>
+  </ol>
+
+  <section class="step" id="step-1">
+    <h2 tabindex="-1">Critical illness cover</h2>
+    <figure class="figure">
+      <figcaption>The hospital bill</figcaption>
+      <div class="bar" style="--h: 14px" aria-hidden="true">
+        <i class="seg" style="--w: 40"></i>
+        <i class="seg" style="--w: 60; --c: #ABAFC4"></i>
+      </div>
+      <ul class="legend one">
+        <li><i></i><span>Medical insurance first</span><b>₱400,000</b></li>
+        <li class="slab"><i></i><span>Lump sum, emergency fund</span><b>₱600,000</b></li>
+      </ul>
+      <ul class="rows">
+        <li><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-hospital"/></svg></span><span class="words"><b class="t">Medical insurance first</b><span class="g">Medical insurance pays the hospital bill first, up to its yearly limit.</span></span></li>
+        <li><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-aid"/></svg></span><span class="words"><b class="t">Lump sum, emergency fund</b><span class="g">These pay the rest of your hospital bill.</span></span></li>
+        <li><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-cal"/></svg></span><span class="words"><b class="t">What is left</b><span class="g">What is left replaces your income while you recover.</span></span></li>
+      </ul>
+    </figure>
+  </section>
+
+  <section class="step" id="step-2">
+    <h2 tabindex="-1">Medical insurance first</h2>
+    <p>Medical insurance pays the hospital bill first, up to its yearly limit.</p>
+    <figure class="figure">
+      <div class="bar" style="--h: 14px" aria-hidden="true">
+        <i class="seg" style="--w: 40"></i>
+        <i class="seg off" style="--w: 60; --c: #ABAFC4"></i>
+      </div>
+      <dl class="facts">
+        <div><dt>The hospital bill</dt><dd>₱1,000,000</dd></div>
+        <div><dt>Medical insurance limit</dt><dd>₱400,000</dd></div>
+      </dl>
+    </figure>
+  </section>
+
+  <section class="step" id="step-3">
+    <h2 tabindex="-1">Lump sum, emergency fund</h2>
+    <p>These pay the rest of your hospital bill.</p>
+    <figure class="figure">
+      <div class="bar" style="--h: 14px" aria-hidden="true">
+        <i class="seg off" style="--w: 40"></i>
+        <i class="seg" style="--w: 60; --c: #ABAFC4"></i>
+      </div>
+      <dl class="facts">
+        <div><dt>Health cover</dt><dd>₱1,000,000</dd></div>
+        <div><dt>Set aside</dt><dd>₱100,000</dd></div>
+      </dl>
+      <p>The hospital bill: ₱1.5M held, ₱1.0M paid, ₱500K left</p>
+    </figure>
+  </section>
+
+  <section class="step" id="step-4">
+    <h2 tabindex="-1">What is left</h2>
+    <p>What is left replaces your income while you recover.</p>
+    <figure class="figure">
+      <p class="hero-num"><span class="fig">5<span class="dec">.0</span></span><span class="unit">months off work</span></p>
+      <p class="basis">After the hospital bill is paid</p>
+      <dl class="facts">
+        <div><dt>While you recover</dt><dd>₱100,000/mo</dd></div>
+      </dl>
+    </figure>
+  </section>
+</div>

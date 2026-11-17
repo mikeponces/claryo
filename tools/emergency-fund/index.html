@@ -1,0 +1,189 @@
+---
+layout: tool
+title: Emergency fund calculator
+description: See how many months of expenses your emergency fund covers, against the same 3 to 6 month band the app uses.
+order: 1
+pillar: cash
+doc: false
+guide_url: /learn/emergency-fund/
+guide_title: Four purposes for your cash
+style: |
+  /* The worked example and the result share one grammar: a quiet label over hairline rows. */
+  .result .panel-label + .facts { margin-top: 0; }
+  .result .facts + .panel-label { margin-top: 20px; }
+  .result .basis + .track { margin-top: 18px; }
+  /* The milestone lines under the reserve scale (reserve_scale_track.dart's gap line): the amount
+     in ink, the words muted, a filled dot once the milestone is reached and a groove dot before. */
+  .legend.gaps { margin-top: 18px; }
+  .legend.gaps li > span b { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; }
+  .legend.gaps li.short > i { background: rgba(0, 0, 0, 0.176); }
+---
+<section class="sect">
+  <h2>How it works</h2>
+  <p>Months covered is the cash you keep for emergencies divided by your average monthly expenses. Count only money set aside for emergencies. Cash already meant for bills you know are coming, or for a purchase you have decided on, is spent already.</p>
+  <ul>
+    <li><b>3 months</b> is the minimum. From here the fund is on track.</li>
+    <li><b>6 months</b> is the target.</li>
+    <li><b>9 and 12 months</b> are buffers past the target.</li>
+  </ul>
+  <p>Below 3 months the fund needs attention. The status compares the money itself, never the rounded months.</p>
+</section>
+
+<section class="sect">
+  <h2>A worked example</h2>
+  <p>A household spends ₱50,000 in an average month and keeps ₱212,000 for emergencies.</p>
+  <div class="result">
+    <p class="panel-label">The household</p>
+    <dl class="facts">
+      <div><dt>Average monthly expenses</dt><dd>₱50,000</dd></div>
+      <div><dt>Kept for emergencies</dt><dd>₱212,000</dd></div>
+    </dl>
+    <p class="panel-label">The result</p>
+    <dl class="facts">
+      <div><dt>Months of expenses</dt><dd>4.2 months</dd></div>
+      <div><dt>Status</dt><dd>On track</dd></div>
+      <div><dt>3-month minimum</dt><dd>₱62,000 above</dd></div>
+      <div><dt>6-month target</dt><dd>₱88,000 remaining</dd></div>
+      <div><dt>9-month buffer</dt><dd>₱238,000 remaining</dd></div>
+      <div><dt>12-month buffer</dt><dd>₱388,000 remaining</dd></div>
+    </dl>
+  </div>
+</section>
+
+<form class="calc" hidden novalidate>
+  <div class="steps" data-steps="tool">
+    <ol class="chapters" aria-label="Steps">
+      <li><a href="#step-1">Expenses</a></li>
+      <li><a href="#step-2">Emergency fund</a></li>
+      <li><a href="#step-3">Result</a></li>
+    </ol>
+
+    <section class="step" id="step-1">
+      <h2 tabindex="-1"><label for="ef-exp">Average monthly expenses</label></h2>
+      <p class="hint" id="ef-exp-hint">What your household spends in an average month, across the last year.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="ef-exp" type="text" inputmode="decimal" autocomplete="off" required data-check="positive" aria-describedby="ef-exp-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-2">
+      <h2 tabindex="-1"><label for="ef-fund">Money kept for emergencies</label></h2>
+      <p class="hint" id="ef-fund-hint">Cash you keep for emergencies only. Leave out money already meant for bills or a planned purchase.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="ef-fund" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="ef-fund-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-3">
+      <h2 tabindex="-1">Your result</h2>
+      <div class="result">
+        <p class="status" id="ef-status" data-tone="ok">On track</p>
+        <p class="hero-num"><span class="fig"><span id="ef-whole">4</span><span class="dec" id="ef-dec">.2</span></span> <span class="unit">months of expenses</span></p>
+        <p class="basis" id="ef-basis">₱212,000 reserved · avg ₱50,000/mo</p>
+        <div class="track" id="ef-track" style="--v:4.24;--max:12;--lo:3;--hi:6" role="img" aria-label="4.2 months on a scale to 12 months, with 3 to 6 months marked as the target band">
+          <div class="groove"><i class="band"></i><i class="track-fill"></i><i class="tick" style="--m:3"></i><i class="tick" style="--m:6"></i><i class="tick" style="--m:9"></i></div>
+          <div class="marks" aria-hidden="true"><span style="--m:3">3 mo</span><span style="--m:6">6 mo</span><span style="--m:9">9 mo</span><span style="--m:12">12 mo</span></div>
+        </div>
+        <ul class="legend one gaps" id="ef-gaps">
+          <li><i></i><span><b>₱62,000</b> above the 3-month minimum</span></li>
+          <li class="short"><i></i><span><b>₱88,000</b> remaining for the 6-month target</span></li>
+          <li class="short"><i></i><span><b>₱238,000</b> remaining for the 9-month buffer</span></li>
+          <li class="short"><i></i><span><b>₱388,000</b> remaining for the 12-month buffer</span></li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</form>
+
+<section class="sect">
+  <h2>How to use your results</h2>
+  <p>Below 3 months, the fund comes first. Set part of each paycheck aside for it until it reaches the minimum, then keep going to 6.</p>
+  <p>From 3 to 6 months the fund is on track. Months past 6 are a buffer.</p>
+  <p>Work it out again when your expenses change. A higher rent or a new loan payment raises the target with them.</p>
+</section>
+
+<p class="note">An estimate from the numbers you entered, using the same method as the app. Not financial advice. Nothing you type leaves this page.</p>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var M = window.ClaryoMoney;
+  var C = window.ClaryoCalc;
+  var form = document.querySelector('form.calc');
+  if (!M || !C || !form) return;
+  var root = form.querySelector('.steps');
+  function $(id) { return document.getElementById(id); }
+
+  // ── Fields: commas stripped, nothing negative, every message the browser shows on Next ──
+  function num(input) {
+    var s = input.value.replace(/[,\s]/g, '');
+    return s === '' ? null : Number(s);
+  }
+  function check(input) {
+    var v = num(input);
+    var kind = input.getAttribute('data-check');
+    var msg = '';
+    if (v === null) msg = input.required ? 'Enter an amount.' : '';
+    else if (!isFinite(v)) msg = 'Enter a number, like ' + input.placeholder + '.';
+    else if (v < 0) msg = 'Enter an amount of 0 or more.';
+    else if (kind === 'positive' && v === 0) msg = 'Enter an amount above 0.';
+    input.setCustomValidity(msg);
+  }
+  var fields = form.querySelectorAll('input[inputmode="decimal"]');
+  Array.prototype.forEach.call(fields, function (input) {
+    input.addEventListener('input', function () { check(input); });
+    input.addEventListener('blur', function () {
+      var v = num(input);
+      if (v !== null && isFinite(v) && v >= 0) input.value = v.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      check(input);
+    });
+    check(input);
+  });
+
+  // Placeholders: the worked example's household, in the visitor's currency.
+  $('ef-exp').placeholder = M.whole(50000 / M.factor);
+  $('ef-fund').placeholder = M.whole(212000 / M.factor);
+
+  // ── The result: MonthsHero, the basis line, the reserve scale and its gap lines ──
+  var TONE = { healthy: 'ok', attention: 'warn', atRisk: 'risk', notSetUp: 'warn' };
+  function fill() {
+    var exp = num($('ef-exp'));
+    var fund = num($('ef-fund'));
+    if (!(exp > 0) || fund === null || !(fund >= 0)) return;
+    var r = C.reserve(fund, exp);
+    var months = r.monthsCovered === null ? 0 : r.monthsCovered;
+    var split = M.monthsSplit(months);
+
+    var status = $('ef-status');
+    status.textContent = C.tiers.status[r.status];
+    status.setAttribute('data-tone', TONE[r.status]);
+    $('ef-whole').textContent = split.whole;
+    $('ef-dec').textContent = '.' + split.decimal;
+    $('ef-basis').textContent = M.money(fund) + ' reserved · avg ' + M.money(exp) + '/mo';
+
+    var track = $('ef-track');
+    track.style.setProperty('--v', String(months));
+    track.setAttribute('aria-label', split.whole + '.' + split.decimal +
+      ' months on a scale to 12 months, with 3 to 6 months marked as the target band');
+
+    var list = $('ef-gaps');
+    while (list.firstChild) list.removeChild(list.firstChild);
+    r.milestones.forEach(function (m) {
+      var li = document.createElement('li');
+      if (!m.reached) li.className = 'short';
+      var dot = document.createElement('i');
+      var words = document.createElement('span');
+      var amount = document.createElement('b');
+      amount.textContent = M.money(Math.abs(m.diff));
+      words.appendChild(amount);
+      words.appendChild(document.createTextNode(' ' + m.phrase));
+      li.appendChild(dot);
+      li.appendChild(words);
+      list.appendChild(li);
+    });
+  }
+
+  root.addEventListener('steps:finish', fill);
+  root.addEventListener('steps:restart', function () {
+    // form.reset() runs after this event; the fields' messages follow it.
+    setTimeout(function () { Array.prototype.forEach.call(fields, check); }, 0);
+  });
+  form.addEventListener('submit', function (e) { e.preventDefault(); });
+  form.hidden = false;
+});
+</script>

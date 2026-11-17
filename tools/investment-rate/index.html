@@ -1,0 +1,450 @@
+---
+layout: tool
+title: Investment rate calculator
+description: The share of your income you invest, against the target you pick, and what it could grow to.
+order: 5
+pillar: growth
+doc: false
+guide_url: /learn/paycheck-plan/
+guide_title: One paycheck, five actions
+style: |
+  .result .panel-label + .facts { margin-top: 0; }
+  .result .facts + .panel-label { margin-top: 20px; }
+  .result .basis + .track { margin-top: 18px; }
+  .result + .result { margin-top: 16px; }
+  .result > .panel-label:first-child + .hero-num { margin-top: 0; }
+  .result .legend + .facts { margin-top: 16px; padding-top: 6px; border-top: 1px solid var(--hair); }
+  .step h3 { margin: 32px 0 4px; }
+  .step h3 + .hint + .opts, .step h3 + .hint + .q { margin-top: 12px; }
+  .opt-line { margin: 10px 0 0; font-size: 0.875rem; line-height: 1.45; color: var(--muted); max-width: 36em; }
+  .opts.tiles { display: grid; gap: 8px; }
+  .opts.tiles label { display: block; }
+  .opts.tiles label > span { width: 100%; align-items: flex-start; text-align: left; min-height: 56px; padding: 10px 20px; border-radius: 18px; }
+  .opts.tiles label > span small { margin-top: 2px; font-size: 0.875rem; line-height: 1.4; }
+  .num .sym.after { font-size: 1rem; white-space: nowrap; }
+  .bar { --h: 14px; }
+  .legend li > b { font-weight: 600; }
+  /* The year chart (StackedAreaPainter on /trajectory-projection): nest egg, contributions and
+     returns stacked, today's money dashed, the year you picked marked. */
+  .result .chart { margin-top: 22px; }
+  .chart text { font-size: 11px; fill: var(--quiet); font-variant-numeric: tabular-nums; }
+  .legend.keys { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.8125rem; }
+  .legend.keys li { align-items: center; }
+  .legend.keys li > i { width: 14px; height: 0; border-radius: 0; background: none; border-top: 2px dashed rgba(27, 24, 48, 0.45); }
+---
+<section class="sect">
+  <h2>How it works</h2>
+  <p>Your investment rate is what you invest each month divided by your monthly income. At or above your target, the rate is on track. At half the target or more, it needs attention. Below half, it is at risk.</p>
+  <p>The projection grows what you already hold, plus your monthly contribution, at your yearly return, compounded every month. You contribute for the years you choose; after that the balance keeps growing with no new money.</p>
+  <p>The total in the year you pick is also shown in today's money, discounted by inflation. The monthly income it could pay comes from that figure in today's money, at your withdrawal rate.</p>
+</section>
+
+<section class="sect">
+  <h2>A worked example</h2>
+  <p>A household earns ₱50,000 a month and invests ₱10,000 of it. It already holds ₱600,000 in investments and aims for a 15% target. Every other assumption is at the app's default.</p>
+  <div class="result">
+    <p class="panel-label">The household</p>
+    <dl class="facts">
+      <div><dt>Monthly income</dt><dd>₱50,000</dd></div>
+      <div><dt>Invested each month</dt><dd>₱10,000</dd></div>
+      <div><dt>Target</dt><dd>15%</dd></div>
+      <div><dt>Current investments</dt><dd>₱600,000</dd></div>
+      <div><dt>Return</dt><dd>7% a year</dd></div>
+      <div><dt>Contributing for</dt><dd>30 years</dd></div>
+      <div><dt>Inflation and withdrawal rate</dt><dd>3% and 4%</dd></div>
+    </dl>
+    <p class="panel-label">The result</p>
+    <dl class="facts">
+      <div><dt>Investment rate</dt><dd>20.0%</dd></div>
+      <div><dt>Status</dt><dd>On track</dd></div>
+      <div><dt>Projected wealth in 30 years</dt><dd>₱17,069,608</dd></div>
+      <div><dt>Nest egg</dt><dd>₱600,000</dd></div>
+      <div><dt>Contributions</dt><dd>₱3,600,000</dd></div>
+      <div><dt>Returns</dt><dd>₱12,869,608</dd></div>
+      <div><dt>Against what you put in</dt><dd>4.1×</dd></div>
+      <div><dt>In today's money</dt><dd>₱7,032,453</dd></div>
+      <div><dt>Monthly income at 4%</dt><dd>₱23,442/mo</dd></div>
+    </dl>
+  </div>
+</section>
+
+<form class="calc" hidden novalidate>
+  <div class="steps" data-steps="tool">
+    <ol class="chapters" aria-label="Steps">
+      <li><a href="#step-1">Income</a></li>
+      <li><a href="#step-2">Invested each month</a></li>
+      <li><a href="#step-3">Your target</a></li>
+      <li><a href="#step-4">Current investments</a></li>
+      <li><a href="#step-5">Projection</a></li>
+      <li><a href="#step-6">Result</a></li>
+    </ol>
+
+    <section class="step" id="step-1">
+      <h2 tabindex="-1"><label for="ir-inc">Monthly income</label></h2>
+      <p class="hint" id="ir-inc-hint">What your household earns in an average month.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="ir-inc" type="text" inputmode="decimal" autocomplete="off" required data-check="positive" aria-describedby="ir-inc-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-2">
+      <h2 tabindex="-1"><label for="ir-inv">Invested each month</label></h2>
+      <p class="hint" id="ir-inv-hint">Everything you put into investments in an average month, retirement accounts included. Enter 0 if you invest nothing yet.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="ir-inv" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="ir-inv-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-3">
+      <h2 tabindex="-1" id="ir-tgt-h">Your target</h2>
+      <p class="hint" id="ir-tgt-hint">The share of your income you aim to invest.</p>
+      <div class="opts tiles" role="radiogroup" aria-labelledby="ir-tgt-h" aria-describedby="ir-tgt-hint">
+        <label><input type="radio" name="ir-tgt" value="10"><span>10%<small>A starting point: builds the habit, won't move your timeline</small></span></label>
+        <label><input type="radio" name="ir-tgt" value="15" checked><span>15%<small>The standard floor for long-term retirement security</small></span></label>
+        <label><input type="radio" name="ir-tgt" value="25"><span>25%<small>Meaningfully shortens the timeline to financial independence</small></span></label>
+        <label><input type="radio" name="ir-tgt" value="40"><span>40%+<small>Aggressive — requires household sacrifice, accelerates exit from earned income</small></span></label>
+      </div>
+    </section>
+
+    <section class="step" id="step-4">
+      <h2 tabindex="-1"><label for="ir-egg">Current investments</label></h2>
+      <p class="hint" id="ir-egg-hint">What your investments are worth today. Enter 0 if you are starting out.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="ir-egg" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="ir-egg-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-5">
+      <h2 tabindex="-1">Projection</h2>
+      <p class="hint">Each one starts at the app's default.</p>
+
+      <h3 id="ir-ret-h">Annual Return</h3>
+      <p class="hint" id="ir-ret-hint">How much your investments grow each year, on average.</p>
+      <div class="opts" role="radiogroup" aria-labelledby="ir-ret-h" aria-describedby="ir-ret-hint">
+        <label><input type="radio" name="ir-ret" value="5" data-line="Conservative — bond-heavy or low-risk portfolio"><span>5%</span></label>
+        <label><input type="radio" name="ir-ret" value="7" data-line="Balanced — diversified index fund assumption" checked><span>7%</span></label>
+        <label><input type="radio" name="ir-ret" value="10" data-line="Equity-heavy — historical S&amp;P 500 average"><span>10%</span></label>
+        <label><input type="radio" name="ir-ret" value="12" data-line="Optimistic — aggressive growth estimate"><span>12%</span></label>
+      </div>
+      <p class="opt-line" data-for="ir-ret" aria-hidden="true">Balanced — diversified index fund assumption</p>
+
+      <h3 id="ir-hor-h">Contribution Horizon</h3>
+      <p class="hint" id="ir-hor-hint">How many years will you keep investing?</p>
+      <div class="opts" role="radiogroup" aria-labelledby="ir-hor-h" aria-describedby="ir-hor-hint">
+        <label><input type="radio" name="ir-hor" value="10"><span>10 years</span></label>
+        <label><input type="radio" name="ir-hor" value="20"><span>20 years</span></label>
+        <label><input type="radio" name="ir-hor" value="25"><span>25 years</span></label>
+        <label><input type="radio" name="ir-hor" value="30" checked><span>30 years</span></label>
+        <label><input type="radio" name="ir-hor" value="40"><span>40 years</span></label>
+      </div>
+
+      <h3><label for="ir-year">The year to look at</label></h3>
+      <p class="hint" id="ir-year-hint">How many years from now, from 1 to 40.</p>
+      <div class="q"><div class="num"><input id="ir-year" type="text" inputmode="numeric" autocomplete="off" required value="30" aria-describedby="ir-year-hint"><span class="sym after" aria-hidden="true">years from now</span></div></div>
+
+      <h3 id="ir-inf-h">Inflation</h3>
+      <p class="hint" id="ir-inf-hint">How much prices rise each year. The higher it is, the faster your future balance loses buying power.</p>
+      <div class="opts" role="radiogroup" aria-labelledby="ir-inf-h" aria-describedby="ir-inf-hint">
+        <label><input type="radio" name="ir-inf" value="2" data-line="Low — prices creep up slowly; your money holds its value well"><span>2%</span></label>
+        <label><input type="radio" name="ir-inf" value="3" data-line="Typical — close to what most years look like" checked><span>3%</span></label>
+        <label><input type="radio" name="ir-inf" value="4" data-line="Elevated — prices climb faster than usual"><span>4%</span></label>
+        <label><input type="radio" name="ir-inf" value="6" data-line="High — prices rise fast and buying power erodes quickly"><span>6%</span></label>
+      </div>
+      <p class="opt-line" data-for="ir-inf" aria-hidden="true">Typical — close to what most years look like</p>
+
+      <h3 id="ir-wd-h">Withdrawal Rate</h3>
+      <p class="hint" id="ir-wd-hint">The share of your nest egg you would draw each year. The lower it is, the longer the money lasts.</p>
+      <div class="opts" role="radiogroup" aria-labelledby="ir-wd-h" aria-describedby="ir-wd-hint">
+        <label><input type="radio" name="ir-wd" value="2.5" data-line="Cautious — built to outlast long retirements and bad decades"><span>2.5%</span></label>
+        <label><input type="radio" name="ir-wd" value="3" data-line="Conservative — a common rate for a retirement with no end date"><span>3%</span></label>
+        <label><input type="radio" name="ir-wd" value="4" data-line="The classic rule — the 30-year rate from the Trinity study" checked><span>4%</span></label>
+        <label><input type="radio" name="ir-wd" value="5" data-line="Aggressive — assumes a shorter horizon or room to cut back"><span>5%</span></label>
+      </div>
+      <p class="opt-line" data-for="ir-wd" aria-hidden="true">The classic rule — the 30-year rate from the Trinity study</p>
+      <p class="source">Source: the 4% rate traces to William P. Bengen, <a href="https://www.financialplanningassociation.org/sites/default/files/2021-04/MAR04%20Determining%20Withdrawal%20Rates%20Using%20Historical%20Data.pdf">Determining Withdrawal Rates Using Historical Data</a>, Journal of Financial Planning, October 1994, and to the Trinity study by Philip L. Cooley, Carl M. Hubbard and Daniel T. Walz, <a href="https://www.aaii.com/journal/article/retirement-savings-choosing-a-withdrawal-rate-that-is-sustainable">Retirement Savings: Choosing a Withdrawal Rate That Is Sustainable</a>, AAII Journal, February 1998.</p>
+    </section>
+
+    <section class="step" id="step-6">
+      <h2 tabindex="-1">Your result</h2>
+      <div class="result">
+        <p class="status" id="ir-status" data-tone="ok">On track</p>
+        <p class="hero-num"><span class="fig" id="ir-rate">20.0<span class="mag">%</span></span> <span class="unit">of your income invested</span></p>
+        <p class="basis" id="ir-basis">₱10,000 of ₱50,000 a month · target 15%</p>
+        <div class="track" id="ir-track" style="--v:15;--max:15" role="img" aria-label="20.0% against a target of 15%">
+          <div class="groove"><i class="track-fill"></i><i class="tick" id="ir-tick" style="--m:7.5"></i></div>
+          <div class="marks" aria-hidden="true"><span id="ir-mark-half" style="--m:7.5">7.5%</span><span id="ir-mark-top" style="--m:15">15%</span></div>
+        </div>
+      </div>
+      <div class="result">
+        <p class="panel-label" id="ir-proj-label">Projected wealth in 30 years</p>
+        <p class="hero-num"><span class="fig" id="ir-total">₱17,069,608</span></p>
+        <p class="basis" id="ir-multiple">4.1× what you put in</p>
+        <div class="bar" id="ir-bar" role="img" aria-label=""></div>
+        <ul class="legend one" id="ir-legend"></ul>
+        <dl class="facts" id="ir-facts"></dl>
+        <svg class="chart" id="ir-chart" role="img" aria-label="" focusable="false"></svg>
+        <ul class="legend keys" aria-hidden="true"><li><i></i><span>In today's money</span></li></ul>
+      </div>
+    </section>
+  </div>
+</form>
+
+<section class="sect">
+  <h2>How to use your results</h2>
+  <p>Below half your target the rate is at risk. Investing a larger share of each paycheck moves it fastest.</p>
+  <p>The projection assumes the same rate and the same return every year. A higher return or more years of contributing raise the total. Higher inflation lowers what it is worth today.</p>
+  <p>The monthly income is what the total, in today's money, could pay each month at your withdrawal rate.</p>
+</section>
+
+<p class="note">An estimate from the numbers you entered, using the same method as the app. Not financial advice. Nothing you type leaves this page.</p>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var M = window.ClaryoMoney;
+  var C = window.ClaryoCalc;
+  var form = document.querySelector('form.calc');
+  if (!M || !C || !form) return;
+  var root = form.querySelector('.steps');
+  function $(id) { return document.getElementById(id); }
+  function each(list, f) { Array.prototype.forEach.call(list, f); }
+
+  // ── Fields: commas stripped, nothing negative, every message the browser shows on Next ──
+  function num(input) {
+    var s = input.value.replace(/[,\s]/g, '');
+    return s === '' ? null : Number(s);
+  }
+  function check(input) {
+    var v = num(input);
+    var kind = input.getAttribute('data-check');
+    var msg = '';
+    if (input.id === 'ir-year') {
+      if (v === null || !isFinite(v) || v % 1 !== 0 || v < 1 || v > 40) msg = 'Enter a whole number of years from 1 to 40.';
+    } else if (v === null) msg = input.required ? 'Enter an amount, or 0.' : '';
+    else if (!isFinite(v)) msg = 'Enter a number, like ' + input.placeholder + '.';
+    else if (v < 0) msg = 'Enter an amount of 0 or more.';
+    else if (kind === 'positive' && v === 0) msg = 'Enter an amount above 0.';
+    input.setCustomValidity(msg);
+  }
+  var fields = form.querySelectorAll('input[inputmode="decimal"], input[inputmode="numeric"]');
+  each(fields, function (input) {
+    input.addEventListener('input', function () { check(input); });
+    input.addEventListener('blur', function () {
+      var v = num(input);
+      if (input.getAttribute('inputmode') === 'decimal' && v !== null && isFinite(v) && v >= 0) input.value = v.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      check(input);
+    });
+    check(input);
+  });
+  $('ir-year').defaultValue = String(C.tiers.projection.viewYear.default);
+  function picked(name) {
+    var r = form.querySelector('input[name="' + name + '"]:checked');
+    return r ? Number(r.value) : null;
+  }
+  function syncLines() {
+    each(form.querySelectorAll('.opt-line[data-for]'), function (p) {
+      var r = form.querySelector('input[name="' + p.getAttribute('data-for') + '"]:checked');
+      if (r) p.textContent = r.getAttribute('data-line');
+    });
+  }
+  form.addEventListener('change', function (e) { if (e.target.type === 'radio') syncLines(); });
+  each(form.querySelectorAll('input[data-line]'), function (r) {
+    var sr = document.createElement('span');
+    sr.className = 'sr';
+    sr.textContent = ', ' + r.getAttribute('data-line');
+    r.nextElementSibling.appendChild(sr);
+  });
+
+  // Placeholders: the worked example's household, in the visitor's currency.
+  var EXAMPLE = { 'ir-inc': 50000, 'ir-inv': 10000, 'ir-egg': 600000 };
+  Object.keys(EXAMPLE).forEach(function (id) { $(id).placeholder = M.whole(EXAMPLE[id] / M.factor); });
+
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+  function fact(list, label, value) {
+    var row = document.createElement('div');
+    var dt = document.createElement('dt');
+    var dd = document.createElement('dd');
+    dt.textContent = label;
+    dd.textContent = value;
+    row.appendChild(dt);
+    row.appendChild(dd);
+    list.appendChild(row);
+  }
+
+  // AppColors.projectionNestEgg, projectionContributions (the Growth amber), projectionGains.
+  var HUE = { egg: '#D4C4A8', contrib: '#FFB74D', gains: '#10B981' };
+
+  // ── The year chart ──
+  var NS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  function ticks(max) {
+    if (!(max > 0)) return [];
+    var raw = max / 4;
+    var p = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10));
+    var steps = [1, 2, 2.5, 5, 10];
+    var step = 10 * p;
+    for (var k = 0; k < steps.length; k++) { if (steps[k] * p >= raw) { step = steps[k] * p; break; } }
+    var out = [];
+    for (var v = step; v <= max * 1.0001; v += step) out.push(v);
+    return out;
+  }
+  var last = null;
+  function drawChart() {
+    var svg = $('ir-chart');
+    if (!last || !svg.getBoundingClientRect().width) return;
+    var years = last.years, real = last.real, at = last.at;
+    clear(svg);
+    var W = Math.round(svg.getBoundingClientRect().width);
+    var top = 12, floor = 162, H = 182, gutter = 46;
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
+    var span = years.length - 1;
+    var yMax = 0;
+    years.forEach(function (m) { yMax = Math.max(yMax, m.total); });
+    if (!(yMax > 0)) yMax = 1;
+    function x(i) { return gutter + i / span * (W - gutter); }
+    function y(v) { return floor - v / yMax * (floor - top); }
+    ticks(yMax).forEach(function (t) {
+      svgEl('line', { x1: gutter, x2: W, y1: y(t), y2: y(t), stroke: 'rgba(27,24,48,0.11)', 'stroke-width': 0.8 }, svg);
+      var label = svgEl('text', { x: gutter - 6, y: y(t), 'text-anchor': 'end', 'dominant-baseline': 'middle' }, svg);
+      label.textContent = M.compactMoney(t);
+    });
+    svgEl('line', { x1: gutter, x2: W, y1: floor, y2: floor, stroke: 'rgba(27,24,48,0.11)', 'stroke-width': 0.8 }, svg);
+    var bands = [['nestEgg', HUE.egg], ['contributions', HUE.contrib], ['gains', HUE.gains]];
+    var lower = years.map(function () { return 0; });
+    bands.forEach(function (b) {
+      var upper = years.map(function (m, i) { return lower[i] + m[b[0]]; });
+      var d = 'M' + x(0) + ' ' + y(lower[0]);
+      for (var i = 0; i <= span; i++) d += ' L' + x(i) + ' ' + y(upper[i]);
+      for (var j = span; j >= 0; j--) d += ' L' + x(j) + ' ' + y(lower[j]);
+      svgEl('path', { d: d + ' Z', fill: b[1] }, svg);
+      lower = upper;
+    });
+    var edge = '';
+    lower.forEach(function (v, i) { edge += (i ? ' L' : 'M') + x(i) + ' ' + y(v); });
+    svgEl('path', { d: edge, fill: 'none', stroke: HUE.gains, 'stroke-width': 2, 'stroke-linejoin': 'round' }, svg);
+    var dash = '';
+    real.forEach(function (v, i) { dash += (i ? ' L' : 'M') + x(i) + ' ' + y(v); });
+    svgEl('path', { d: dash, fill: 'none', stroke: 'rgba(27,24,48,0.45)', 'stroke-width': 1.5, 'stroke-dasharray': '4 3' }, svg);
+    svgEl('line', { x1: x(at), x2: x(at), y1: top - 6, y2: floor, stroke: 'rgba(27,24,48,0.35)', 'stroke-width': 1 }, svg);
+    svgEl('circle', { cx: x(at), cy: y(lower[at]), r: 4, fill: '#FFFFFF', stroke: HUE.gains, 'stroke-width': 2 }, svg);
+    [0, 10, 20, 30, 40].forEach(function (m, k, all) {
+      if (m > span) return;
+      var anchor = k === 0 ? 'start' : (m === span ? 'end' : 'middle');
+      var t = svgEl('text', { x: k === 0 ? gutter : (m === span ? W : x(m)), y: floor + 15, 'text-anchor': anchor }, svg);
+      t.textContent = m === 0 ? 'Now' : 'Yr ' + m;
+    });
+  }
+  var resizeTimer = 0;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(drawChart, 150);
+  });
+
+  var TONE = { healthy: 'ok', attention: 'warn', atRisk: 'risk', notSetUp: 'warn' };
+
+  function fill() {
+    var income = num($('ir-inc'));
+    var invested = num($('ir-inv'));
+    var egg = num($('ir-egg'));
+    var year = num($('ir-year'));
+    if (!(income > 0) || invested === null || egg === null || !(year >= 1 && year <= 40)) return;
+    var target = picked('ir-tgt');
+    var o = { returnRate: picked('ir-ret'), contributionYears: picked('ir-hor') };
+    var inflation = picked('ir-inf');
+    var withdrawal = picked('ir-wd');
+
+    // ── The rate against the target ──
+    var rate = C.investmentRate(invested, income);
+    var status = C.investmentStatus(rate, target);
+    var st = $('ir-status');
+    st.textContent = C.tiers.status[status];
+    st.setAttribute('data-tone', TONE[status]);
+    var shown = M.percent(rate, 1);
+    var fig = $('ir-rate');
+    clear(fig);
+    fig.appendChild(document.createTextNode(shown.slice(0, -1)));
+    var pct = document.createElement('span');
+    pct.className = 'mag';
+    pct.textContent = '%';
+    fig.appendChild(pct);
+    $('ir-basis').textContent = M.money(invested) + ' of ' + M.money(income) + ' a month · target ' + M.percent(target);
+    var track = $('ir-track');
+    track.style.setProperty('--max', String(target));
+    track.style.setProperty('--v', String(Math.min(rate, target)));
+    track.setAttribute('aria-label', shown + ' against a target of ' + M.percent(target) + ', with half the target at ' + M.percent(target / 2));
+    $('ir-tick').style.setProperty('--m', String(target / 2));
+    var half = $('ir-mark-half');
+    half.style.setProperty('--m', String(target / 2));
+    half.textContent = M.percent(target / 2);
+    var topMark = $('ir-mark-top');
+    topMark.style.setProperty('--m', String(target));
+    topMark.textContent = M.percent(target);
+
+    // ── The projection at the year picked ──
+    var monthly = C.monthlyContributionAt(income, rate);
+    var m = C.milestone(egg, monthly, year, o);
+    var today = C.todaysMoney(m.total, inflation, year);
+    $('ir-proj-label').textContent = 'Projected wealth in ' + year + (year === 1 ? ' year' : ' years');
+    $('ir-total').textContent = M.money(m.total);
+    var multiple = $('ir-multiple');
+    var showMultiple = m.gains > 0 && year !== 0 && m.multiple !== null;
+    multiple.hidden = !showMultiple;
+    multiple.textContent = showMultiple ? M.multiple(m.multiple) + ' what you put in' : '';
+
+    var parts = [
+      { label: 'Nest egg', value: m.nestEgg, hue: HUE.egg },
+      { label: 'Contributions', value: m.contributions, hue: HUE.contrib },
+      { label: 'Returns', value: m.gains, hue: HUE.gains },
+    ];
+    var bar = $('ir-bar');
+    var legend = $('ir-legend');
+    clear(bar);
+    clear(legend);
+    var said = [];
+    parts.forEach(function (p) {
+      if (!(p.value > 0)) return;
+      var seg = document.createElement('i');
+      seg.className = 'seg';
+      seg.style.setProperty('--w', String(p.value));
+      seg.style.setProperty('--c', p.hue);
+      bar.appendChild(seg);
+      var li = document.createElement('li');
+      li.style.setProperty('--c', p.hue);
+      var dot = document.createElement('i');
+      var name = document.createElement('span');
+      var amount = document.createElement('b');
+      name.textContent = p.label;
+      amount.textContent = M.money(p.value);
+      li.appendChild(dot);
+      li.appendChild(name);
+      li.appendChild(amount);
+      legend.appendChild(li);
+      said.push(p.label + ' ' + M.money(p.value));
+    });
+    bar.setAttribute('aria-label', said.join(', '));
+
+    var facts = $('ir-facts');
+    clear(facts);
+    fact(facts, "In today's money, at " + M.percent(inflation) + ' inflation', M.money(today));
+    fact(facts, 'Monthly income, at ' + M.percent(withdrawal) + ' withdrawal', M.money(C.monthlyIncome(today, withdrawal)) + '/mo');
+
+    var series = C.yearSeries(egg, monthly, o);
+    last = {
+      years: series,
+      real: series.map(function (s) { return C.todaysMoney(s.total, inflation, s.year); }),
+      at: year,
+    };
+    $('ir-chart').setAttribute('aria-label', 'Projected wealth from ' + M.money(series[0].total) + ' now to ' +
+      M.money(series[series.length - 1].total) + ' in 40 years, with year ' + year + ' marked at ' + M.money(m.total) + '.');
+    drawChart();
+  }
+
+  root.addEventListener('steps:finish', fill);
+  root.addEventListener('steps:restart', function () {
+    // form.reset() runs after this event; the fields' messages and option lines follow it.
+    setTimeout(function () { each(fields, check); syncLines(); }, 0);
+  });
+  form.addEventListener('submit', function (e) { e.preventDefault(); });
+  form.hidden = false;
+});
+</script>

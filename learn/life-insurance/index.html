@@ -1,0 +1,142 @@
+---
+layout: guide
+title: How much life cover you need
+description: How much life insurance a household needs
+date: 2026-11-18 09:03:00 +0800
+pillar: protect
+doc: false
+feed: true
+tool_url: /tools/life-cover/
+tool_title: Life cover calculator
+style: |
+  /* The Protection tutorial's first two walks (cover_kinds_beats.dart, coverage_method_beats.dart).
+     The chart is AnnuityDrawdownChart on the walk's sample, from calc-math.js's samples.life:
+     900,000 a year of a 1.2M income, 20 years, 6% return, 3% inflation. The solid area is what the
+     need takes (13.9M drawn to zero), the dashed line the cover sized by income (12.0M, dry in year
+     17 of 20), the red band the years it misses (dryFill, signalDanger at alpha 26). The y scale is
+     niceAxisStep over the larger series; the plot stretches, so strokes do not scale and the dots
+     and labels are HTML. */
+  .dd { display: flex; }
+  .dd-y { position: relative; flex: none; width: 46px; height: 150px; }
+  .dd-y span { position: absolute; right: 6px; top: var(--t); transform: translateY(-50%); font-size: 0.6875rem; font-weight: 500; line-height: 1; color: var(--quiet); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .dd-plot { position: relative; flex: 1 1 auto; min-width: 0; height: 150px; }
+  .dd-plot svg.chart { width: 100%; height: 150px; overflow: hidden; }
+  .dd-dot { position: absolute; left: var(--x); top: var(--y); width: 6px; height: 6px; margin: -3px 0 0 -3px; border-radius: 50%; background: var(--card); box-shadow: inset 0 0 0 1.5px var(--peri); }
+  .dd-x { position: relative; height: 18px; margin: 4px 0 0 46px; font-size: 0.6875rem; font-weight: 500; line-height: 18px; color: var(--quiet); }
+  .dd-x span { position: absolute; top: 0; left: var(--x); transform: translateX(-50%); white-space: nowrap; }
+  .dd-x span:first-child { transform: none; }
+  .dd-x span:last-child { left: auto; right: 0; transform: none; }
+  .dd-key { list-style: none; display: flex; flex-wrap: wrap; gap: 6px 16px; margin: 12px 0 0; padding: 0; font-size: 0.8125rem; line-height: 1.4; color: var(--muted); }
+  .dd-key li { display: flex; align-items: center; gap: 6px; }
+  .dd-key i { flex: none; width: 14px; height: 7px; border-radius: 2px; }
+  .dd-key .k-need { background: rgba(121, 134, 203, 0.275); box-shadow: inset 0 0 0 0.8px var(--peri); }
+  .dd-key .k-held { height: 0; border-radius: 0; border-top: 1.5px dashed rgba(27, 24, 48, 0.45); }
+  .dd-key .k-short { background: rgba(198, 40, 40, 0.102); }
+  /* The shortfall's chip: the one red mark, keying the row to the band (coverage_method_beats.dart). */
+  .chip.short { background: #C62828; color: #fff; }
+---
+<div class="steps" data-steps="guide">
+  <ol class="chapters" aria-label="In this guide">
+    <li><a href="#step-1">Three kinds of insurance cover</a></li>
+    <li><a href="#step-2">Life cover needed</a></li>
+    <li><a href="#step-3">Spending and years</a></li>
+    <li><a href="#step-4">Returns and prices</a></li>
+    <li><a href="#step-5">The shortfall</a></li>
+  </ol>
+
+  <section class="step" id="step-1">
+    <h2 tabindex="-1">Three kinds of insurance cover</h2>
+    <figure class="figure">
+      <ul class="rows">
+        <li><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-heart"/></svg></span><span class="words"><b class="t">Life insurance</b><span class="g">Pays a lump sum to your beneficiaries when you die.</span></span></li>
+        <li><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-aid"/></svg></span><span class="words"><b class="t">Health (critical illness)</b><span class="g">Pays you a lump sum on diagnosis of a covered illness, such as cancer or stroke.</span></span></li>
+        <li><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-hospital"/></svg></span><span class="words"><b class="t">Medical insurance</b><span class="g">Pays hospital and doctor bills up to a yearly limit.</span></span></li>
+        <li><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-users"/></svg></span><span class="words"><b class="t">Each adult's policies</b><span class="g">Add policies under the adult they cover. A joint policy counts for both.</span></span></li>
+      </ul>
+    </figure>
+  </section>
+
+  <section class="step" id="step-2">
+    <h2 tabindex="-1">Life cover needed</h2>
+    <figure class="figure">
+      <div class="dd">
+        <div class="dd-y" aria-hidden="true">
+          <span style="--t: 20.528%">₱12M</span>
+          <span style="--t: 33.773%">₱10M</span>
+          <span style="--t: 47.019%">₱8M</span>
+          <span style="--t: 60.264%">₱6M</span>
+          <span style="--t: 73.509%">₱4M</span>
+          <span style="--t: 86.755%">₱2M</span>
+        </div>
+        <div class="dd-plot">
+          <svg class="chart" viewBox="0 0 200 150" preserveAspectRatio="none" role="img" aria-label="What it takes: ₱13.9M, drawn down to nothing over 20 years. What you hold: ₱12.0M, which runs out after 16.5 years. Not funded: years 17 to 20.">
+            <g stroke="rgba(27, 24, 48, 0.11)" stroke-width="0.8" vector-effect="non-scaling-stroke">
+              <line x1="0" y1="30.79" x2="200" y2="30.79" vector-effect="non-scaling-stroke"/>
+              <line x1="0" y1="50.66" x2="200" y2="50.66" vector-effect="non-scaling-stroke"/>
+              <line x1="0" y1="70.53" x2="200" y2="70.53" vector-effect="non-scaling-stroke"/>
+              <line x1="0" y1="90.4" x2="200" y2="90.4" vector-effect="non-scaling-stroke"/>
+              <line x1="0" y1="110.26" x2="200" y2="110.26" vector-effect="non-scaling-stroke"/>
+              <line x1="0" y1="130.13" x2="200" y2="130.13" vector-effect="non-scaling-stroke"/>
+            </g>
+            <path d="M0,150 L0,12 L10,13.2 L20,14.75 L30,16.69 L40,19.05 L50,21.86 L60,25.15 L70,28.98 L80,33.37 L90,38.38 L100,44.05 L110,50.43 L120,57.57 L130,65.54 L140,74.39 L150,84.19 L160,95 L170,106.91 L180,119.99 L190,134.32 L200,150 Z" fill="rgba(121, 134, 203, 0.275)"/>
+            <polyline points="0,12 10,13.2 20,14.75 30,16.69 40,19.05 50,21.86 60,25.15 70,28.98 80,33.37 90,38.38 100,44.05 110,50.43 120,57.57 130,65.54 140,74.39 150,84.19 160,95 170,106.91 180,119.99 190,134.32 200,150" fill="none" stroke="#7986CB" stroke-width="2" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+            <polyline points="0,30.79 10,33.12 20,35.87 30,39.07 40,42.77 50,47 60,51.81 70,57.24 80,63.32 90,70.13 100,77.7 110,86.1 120,95.39 130,105.62 140,116.88 150,129.22 160,142.74 170,150 180,150 190,150 200,150" fill="none" stroke="rgba(27, 24, 48, 0.35)" stroke-width="1.2" stroke-dasharray="4 3" stroke-linecap="round" vector-effect="non-scaling-stroke"/>
+            <rect x="170" y="0" width="30" height="150" fill="rgba(198, 40, 40, 0.102)"/>
+          </svg>
+          <i class="dd-dot" style="--x: 0%; --y: 8%" aria-hidden="true"></i>
+          <i class="dd-dot" style="--x: 50%; --y: 29.367%" aria-hidden="true"></i>
+          <i class="dd-dot" style="--x: 100%; --y: 100%" aria-hidden="true"></i>
+        </div>
+      </div>
+      <div class="dd-x" aria-hidden="true"><span style="--x: 0%">Now</span><span style="--x: 25%">Yr 5</span><span style="--x: 50%">Yr 10</span><span style="--x: 75%">Yr 15</span><span style="--x: 100%">Yr 20</span></div>
+      <ul class="dd-key" aria-hidden="true">
+        <li><i class="k-need"></i>What it takes</li>
+        <li><i class="k-held"></i>What you hold</li>
+        <li><i class="k-short"></i>Not funded</li>
+      </ul>
+      <ul class="rows">
+        <li><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-cal"/></svg></span><span class="words"><b class="t">Spending and years</b><span class="g">Yearly spending times the years your family needs it, not a multiple of income.</span></span></li>
+        <li><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-percent"/></svg></span><span class="words"><b class="t">Returns and prices</b><span class="g">The proceeds earns each year while you draw it down, and prices rise due to inflation.</span></span></li>
+        <li><span class="chip short"><svg class="gl" aria-hidden="true"><use href="#g-hourglass"/></svg></span><span class="words"><b class="t">The shortfall</b><span class="g">Red marks the years a cover sized by income runs out.</span></span></li>
+      </ul>
+    </figure>
+  </section>
+
+  <section class="step" id="step-3">
+    <h2 tabindex="-1">Spending and years</h2>
+    <p>Yearly spending times the years your family needs it, not a multiple of income.</p>
+    <figure class="figure">
+      <figcaption>What your family would need</figcaption>
+      <dl class="facts">
+        <div><dt>Yearly spending</dt><dd>₱900,000</dd></div>
+        <div><dt>10 years</dt><dd>₱7.9M</dd></div>
+        <div><dt>20 years</dt><dd>₱13.9M</dd></div>
+        <div><dt>30 years</dt><dd>₱18.4M</dd></div>
+      </dl>
+    </figure>
+  </section>
+
+  <section class="step" id="step-4">
+    <h2 tabindex="-1">Returns and prices</h2>
+    <p>The proceeds earns each year while you draw it down, and prices rise due to inflation.</p>
+    <figure class="figure">
+      <dl class="facts">
+        <div><dt>Return on the payout</dt><dd>6%</dd></div>
+        <div><dt>Inflation</dt><dd>3%</dd></div>
+      </dl>
+    </figure>
+  </section>
+
+  <section class="step" id="step-5">
+    <h2 tabindex="-1">The shortfall</h2>
+    <p>Red marks the years a cover sized by income runs out.</p>
+    <figure class="figure">
+      <p class="hero-num"><span class="fig">16<span class="dec">.5</span></span><span class="unit">years</span></p>
+      <p>of the 20 your household would need, if your life cover paid out today.</p>
+      <dl class="facts">
+        <div><dt>What it takes</dt><dd>₱13.9M</dd></div>
+        <div><dt>What you hold</dt><dd>₱12.0M</dd></div>
+      </dl>
+    </figure>
+  </section>
+</div>

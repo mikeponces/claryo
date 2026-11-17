@@ -3,13 +3,34 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Claryo: Paycheck System</title>
+<title>Claryo: Paycheck System | Plan your paycheck. Secure your future.</title>
 <meta name="description" content="Plan your paycheck. Secure your financial future — in the right order.">
 <meta name="color-scheme" content="light">
 <meta name="theme-color" content="#F5F2F8">
-<meta property="og:title" content="Claryo: Paycheck System">
+<link rel="canonical" href="https://claryoapp.com/">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://claryoapp.com/">
+<meta property="og:site_name" content="Claryo">
+<meta property="og:title" content="Claryo: Paycheck System | Plan your paycheck. Secure your future.">
 <meta property="og:description" content="Plan your paycheck. Secure your financial future — in the right order.">
-<meta property="og:image" content="https://claryoapp.com/assets/icon-512.png">
+<meta property="og:image" content="https://claryoapp.com/assets/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Claryo: Plan your paycheck. Secure your future.">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Claryo: Paycheck System",
+  "alternateName": "Claryo",
+  "description": "Plan your paycheck. Secure your financial future — in the right order.",
+  "url": "https://claryoapp.com/",
+  "operatingSystem": "iOS, Android",
+  "applicationCategory": "FinanceApplication",
+  "image": "https://claryoapp.com/assets/og-image.png"
+}
+</script>
 <link rel="icon" type="image/png" href="assets/favicon.png">
 <link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
 <script>
@@ -20,11 +41,11 @@
   }
 </script>
 <style>
-  @font-face { font-family: Figtree; font-weight: 400; font-display: swap; src: url("assets/fonts/Figtree-Regular.ttf") format("truetype"); }
-  @font-face { font-family: Figtree; font-weight: 500; font-display: swap; src: url("assets/fonts/Figtree-Medium.ttf") format("truetype"); }
-  @font-face { font-family: Figtree; font-weight: 600; font-display: swap; src: url("assets/fonts/Figtree-SemiBold.ttf") format("truetype"); }
-  @font-face { font-family: Figtree; font-weight: 700; font-display: swap; src: url("assets/fonts/Figtree-Bold.ttf") format("truetype"); }
-  @font-face { font-family: Figtree; font-weight: 800; font-display: swap; src: url("assets/fonts/Figtree-ExtraBold.ttf") format("truetype"); }
+  @font-face { font-family: Figtree; font-weight: 400; font-display: swap; src: url("assets/fonts/Figtree-Regular.woff2") format("woff2"), url("assets/fonts/Figtree-Regular.ttf") format("truetype"); }
+  @font-face { font-family: Figtree; font-weight: 500; font-display: swap; src: url("assets/fonts/Figtree-Medium.woff2") format("woff2"), url("assets/fonts/Figtree-Medium.ttf") format("truetype"); }
+  @font-face { font-family: Figtree; font-weight: 600; font-display: swap; src: url("assets/fonts/Figtree-SemiBold.woff2") format("woff2"), url("assets/fonts/Figtree-SemiBold.ttf") format("truetype"); }
+  @font-face { font-family: Figtree; font-weight: 700; font-display: swap; src: url("assets/fonts/Figtree-Bold.woff2") format("woff2"), url("assets/fonts/Figtree-Bold.ttf") format("truetype"); }
+  @font-face { font-family: Figtree; font-weight: 800; font-display: swap; src: url("assets/fonts/Figtree-ExtraBold.woff2") format("woff2"), url("assets/fonts/Figtree-ExtraBold.ttf") format("truetype"); }
 
   /* The app icon's ground and its four bars. White ink only on purple: it is
      the one fill where white clears AA (4.6:1); the other three take dark ink. */
@@ -65,17 +86,32 @@
   @media (min-width: 640px) { :root { --gutter: 32px; } }
 
   /* ── Header ── */
-  .top { display: flex; align-items: center; justify-content: space-between; padding: 20px 0; }
-  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.125rem; letter-spacing: -0.01em; text-decoration: none; }
+  /* A full-bleed sticky bar, 60 tall plus its 1px hairline; anything sized to the window subtracts 61. */
+  html { scroll-padding-top: 76px; }
+  .top { position: sticky; top: 0; z-index: 10; background: rgba(245, 242, 248, 0.96);
+         border-bottom: 1px solid transparent; }
+  @supports ((-webkit-backdrop-filter: blur(12px)) or (backdrop-filter: blur(12px))) {
+    .top { background: rgba(245, 242, 248, 0.85); -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px); }
+  }
+  .top.scrolled { border-bottom-color: var(--line); }
+  .top > .wrap { display: flex; align-items: center; justify-content: space-between; gap: 16px;
+                 padding-top: 14px; padding-bottom: 14px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 1.125rem;
+           letter-spacing: -0.01em; text-decoration: none; }
   .brand img { width: 32px; height: 32px; border-radius: 8px; }
-  .top nav { display: flex; gap: 20px; font-size: 0.9375rem; color: var(--muted); }
-  .top nav a { text-decoration: none; }
-  .top nav a:hover { color: var(--ink); }
+  .top nav { display: flex; align-items: center; gap: 20px; font-size: 0.9375rem; color: var(--muted); }
+  .top nav a { text-decoration: none; white-space: nowrap; }
+  .top nav a:hover, .top nav a[aria-current] { color: var(--ink); }
+  .top .sections { display: none; }
+  @media (min-width: 880px) {
+    .top .sections { display: flex; gap: 20px; padding-right: 20px; border-right: 1px solid var(--line); }
+  }
   /* On a phone every link is a 44-point target: padding out, margin back, so nothing moves. */
   @media (max-width: 879px) {
     .brand { padding: 6px 0; margin: -6px 0; }
     .top nav a { padding: 10px; margin: -10px; }
   }
+  @media (max-width: 359px) { .top nav { gap: 14px; font-size: 0.875rem; } }
 
   /* ── Hero ── */
   .hero { display: grid; gap: 40px; padding: 48px 0 72px; align-items: center; }
@@ -89,6 +125,10 @@
     letter-spacing: -0.035em;
   }
   .lead { font-size: 1.1875rem; color: var(--muted); max-width: 36em; }
+  /* The launch list: a quiet text link, never a filled button (house-rules: no filled button outside a form). */
+  .notify { margin-top: 28px; font-size: 1.0625rem; font-weight: 600; }
+  .notify a { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
+  @media (max-width: 879px) { .notify a { display: inline-block; padding: 9px 0; margin: -9px 0; } }
   /* The stores' official badges, unmodified, at 40 tall; Google's PNG carries 41 of transparent
      padding round a 564x168 badge, so it draws at 59.5 and the padding is pulled back. */
   .stores { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 22px; margin-top: 28px; }
@@ -211,6 +251,25 @@
   /* Built for breadwinners: a centred pause between the hero and the pillars. */
   .interlude { text-align: center; }
   .interlude .intro { margin: 0 auto; max-width: 32em; text-wrap: pretty; }
+  /* The onboarding contrast (tracker_contrast_beat.dart): the tracker a flat grey receipt with no lift, its
+     spends dated and muted; Claryo the lifted panel, each line named by its job; "vs" between. Side by side from
+     560. No headline: the cards carry it ("One looks back, one plans ahead." reads as slop, founder 2026-11-18). */
+  .contrast { max-width: 640px; margin: 40px auto 0; }
+  .vs-pair { display: grid; gap: 12px; text-align: left; }
+  .vs-pair .side { min-width: 0; padding: 16px 24px; border-radius: 26px; }
+  .vs-pair .past { background: #F4F3F5; border: 1px solid #CAC4D0; }   /* panelSurface lerped 5% to onSurface, outlineVariant */
+  .side .who { font-size: 0.8125rem; font-weight: 700; line-height: 1.4; }
+  .side .q { margin: 4px 0 8px; font-weight: 700; font-size: 1.375rem; line-height: 1.2; letter-spacing: -0.014em; text-wrap: balance; }
+  .side ul { list-style: none; margin: 0; padding: 0; }
+  .side li { display: flex; align-items: center; gap: 16px; padding: 4px 0; }
+  .side li .chip { width: 28px; height: 28px; border-radius: 8.68px; }
+  .side li .chip svg { width: 15px; height: 15px; }
+  .side li .nm { flex: 1; min-width: 0; display: grid; font-size: 0.875rem; font-weight: 600; line-height: 1.35; }
+  .side li .nm small { font-size: 0.75rem; font-weight: 400; color: var(--muted); }
+  .side li b { flex: none; font-weight: 600; font-size: 0.875rem; font-variant-numeric: tabular-nums; }
+  .past li .nm, .past li b { color: var(--muted); }   /* onSurfaceVariant: the past reads muted */
+  .vs { justify-self: center; align-self: center; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--card); border: 1px solid #CAC4D0; font-size: 0.75rem; font-weight: 700; line-height: 1; color: var(--muted); }
+  @media (min-width: 560px) { .vs-pair { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); } }
 
   /* ── Pillar strips ── */
   /* A pillar strip: the words with the tab's instrument card under them, the tab in a phone beside
@@ -563,7 +622,8 @@
   .ipads h2 { text-wrap: balance; }
   .pad-fig { margin: 48px 0 0; }
   /* --k is the smaller of what the column's width allows (--kw) and what the window's height allows (--kh):
-     never a sideways scroll, and from 892 tall the strip's head and the whole iPad share one screen. */
+     never a sideways scroll, and from 953 tall the strip's head and the whole iPad share one screen. Each
+     height step is 61 higher than the window it was sized for: the sticky header covers that much. */
   .pad {
     --W: 820; --H: 1180; --kw: 0.33; --kh: 0.57; --k: min(var(--kw), var(--kh));
     width: calc((var(--W) + 52) * var(--k) * 1px);
@@ -579,15 +639,15 @@
   @media (min-width: 480px) { .pad { --kw: 0.513; } }
   @media (min-width: 560px) { .pad { --kw: 0.605; } }
   @media (min-width: 640px) { .pad { --kw: 0.66; } }
-  @media (min-height: 1000px) { .pad { --kh: 0.66; } }
-  @media (max-height: 891px) { .pad { --kh: 0.52; } }
-  @media (max-height: 831px) { .pad { --kh: 0.48; } }
-  @media (max-height: 780px) { .pad { --kh: 0.44; } }
-  @media (max-height: 731px) { .pad { --kh: 0.4; } }
-  @media (max-height: 682px) { .pad { --kh: 0.36; } }
-  @media (max-height: 633px) { .pad { --kh: 0.32; } }
-  @media (max-height: 583px) { .pad { --kh: 0.28; } }
-  @media (max-height: 534px) { .pad { --kh: 0.24; } }
+  @media (min-height: 1061px) { .pad { --kh: 0.66; } }
+  @media (max-height: 952px) { .pad { --kh: 0.52; } }
+  @media (max-height: 892px) { .pad { --kh: 0.48; } }
+  @media (max-height: 841px) { .pad { --kh: 0.44; } }
+  @media (max-height: 792px) { .pad { --kh: 0.4; } }
+  @media (max-height: 743px) { .pad { --kh: 0.36; } }
+  @media (max-height: 694px) { .pad { --kh: 0.32; } }
+  @media (max-height: 644px) { .pad { --kh: 0.28; } }
+  @media (max-height: 595px) { .pad { --kh: 0.24; } }
   .pscreen {
     position: relative;
     width: calc(var(--W) * var(--k) * 1px); height: calc(var(--H) * var(--k) * 1px);
@@ -809,17 +869,22 @@
   }
 
   /* ── Footer ── */
-  footer { border-top: 1px solid var(--line); padding: 32px 0 48px; color: var(--muted); font-size: 0.9375rem; }
-  footer .wrap { display: grid; gap: 16px; }
-  @media (min-width: 720px) { footer .wrap { grid-template-columns: 1fr auto; align-items: center; } }
-  footer nav { display: flex; flex-wrap: wrap; gap: 8px 20px; }
-  footer nav a { text-decoration: none; }
-  footer nav a:hover { color: var(--ink); }
-  /* 44-point targets, as in the header; wrapped rows sit far enough apart that theirs never overlap. */
-  @media (max-width: 879px) {
-    footer nav { row-gap: 20px; }
-    footer nav a { padding: 10px 0; margin: -10px 0; }
+  /* Four columns wide, two narrow with Contact across. footer h2 outranks the page's h2 on every property it sets. */
+  footer { border-top: 1px solid var(--line); padding: 40px 0 48px; color: var(--muted); font-size: 0.9375rem; }
+  footer .foot-cols { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px 24px; }
+  footer .contact { grid-column: 1 / -1; }
+  @media (min-width: 880px) {
+    footer .foot-cols { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+    footer .contact { grid-column: auto; }
   }
+  footer h2 { margin: 0 0 12px; font-size: 0.9375rem; font-weight: 700; line-height: 1.4;
+              letter-spacing: -0.01em; color: var(--ink); text-wrap: initial; }
+  footer ul { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  footer a { text-decoration: none; overflow-wrap: anywhere; }
+  footer a:hover { color: var(--ink); }
+  footer .legal { margin: 32px 0 0; padding-top: 24px; border-top: 1px solid var(--line); }
+  /* 44-point targets, as in the header. */
+  @media (max-width: 879px) { footer ul { gap: 0; } footer ul a { display: inline-block; padding: 10px 0; } }
 
   /* ── Motion ── */
   /* The stepped arrival (arrival_clock.dart): each beat fades and rises 12
@@ -848,7 +913,7 @@
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
 <!-- Phosphor glyphs (MIT), the outlines the app draws; a duotone layer at 0.2, as PhosphorIcon draws it. -->
-<symbol id="g-save" viewBox="0 0 1024 1024"><path opacity=".2" d="M960 448L960 576Q960 603 941.5 621.5Q923 640 896 640L896 640L864 640L792 843Q788 852 780 858Q772 864 761 864Q761 864 761 864Q761 864 761 864L711 864Q711 864 711 864Q711 864 711 864Q700 864 692 858Q684 852 680 843L680 843L665 800L391 800L376 843Q372 852 364 858Q356 864 345 864Q345 864 345 864Q345 864 345 864L295 864Q295 864 295 864Q295 864 295 864Q284 864 276 858Q268 852 264 843L264 843L212 696Q173 654 150.5 598.5Q128 543 128 480Q128 480 128 480Q128 480 128 480L128 480Q128 414 153 355Q178 297 221.5 253.5Q265 210 323 185Q382 160 448 160L448 160L576 160Q576 160 576 160Q576 160 576 160Q625 160 670 174Q715 188 753 213.5Q791 239 821 274Q850 309 869 351L870 353Q872 359 875 366.5Q878 374 881 382L881 384L896 384Q923 384 941.5 402.5Q960 421 960 448L960 448L960 448Z"/><path d="M768 464Q768 484 754 498Q740 512 720 512Q700 512 686 498Q672 484 672 464Q672 444 686 430Q700 416 720 416L720 416Q740 416 754 430Q768 444 768 464L768 464ZM608 256L448 256Q435 256 425.5 265.5Q416 275 416 288Q416 301 425.5 310.5Q435 320 448 320L448 320L608 320Q621 320 630.5 310.5Q640 301 640 288Q640 275 630.5 265.5Q621 256 608 256L608 256ZM992 448L992 576Q992 616 964 644Q936 672 896 672L896 672L887 672L822 854Q815 872 798.5 884Q782 896 761 896Q761 896 761 896Q761 896 761 896L711 896Q711 896 711 896Q711 896 711 896Q690 896 673.5 884Q657 872 650 854L650 854L643 832L413 832L406 854Q399 872 382.5 884Q366 896 345 896Q345 896 345 896Q345 896 345 896L295 896Q295 896 295 896Q295 896 295 896Q274 896 257.5 884Q241 872 234 854L234 854L184 713Q149 674 127 625Q105 576 98 521L98 519Q83 528 73.5 543Q64 558 64 576L64 576Q64 589 54.5 598.5Q45 608 32 608Q19 608 9.5 598.5Q0 589 0 576L0 576Q0 531 27.5 497Q55 463 96 452L97 452Q103 384 132 325Q162 266 209 222Q256 178 317 153Q379 128 448 128L864 128Q877 128 886.5 137.5Q896 147 896 160Q896 173 886.5 182.5Q877 192 864 192L864 192L778 192Q818 220 848.5 257Q879 294 898 338L899 340Q900 343 901.5 346Q903 349 904 352Q941 355 966.5 382.5Q992 410 992 448Q992 448 992 448Q992 448 992 448L992 448ZM928 448Q928 435 918.5 425.5Q909 416 896 416L896 416L881 416Q881 416 881 416Q881 416 881 416Q871 416 862.5 409.5Q854 403 851 394L851 394Q837 349 810 312Q783 275 747.5 248.5Q712 222 668 207Q624 192 576 192Q576 192 576 192Q576 192 576 192L448 192Q448 192 448 192Q448 192 448 192Q388 192 336 215Q283 237 244 276Q205 315 183 368Q160 420 160 480Q160 536 180.5 586Q201 636 236 675L236 675Q238 677 239.5 679.5Q241 682 242 685L242 685L295 832L345 832L361 789Q364 780 372 774Q380 768 391 768L665 768Q676 768 684 774Q692 780 695 789L695 789L711 832L761 832L834 629Q837 620 845.5 614Q854 608 864 608L896 608Q909 608 918.5 598.5Q928 589 928 576L928 576L928 448Z"/></symbol>
+<symbol id="g-receipt" viewBox="0 0 1024 1024"><path d="M288 416Q288 403 297.5 393.5Q307 384 320 384H704Q717 384 726.5 393.5Q736 403 736 416Q736 429 726.5 438.5Q717 448 704 448H320Q307 448 297.5 438.5Q288 429 288 416ZM320 576H704Q717 576 726.5 566.5Q736 557 736 544Q736 531 726.5 521.5Q717 512 704 512H320Q307 512 297.5 521.5Q288 531 288 544Q288 557 297.5 566.5Q307 576 320 576ZM928 224V832Q928 845 918.5 854.5Q909 864 896 864Q892 864 888.5 863Q885 862 881 861H882L768 804L654 861Q651 862 647.5 863Q644 864 640 864Q636 864 632.5 863Q629 862 625 861H626L512 804L398 861Q395 862 391.5 863Q388 864 384 864Q380 864 376.5 863Q373 862 369 861H370L256 804L142 861Q139 862 135.5 863Q132 864 128 864Q115 864 105.5 854.5Q96 845 96 832V224Q96 197 114.5 178.5Q133 160 160 160H864Q891 160 909.5 178.5Q928 197 928 224ZM864 224H160V780L242 739Q245 738 248.5 737Q252 736 256 736Q260 736 263.5 737Q267 738 271 739H270L384 796L498 739Q501 738 504.5 737Q508 736 512 736Q516 736 519.5 737Q523 738 527 739H526L640 796L754 739Q757 738 760.5 737Q764 736 768 736Q772 736 775.5 737Q779 738 783 739H782L864 780Z"/></symbol><symbol id="g-save" viewBox="0 0 1024 1024"><path opacity=".2" d="M960 448L960 576Q960 603 941.5 621.5Q923 640 896 640L896 640L864 640L792 843Q788 852 780 858Q772 864 761 864Q761 864 761 864Q761 864 761 864L711 864Q711 864 711 864Q711 864 711 864Q700 864 692 858Q684 852 680 843L680 843L665 800L391 800L376 843Q372 852 364 858Q356 864 345 864Q345 864 345 864Q345 864 345 864L295 864Q295 864 295 864Q295 864 295 864Q284 864 276 858Q268 852 264 843L264 843L212 696Q173 654 150.5 598.5Q128 543 128 480Q128 480 128 480Q128 480 128 480L128 480Q128 414 153 355Q178 297 221.5 253.5Q265 210 323 185Q382 160 448 160L448 160L576 160Q576 160 576 160Q576 160 576 160Q625 160 670 174Q715 188 753 213.5Q791 239 821 274Q850 309 869 351L870 353Q872 359 875 366.5Q878 374 881 382L881 384L896 384Q923 384 941.5 402.5Q960 421 960 448L960 448L960 448Z"/><path d="M768 464Q768 484 754 498Q740 512 720 512Q700 512 686 498Q672 484 672 464Q672 444 686 430Q700 416 720 416L720 416Q740 416 754 430Q768 444 768 464L768 464ZM608 256L448 256Q435 256 425.5 265.5Q416 275 416 288Q416 301 425.5 310.5Q435 320 448 320L448 320L608 320Q621 320 630.5 310.5Q640 301 640 288Q640 275 630.5 265.5Q621 256 608 256L608 256ZM992 448L992 576Q992 616 964 644Q936 672 896 672L896 672L887 672L822 854Q815 872 798.5 884Q782 896 761 896Q761 896 761 896Q761 896 761 896L711 896Q711 896 711 896Q711 896 711 896Q690 896 673.5 884Q657 872 650 854L650 854L643 832L413 832L406 854Q399 872 382.5 884Q366 896 345 896Q345 896 345 896Q345 896 345 896L295 896Q295 896 295 896Q295 896 295 896Q274 896 257.5 884Q241 872 234 854L234 854L184 713Q149 674 127 625Q105 576 98 521L98 519Q83 528 73.5 543Q64 558 64 576L64 576Q64 589 54.5 598.5Q45 608 32 608Q19 608 9.5 598.5Q0 589 0 576L0 576Q0 531 27.5 497Q55 463 96 452L97 452Q103 384 132 325Q162 266 209 222Q256 178 317 153Q379 128 448 128L864 128Q877 128 886.5 137.5Q896 147 896 160Q896 173 886.5 182.5Q877 192 864 192L864 192L778 192Q818 220 848.5 257Q879 294 898 338L899 340Q900 343 901.5 346Q903 349 904 352Q941 355 966.5 382.5Q992 410 992 448Q992 448 992 448Q992 448 992 448L992 448ZM928 448Q928 435 918.5 425.5Q909 416 896 416L896 416L881 416Q881 416 881 416Q881 416 881 416Q871 416 862.5 409.5Q854 403 851 394L851 394Q837 349 810 312Q783 275 747.5 248.5Q712 222 668 207Q624 192 576 192Q576 192 576 192Q576 192 576 192L448 192Q448 192 448 192Q448 192 448 192Q388 192 336 215Q283 237 244 276Q205 315 183 368Q160 420 160 480Q160 536 180.5 586Q201 636 236 675L236 675Q238 677 239.5 679.5Q241 682 242 685L242 685L295 832L345 832L361 789Q364 780 372 774Q380 768 391 768L665 768Q676 768 684 774Q692 780 695 789L695 789L711 832L761 832L834 629Q837 620 845.5 614Q854 608 864 608L896 608Q909 608 918.5 598.5Q928 589 928 576L928 576L928 448Z"/></symbol>
 <symbol id="g-repay" viewBox="0 0 1024 1024"><path opacity=".2" d="M928 384L928 768Q928 781 918.5 790.5Q909 800 896 800L896 800L128 800Q115 800 105.5 790.5Q96 781 96 768L96 768L96 384L928 384Z"/><path d="M896 192L128 192Q101 192 82.5 210.5Q64 229 64 256L64 256L64 768Q64 795 82.5 813.5Q101 832 128 832L128 832L896 832Q923 832 941.5 813.5Q960 795 960 768L960 768L960 256Q960 229 941.5 210.5Q923 192 896 192L896 192ZM896 256L896 352L128 352L128 256L896 256ZM896 768L128 768L128 416L896 416L896 768ZM832 672Q832 685 822.5 694.5Q813 704 800 704L800 704L672 704Q659 704 649.5 694.5Q640 685 640 672Q640 659 649.5 649.5Q659 640 672 640L672 640L800 640Q813 640 822.5 649.5Q832 659 832 672L832 672ZM576 672Q576 685 566.5 694.5Q557 704 544 704L544 704L480 704Q467 704 457.5 694.5Q448 685 448 672Q448 659 457.5 649.5Q467 640 480 640L480 640L544 640Q557 640 566.5 649.5Q576 659 576 672L576 672Z"/></symbol>
 <symbol id="g-spend" viewBox="0 0 1024 1024"><path opacity=".2" d="M896 224L896 832L768 768L640 832L512 768L384 832L256 768L128 832L128 224Q128 211 137.5 201.5Q147 192 160 192L160 192L864 192Q877 192 886.5 201.5Q896 211 896 224L896 224Z"/><path d="M288 416Q288 403 297.5 393.5Q307 384 320 384L320 384L704 384Q717 384 726.5 393.5Q736 403 736 416Q736 429 726.5 438.5Q717 448 704 448L704 448L320 448Q307 448 297.5 438.5Q288 429 288 416L288 416ZM320 576L704 576Q717 576 726.5 566.5Q736 557 736 544Q736 531 726.5 521.5Q717 512 704 512L704 512L320 512Q307 512 297.5 521.5Q288 531 288 544Q288 557 297.5 566.5Q307 576 320 576L320 576ZM928 224L928 832Q928 845 918.5 854.5Q909 864 896 864Q892 864 888.5 863Q885 862 881 861L882 861L768 804L654 861Q651 862 647.5 863Q644 864 640 864Q636 864 632.5 863Q629 862 625 861L626 861L512 804L398 861Q395 862 391.5 863Q388 864 384 864Q380 864 376.5 863Q373 862 369 861L370 861L256 804L142 861Q139 862 135.5 863Q132 864 128 864Q115 864 105.5 854.5Q96 845 96 832L96 224Q96 197 114.5 178.5Q133 160 160 160L160 160L864 160Q891 160 909.5 178.5Q928 197 928 224L928 224ZM864 224L160 224L160 780L242 739Q245 738 248.5 737Q252 736 256 736Q260 736 263.5 737Q267 738 271 739L270 739L384 796L498 739Q501 738 504.5 737Q508 736 512 736Q516 736 519.5 737Q523 738 527 739L526 739L640 796L754 739Q757 738 760.5 737Q764 736 768 736Q772 736 775.5 737Q779 738 783 739L782 739L864 780L864 224Z"/></symbol>
 <symbol id="g-earmark" viewBox="0 0 1024 1024"><path opacity=".2" d="M768 192L768 896L512 736L256 896L256 192Q256 179 265.5 169.5Q275 160 288 160L288 160L736 160Q749 160 758.5 169.5Q768 179 768 192L768 192Z"/><path d="M736 128L288 128Q261 128 242.5 146.5Q224 165 224 192L224 192L224 896Q224 909 233.5 918.5Q243 928 256 928Q261 928 265 926.5Q269 925 273 923L273 923L512 774L751 923Q755 925 759 926.5Q763 928 768 928Q781 928 790.5 918.5Q800 909 800 896L800 192Q800 165 781.5 146.5Q763 128 736 128L736 128L736 128ZM736 838L529 709Q525 707 521 705.5Q517 704 512 704Q507 704 503 705.5Q499 707 495 709L495 709L288 838L288 192L736 192L736 838Z"/></symbol>
@@ -897,22 +962,32 @@
 <symbol id="g-sbar" viewBox="0 0 393 54"><text x="66" y="31" text-anchor="middle" dominant-baseline="central" font-size="17" font-weight="600" letter-spacing="-0.3" fill="currentColor">9:41</text><g fill="currentColor"><rect x="294" y="32" width="3" height="4" rx="1"/><rect x="298.6" y="29.6" width="3" height="6.4" rx="1"/><rect x="303.2" y="27.2" width="3" height="8.8" rx="1"/><rect x="307.8" y="24.8" width="3" height="11.2" rx="1"/><circle cx="325" cy="34.4" r="1.9"/><rect x="343" y="27.5" width="21" height="8" rx="2"/><rect x="367.4" y="29.5" width="1.6" height="4" rx="0.8" opacity="0.45"/></g><g fill="none" stroke="currentColor" stroke-linecap="round"><path d="M317.2 28.7A11 11 0 0 1 332.8 28.7M320.05 31.55A7 7 0 0 1 329.95 31.55" stroke-width="2.1"/><rect x="341" y="25.5" width="25" height="12" rx="3.6" stroke-width="1" opacity="0.4"/></g></symbol>
 </svg>
 
-<div class="wrap">
-  <header class="top">
-    <a class="brand" href="./"><img src="assets/apple-touch-icon.png" alt="">Claryo</a>
+<header class="top">
+  <div class="wrap">
+    <a class="brand" href="./"><img src="assets/apple-touch-icon.png" alt="" width="32" height="32">Claryo</a>
     <nav aria-label="Site">
+      <span class="sections">
+        <a href="#b-budget">Budget</a>
+        <a href="#b-cash">Cash Flow</a>
+        <a href="#b-protect">Protection</a>
+        <a href="#b-growth">Growth</a>
+        <a href="#faq">Questions</a>
+      </span>
+      <a href="learn/">Learn</a>
+      <a href="tools/">Tools</a>
       <a href="support/">Support</a>
-      <a href="privacy/">Privacy</a>
-      <a href="terms/">Terms</a>
     </nav>
-  </header>
+  </div>
+</header>
 
+<div class="wrap">
   <main>
     <div class="hero">
       <div>
-        <p class="eyebrow">Claryo: Paycheck System</p>
+        <p class="eyebrow">For Filipino breadwinners, at home and abroad</p>
         <h1>Plan your paycheck. Secure your future.</h1>
         <p class="lead">Have a plan before payday arrives. Then build these pillars in order:<br /> cash reserves, protection, growth.</p>
+        <p class="notify"><a href="mailto:hello@claryoapp.com?subject=Tell%20me%20when%20Claryo%20launches">Email me when Claryo launches</a></p>
         <!-- Store badges hidden until both listings are in production (founder, 2026-11-15).
              Uncomment to restore; each badge becomes an <a> once its listing is live.
         <div class="stores">
@@ -1027,6 +1102,32 @@
     <section class="interlude" aria-labelledby="who" data-clock>
       <h2 id="who" data-at="0">Built for breadwinners</h2>
       <p class="intro" data-at="80">You carry financial responsibility for a household, on one income or two. Claryo is for people who are ready to take hold of their financial future.</p>
+      <!-- The onboarding contrast (tracker_contrast_beat.dart): the tracker's card and its three spends, then "vs"
+           and Claryo's card with three jobs. The PHP sample household (ghost_plan_samples.dart: income ₱50,000,
+           each spend a share of it rounded to 10), scaled like every figure on the page. -->
+      <div class="contrast">
+        <div class="vs-pair">
+          <div class="side past" data-at="160">
+            <p class="who">Spending tracker</p>
+            <p class="q">Where did it go?</p>
+            <ul>
+              <li><span class="chip" style="--hue: #D1D5DB"><svg aria-hidden="true"><use href="#g-receipt"/></svg></span><span class="nm">Ride app<small>2 days ago</small></span><b>−₱250</b></li>
+              <li><span class="chip" style="--hue: #D1D5DB"><svg aria-hidden="true"><use href="#g-receipt"/></svg></span><span class="nm">Grocery store<small>5 days ago</small></span><b>−₱2,450</b></li>
+              <li><span class="chip" style="--hue: #D1D5DB"><svg aria-hidden="true"><use href="#g-receipt"/></svg></span><span class="nm">Streaming service<small>9 days ago</small></span><b>−₱550</b></li>
+            </ul>
+          </div>
+          <span class="vs" data-at="240">vs</span>
+          <div class="side card" data-at="240">
+            <p class="who">Claryo</p>
+            <p class="q">Where will it go?</p>
+            <ul>
+              <li><span class="chip" style="--hue: #4DB6AC"><svg aria-hidden="true"><use href="#g-save"/></svg></span><span class="nm">Emergency Fund<small>Save</small></span><b>₱8,000</b></li>
+              <li><span class="chip" style="--hue: #E57373"><svg aria-hidden="true"><use href="#g-spend"/></svg></span><span class="nm">Rent<small>Spend</small></span><b>₱12,000</b></li>
+              <li><span class="chip" style="--hue: #E57373"><svg aria-hidden="true"><use href="#g-spend"/></svg></span><span class="nm">Groceries<small>Spend</small></span><b>₱13,000</b></li>
+            </ul>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- Budget: the paycheck actions (paycheck_actions_beat.dart, split_reveal.dart,
@@ -1678,13 +1779,45 @@
 
 <footer>
   <div class="wrap">
-    <span>© 2026 Michael Lorenzo Ponce Sanchez</span>
-    <nav aria-label="Footer">
-      <a href="support/">Support</a>
-      <a href="privacy/">Privacy Policy</a>
-      <a href="terms/">Terms of Use</a>
-      <a href="mailto:hello@claryoapp.com">hello@claryoapp.com</a>
-    </nav>
+    <div class="foot-cols">
+      <nav aria-labelledby="f-learn">
+        <h2 id="f-learn">Learn</h2>
+        <ul>
+          <li><a href="learn/paycheck-plan/">One paycheck, five actions</a></li>
+          <li><a href="learn/emergency-fund/">Four purposes for your cash</a></li>
+          <li><a href="learn/paying-debt-down/">Four kinds of debt, paid in order</a></li>
+          <li><a href="learn/life-insurance/">How much life cover you need</a></li>
+          <li><a href="learn/critical-illness/">How critical illness cover is used</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="f-tools">
+        <h2 id="f-tools">Tools</h2>
+        <ul>
+          <li><a href="tools/emergency-fund/">Emergency fund calculator</a></li>
+          <li><a href="tools/life-cover/">Life cover calculator</a></li>
+          <li><a href="tools/critical-illness/">Critical illness calculator</a></li>
+          <li><a href="tools/investment-rate/">Investment rate calculator</a></li>
+          <li><a href="tools/debt-payoff/">Debt payoff calculator</a></li>
+        </ul>
+      </nav>
+      <nav aria-labelledby="f-claryo">
+        <h2 id="f-claryo">Claryo</h2>
+        <ul>
+          <li><a href="beta/">Beta</a></li>
+          <li><a href="support/">Support</a></li>
+          <li><a href="privacy/">Privacy Policy</a></li>
+          <li><a href="terms/">Terms of Use</a></li>
+        </ul>
+      </nav>
+      <div class="contact">
+        <h2>Contact</h2>
+        <ul>
+          <li><a href="mailto:hello@claryoapp.com">hello@claryoapp.com</a></li>
+          <li><a href="mailto:hello@claryoapp.com?subject=Tell%20me%20when%20Claryo%20launches">Email me when Claryo launches</a></li>
+        </ul>
+      </div>
+    </div>
+    <p class="legal">© 2026 Michael Lorenzo Ponce Sanchez</p>
   </div>
 </footer>
 
@@ -2848,6 +2981,15 @@
       }
     });
   });
+})();
+</script>
+<script>
+(function () {
+  var top = document.querySelector('.top');
+  if (!top) return;
+  function on() { top.classList.toggle('scrolled', window.pageYOffset > 4); }
+  on();
+  window.addEventListener('scroll', on, { passive: true });
 })();
 </script>
 </body>

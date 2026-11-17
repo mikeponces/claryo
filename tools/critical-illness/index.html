@@ -1,0 +1,317 @@
+---
+layout: tool
+title: Critical illness calculator
+description: How long your cover would replace your income after a serious illness, once the hospital bill is paid.
+order: 4
+pillar: protect
+doc: false
+guide_url: /learn/critical-illness/
+guide_title: How critical illness cover is used
+style: |
+  .result .panel-label + .facts { margin-top: 0; }
+  .result .facts + .panel-label { margin-top: 20px; }
+  .result .basis + .bar { margin-top: 18px; }
+  .result .legend + .facts { margin-top: 16px; padding-top: 6px; border-top: 1px solid var(--hair); }
+  .step h3 { margin: 32px 0 4px; }
+  .step h3 + .hint + .opts { margin-top: 12px; }
+  .opt-line { margin: 10px 0 0; font-size: 0.875rem; line-height: 1.45; color: var(--muted); max-width: 36em; }
+  .opts.tiles { display: grid; gap: 8px; }
+  .opts.tiles label { display: block; }
+  .opts.tiles label > span { width: 100%; align-items: flex-start; text-align: left; min-height: 56px; padding: 10px 20px; border-radius: 18px; }
+  .opts.tiles label > span small { margin-top: 2px; font-size: 0.875rem; line-height: 1.4; }
+  /* The recovery bar: what pays the bill, what is left, and any part of the bill nothing covers. */
+  .bar { --h: 14px; }
+  .legend li > b { font-weight: 600; }
+---
+<section class="sect">
+  <h2>How it works</h2>
+  <p>A serious illness brings a hospital bill. Medical insurance pays the hospital bill first, up to its yearly limit. Your critical illness cover, a lump sum paid on diagnosis, and your emergency fund pay the rest of the bill.</p>
+  <p>What is left replaces your income while you recover, one month at a time, until it runs out. The months are what is left divided by the income you would need each month. No return and no inflation are counted.</p>
+  <p>If the bill is bigger than everything set against it, the part nothing covers is a shortfall, and nothing is left to replace your income.</p>
+</section>
+
+<section class="sect">
+  <h2>A worked example</h2>
+  <p>A household earns ₱100,000 a month. Its critical illness cover pays ₱1,000,000 on diagnosis and its medical insurance pays up to ₱400,000 a year. It keeps ₱100,000 for emergencies. The illness brings a ₱1,000,000 hospital bill.</p>
+  <div class="result">
+    <p class="panel-label">The household</p>
+    <dl class="facts">
+      <div><dt>Monthly income</dt><dd>₱100,000</dd></div>
+      <div><dt>Critical illness cover</dt><dd>₱1,000,000</dd></div>
+      <div><dt>Medical insurance yearly limit</dt><dd>₱400,000</dd></div>
+      <div><dt>Emergency fund, all of it used</dt><dd>₱100,000</dd></div>
+      <div><dt>Hospital bill</dt><dd>₱1,000,000</dd></div>
+      <div><dt>Income needed while you recover</dt><dd>100%</dd></div>
+    </dl>
+    <p class="panel-label">The result</p>
+    <dl class="facts">
+      <div><dt>Medical insurance pays</dt><dd>₱400,000</dd></div>
+      <div><dt>Lump sum and emergency fund pay</dt><dd>₱600,000</dd></div>
+      <div><dt>What is left</dt><dd>₱500,000</dd></div>
+      <div><dt>Income needed each month</dt><dd>₱100,000</dd></div>
+      <div><dt>Months of income while you recover</dt><dd>5.0</dd></div>
+    </dl>
+  </div>
+</section>
+
+<form class="calc" hidden novalidate>
+  <div class="steps" data-steps="tool">
+    <ol class="chapters" aria-label="Steps">
+      <li><a href="#step-1">Income</a></li>
+      <li><a href="#step-2">Critical illness cover</a></li>
+      <li><a href="#step-3">Medical insurance</a></li>
+      <li><a href="#step-4">Emergency fund</a></li>
+      <li><a href="#step-5">The hospital bill</a></li>
+      <li><a href="#step-6">Assumptions</a></li>
+      <li><a href="#step-7">Result</a></li>
+    </ol>
+
+    <section class="step" id="step-1">
+      <h2 tabindex="-1"><label for="ci-inc">Monthly income</label></h2>
+      <p class="hint" id="ci-inc-hint">What your household earns in an average month.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="ci-inc" type="text" inputmode="decimal" autocomplete="off" required data-check="positive" aria-describedby="ci-inc-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-2">
+      <h2 tabindex="-1"><label for="ci-lump">Critical illness cover</label></h2>
+      <p class="hint" id="ci-lump-hint">The lump sum your policies pay on diagnosis. Enter 0 if you have none.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="ci-lump" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="ci-lump-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-3">
+      <h2 tabindex="-1"><label for="ci-lim">Medical insurance yearly limit</label></h2>
+      <p class="hint" id="ci-lim-hint">The most your medical insurance pays toward hospital bills in a year. Enter 0 if you have none.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="ci-lim" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="ci-lim-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-4">
+      <h2 tabindex="-1"><label for="ci-ef">Emergency fund</label></h2>
+      <p class="hint" id="ci-ef-hint">Cash you keep for emergencies. Enter 0 if you have none.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="ci-ef" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="ci-ef-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-5">
+      <h2 tabindex="-1" id="ci-bill-h">The hospital bill</h2>
+      <p class="hint" id="ci-bill-hint">What one serious illness would cost you.</p>
+      <div class="opts tiles" id="ci-bills" role="radiogroup" aria-labelledby="ci-bill-h" aria-describedby="ci-bill-hint">
+        <label><input type="radio" name="ci-bill" value="1000000"><span><span class="amt">₱1,000,000</span><small>A public hospital, a major episode</small></span></label>
+        <label><input type="radio" name="ci-bill" value="2000000" checked><span><span class="amt">₱2,000,000</span><small>A private hospital, surgery and recovery</small></span></label>
+        <label><input type="radio" name="ci-bill" value="3000000"><span><span class="amt">₱3,000,000</span><small>A long course of treatment, privately</small></span></label>
+        <label><input type="radio" name="ci-bill" value="5000000"><span><span class="amt">₱5,000,000</span><small>A years-long illness, or treatment abroad</small></span></label>
+      </div>
+    </section>
+
+    <section class="step" id="step-6">
+      <h2 tabindex="-1">Assumptions</h2>
+      <p class="hint">Each one starts at the app's default.</p>
+
+      <h3 id="ci-efs-h">From your emergency fund</h3>
+      <p class="hint" id="ci-efs-hint">How much of it you would spend getting through this.</p>
+      <div class="opts" role="radiogroup" aria-labelledby="ci-efs-h" aria-describedby="ci-efs-hint">
+        <label><input type="radio" name="ci-efs" value="0"><span>0%</span></label>
+        <label><input type="radio" name="ci-efs" value="25"><span>25%</span></label>
+        <label><input type="radio" name="ci-efs" value="50"><span>50%</span></label>
+        <label><input type="radio" name="ci-efs" value="75"><span>75%</span></label>
+        <label><input type="radio" name="ci-efs" value="100" checked><span>100%</span></label>
+      </div>
+
+      <h3 id="ci-rec-h">While you recover</h3>
+      <p class="hint" id="ci-rec-hint">How much of your income you would need each month.</p>
+      <div class="opts" role="radiogroup" aria-labelledby="ci-rec-h" aria-describedby="ci-rec-hint">
+        <label><input type="radio" name="ci-rec" value="50" data-line="Treatment, with the household intact"><span>50%</span></label>
+        <label><input type="radio" name="ci-rec" value="75" data-line="Treatment and most of a lost income"><span>75%</span></label>
+        <label><input type="radio" name="ci-rec" value="100" data-line="A full income replaced while you recover" checked><span>100%</span></label>
+        <label><input type="radio" name="ci-rec" value="125" data-line="Care costs on top of the income"><span>125%</span></label>
+      </div>
+      <p class="opt-line" data-for="ci-rec" aria-hidden="true">A full income replaced while you recover</p>
+    </section>
+
+    <section class="step" id="step-7">
+      <h2 tabindex="-1">Your result</h2>
+      <div class="result">
+        <p class="hero-num" id="ci-hero"><span class="fig" id="ci-fig">5<span class="dec">.0</span></span> <span class="unit" id="ci-unit">months of income while you recover</span></p>
+        <p class="basis" id="ci-basis">₱500,000 left after the hospital bill · ₱100,000 a month</p>
+        <div class="bar" id="ci-bar" role="img" aria-label=""></div>
+        <ul class="legend one" id="ci-legend"></ul>
+        <dl class="facts" id="ci-facts"></dl>
+      </div>
+    </section>
+  </div>
+</form>
+
+<section class="sect">
+  <h2>How to use your results</h2>
+  <p>If part of the bill is not covered, that is the first gap to close. It would come out of other savings or new debt. A higher medical insurance limit or a larger critical illness cover closes it.</p>
+  <p>Once the bill is covered, the months are how long you could stop working. Try a larger bill to see how much room your cover leaves.</p>
+</section>
+
+<p class="note">An estimate from the numbers you entered, using the same method as the app. Not financial advice. Nothing you type leaves this page.</p>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var M = window.ClaryoMoney;
+  var C = window.ClaryoCalc;
+  var form = document.querySelector('form.calc');
+  if (!M || !C || !form) return;
+  var root = form.querySelector('.steps');
+  function $(id) { return document.getElementById(id); }
+  function each(list, f) { Array.prototype.forEach.call(list, f); }
+
+  // ── Fields: commas stripped, nothing negative, every message the browser shows on Next ──
+  function num(input) {
+    var s = input.value.replace(/[,\s]/g, '');
+    return s === '' ? null : Number(s);
+  }
+  function check(input) {
+    var v = num(input);
+    var msg = '';
+    if (v === null) msg = input.required ? 'Enter an amount, or 0.' : '';
+    else if (!isFinite(v)) msg = 'Enter a number, like ' + input.placeholder + '.';
+    else if (v < 0) msg = 'Enter an amount of 0 or more.';
+    else if (input.getAttribute('data-check') === 'positive' && v === 0) msg = 'Enter an amount above 0.';
+    input.setCustomValidity(msg);
+  }
+  var fields = form.querySelectorAll('input[inputmode="decimal"]');
+  each(fields, function (input) {
+    input.addEventListener('input', function () { check(input); });
+    input.addEventListener('blur', function () {
+      var v = num(input);
+      if (v !== null && isFinite(v) && v >= 0) input.value = v.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      check(input);
+    });
+    check(input);
+  });
+  function picked(name) {
+    var r = form.querySelector('input[name="' + name + '"]:checked');
+    return r ? Number(r.value) : null;
+  }
+  function syncLines() {
+    each(form.querySelectorAll('.opt-line[data-for]'), function (p) {
+      var r = form.querySelector('input[name="' + p.getAttribute('data-for') + '"]:checked');
+      if (r) p.textContent = r.getAttribute('data-line');
+    });
+  }
+  form.addEventListener('change', function (e) { if (e.target.type === 'radio') syncLines(); });
+  each(form.querySelectorAll('input[data-line]'), function (r) {
+    var sr = document.createElement('span');
+    sr.className = 'sr';
+    sr.textContent = ', ' + r.getAttribute('data-line');
+    r.nextElementSibling.appendChild(sr);
+  });
+
+  // The bill tiers in the visitor's currency: the app's peso anchors, rounded to two figures.
+  var radios = $('ci-bills').querySelectorAll('input');
+  C.healthBillTiers(M.factor).forEach(function (t, k) {
+    var r = radios[k];
+    if (!r) return;
+    r.value = String(t.value);
+    r.defaultChecked = t.isDefault;
+    r.checked = t.isDefault;
+    r.nextElementSibling.querySelector('.amt').textContent = M.money(t.value);
+    r.nextElementSibling.querySelector('small').textContent = t.line;
+  });
+
+  // Placeholders: the worked example's household, in the visitor's currency.
+  var EXAMPLE = { 'ci-inc': 100000, 'ci-lump': 1000000, 'ci-lim': 400000, 'ci-ef': 100000 };
+  Object.keys(EXAMPLE).forEach(function (id) { $(id).placeholder = M.whole(EXAMPLE[id] / M.factor); });
+
+  function oneDp(v) { return (C.roundHalfAway(v * 10) / 10).toFixed(1); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+  function fact(list, label, value) {
+    var row = document.createElement('div');
+    var dt = document.createElement('dt');
+    var dd = document.createElement('dd');
+    dt.textContent = label;
+    dd.textContent = value;
+    row.appendChild(dt);
+    row.appendChild(dd);
+    list.appendChild(row);
+  }
+
+  // health_drawdown_bars.dart's fills: the bill slab, the cover, and dryFill for what nothing covers.
+  var HUE = { limit: '#ABAFC4', pot: 'rgba(121,134,203,0.45)', left: '#7986CB', short: 'rgba(198,40,40,0.45)' };
+
+  function fill() {
+    var income = num($('ci-inc'));
+    var lump = num($('ci-lump'));
+    var limit = num($('ci-lim'));
+    var ef = num($('ci-ef'));
+    if (!(income > 0) || lump === null || limit === null || ef === null) return;
+    var h = C.healthRecovery({
+      catastrophicBill: picked('ci-bill'),
+      annualLimit: limit,
+      lumpSum: lump,
+      emergencyFund: ef,
+      efConsumePct: picked('ci-efs'),
+      monthlyIncome: income,
+      recoveryPct: picked('ci-rec'),
+    });
+    var toBill = h.billAfterLimit - h.billShortfall;
+
+    // The shortfall leads when there is one; otherwise the months it buys.
+    var fig = $('ci-fig');
+    clear(fig);
+    if (h.billShortfall > 0) {
+      fig.textContent = M.money(h.billShortfall);
+      $('ci-unit').textContent = 'of the bill is not covered';
+      $('ci-basis').textContent = 'Nothing is left to replace your income while you recover.';
+    } else {
+      var parts = oneDp(h.monthsOffWork === null ? 0 : h.monthsOffWork).split('.');
+      fig.appendChild(document.createTextNode(parts[0]));
+      var dec = document.createElement('span');
+      dec.className = 'dec';
+      dec.textContent = '.' + parts[1];
+      fig.appendChild(dec);
+      $('ci-unit').textContent = 'months of income while you recover';
+      $('ci-basis').textContent = M.money(h.capital) + ' left after the hospital bill · ' + M.money(h.recoveryPerMonth) + ' a month';
+    }
+
+    var parts2 = [
+      { label: 'Medical insurance', value: h.limitPaid, hue: HUE.limit },
+      { label: 'Lump sum and emergency fund', value: toBill, hue: HUE.pot },
+      { label: 'What is left', value: h.capital, hue: HUE.left },
+      { label: 'Not covered', value: h.billShortfall, hue: HUE.short },
+    ];
+    var bar = $('ci-bar');
+    var legend = $('ci-legend');
+    clear(bar);
+    clear(legend);
+    var said = [];
+    parts2.forEach(function (p) {
+      if (!(p.value > 0)) return;
+      var seg = document.createElement('i');
+      seg.className = 'seg';
+      seg.style.setProperty('--w', String(p.value));
+      seg.style.setProperty('--c', p.hue);
+      bar.appendChild(seg);
+      var li = document.createElement('li');
+      li.style.setProperty('--c', p.hue);
+      var dot = document.createElement('i');
+      var name = document.createElement('span');
+      var amount = document.createElement('b');
+      name.textContent = p.label;
+      amount.textContent = M.money(p.value);
+      li.appendChild(dot);
+      li.appendChild(name);
+      li.appendChild(amount);
+      legend.appendChild(li);
+      said.push(p.label + ' ' + M.money(p.value));
+    });
+    bar.setAttribute('aria-label', said.join(', '));
+
+    var facts = $('ci-facts');
+    clear(facts);
+    fact(facts, 'Hospital bill', M.money(h.catastrophicBill));
+    fact(facts, 'From your emergency fund', M.money(h.efUsed));
+    fact(facts, 'Income needed each month', M.money(h.recoveryPerMonth));
+  }
+
+  root.addEventListener('steps:finish', fill);
+  root.addEventListener('steps:restart', function () {
+    // form.reset() runs after this event; the fields' messages and option lines follow it.
+    setTimeout(function () { each(fields, check); syncLines(); }, 0);
+  });
+  form.addEventListener('submit', function (e) { e.preventDefault(); });
+  form.hidden = false;
+});
+</script>

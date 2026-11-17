@@ -1,0 +1,241 @@
+---
+layout: guide
+title: Four kinds of debt, paid in order
+description: Which debt to pay down first
+date: 2026-11-18 09:02:00 +0800
+pillar: cash
+doc: false
+feed: true
+tool_url: /tools/debt-payoff/
+tool_title: Debt payoff calculator
+style: |
+  /* The Cash Flow tutorial's debt walk (debt_payoff_beats.dart) on /debts' own quadrant
+     (debt_quadrant.dart): rate across from 0 to the axis max, balance up on four decades from 1K to 1M,
+     split at 20% and at 10^4.5 (debt_zones.dart), ranked 1 to 4 with the deepest coral first. A mark
+     sits at (plot - mark) x fraction, so a split lands on the centre of a mark sitting on it.
+     The sample debts (ghost_debt_samples.dart) are per currency and never scaled: the cut-offs are
+     home-currency numbers, so the figure is data-noscale and its script redraws it.
+     No payoff date, ever: this teaches the rank, not the projection.
+     The kinds' glyphs are left out: the sprite has no car, and one mark without a glyph would read
+     as a different thing. */
+  .dq-name { margin: 0 0 2px; font-size: 0.6875rem; font-weight: 500; line-height: 1.4; color: var(--quiet); }
+  .dq-body { display: flex; height: 150px; }
+  .dq-y { flex: none; width: 34px; margin-right: 4px; display: flex; flex-direction: column; justify-content: space-between; align-items: flex-end; font-size: 0.6875rem; font-weight: 500; line-height: 1; color: var(--quiet); font-variant-numeric: tabular-nums; }
+  .dq-plot { --sx: 0.5; position: relative; flex: 1 1 auto; min-width: 0; }
+  .dq-plot::before, .dq-plot::after { content: ""; position: absolute; left: 0; bottom: 0; background: rgba(27, 24, 48, 0.16); }
+  .dq-plot::before { top: 0; width: 2px; }
+  .dq-plot::after { right: 0; height: 2px; }
+  .dq-zone { position: absolute; display: flex; padding: 4px 5px; font-size: 0.6875rem; font-weight: 500; line-height: 1.25; color: var(--quiet); }
+  .dq-zone span { max-width: 100%; }
+  .z-tl, .z-bl { left: 0; width: calc((100% - 26px) * var(--sx) + 13px); }
+  .z-tr, .z-br { right: 0; left: calc((100% - 26px) * var(--sx) + 13px); }
+  .z-tl, .z-tr { top: 0; bottom: 50%; align-items: flex-start; }
+  .z-bl, .z-br { top: 50%; bottom: 0; align-items: flex-end; }
+  .z-tr, .z-br { justify-content: flex-end; text-align: right; }
+  /* kDebtZoneAlphasLight 42, 28, 16, 8 on the debt coral; stepped back to 0.45 of that. */
+  .dq-zone.r1 { background: rgba(224, 123, 84, 0.165); }
+  .dq-zone.r2 { background: rgba(224, 123, 84, 0.11); }
+  .dq-zone.r3 { background: rgba(224, 123, 84, 0.063); }
+  .dq-zone.r4 { background: rgba(224, 123, 84, 0.031); }
+  .dq-zone.r1.off { background: rgba(224, 123, 84, 0.074); }
+  .dq-zone.r2.off { background: rgba(224, 123, 84, 0.049); }
+  .dq-zone.r3.off { background: rgba(224, 123, 84, 0.028); }
+  .dq-zone.r4.off { background: rgba(224, 123, 84, 0.014); }
+  .dq-mark { position: absolute; width: 26px; height: 26px; border-radius: 8px; background: #E07B54; box-shadow: 0 0 0 2px var(--card);
+             left: calc((100% - 26px) * var(--x)); bottom: calc((100% - 26px) * var(--y)); }
+  .dq-mark.off { opacity: 0.45; }
+  .dq-x { display: flex; justify-content: space-between; gap: 8px; margin: 4px 0 0 38px; font-size: 0.6875rem; font-weight: 500; line-height: 1.4; color: var(--quiet); font-variant-numeric: tabular-nums; }
+  .rows .amt { text-align: right; }
+  /* A row's figures ride its title line, so the gloss keeps the row's width at 320. */
+  .rows .head { display: flex; align-items: flex-start; gap: 12px; }
+  .rows .head .t { min-width: 0; }
+  .rows .amt small { display: block; font-size: 0.8125rem; font-weight: 500; letter-spacing: 0; color: var(--muted); }
+---
+<div class="steps" data-steps="guide">
+  <ol class="chapters" aria-label="In this guide">
+    <li><a href="#step-1">Paying debt down</a></li>
+    <li><a href="#step-2">1 · Small &amp; costly</a></li>
+    <li><a href="#step-3">2 · Small &amp; cheap</a></li>
+    <li><a href="#step-4">3 · Big &amp; costly</a></li>
+    <li><a href="#step-5">4 · Big &amp; cheap</a></li>
+  </ol>
+
+  <section class="step" id="step-1">
+    <h2 tabindex="-1">Paying debt down</h2>
+    <figure class="figure" data-noscale>
+      <div class="dq" role="img" aria-label="Store card ₱18,000, 36% APR: 1 · Small &amp; costly. Family loan ₱12,000, 0% APR: 2 · Small &amp; cheap. Personal loan ₱240,000, 24% APR: 3 · Big &amp; costly. Car loan ₱820,000, 7% APR: 4 · Big &amp; cheap." data-debt-plot>
+        <p class="dq-name" aria-hidden="true">Amount</p>
+        <div class="dq-body" aria-hidden="true">
+          <div class="dq-y"><span><span data-sym>₱</span>1M</span><span><span data-sym>₱</span>1K</span></div>
+          <div class="dq-plot">
+            <div class="dq-zone z-tl r4"><span>4 · Big &amp; cheap</span></div>
+            <div class="dq-zone z-tr r3"><span>3 · Big &amp; costly</span></div>
+            <div class="dq-zone z-bl r2"><span>2 · Small &amp; cheap</span></div>
+            <div class="dq-zone z-br r1"><span>1 · Small &amp; costly</span></div>
+            <i class="dq-mark" data-debt="card" style="--x: 0.9; --y: 0.4184"></i>
+            <i class="dq-mark" data-debt="family" style="--x: 0; --y: 0.3597"></i>
+            <i class="dq-mark" data-debt="personal" style="--x: 0.6; --y: 0.7934"></i>
+            <i class="dq-mark" data-debt="car" style="--x: 0.175; --y: 0.9713"></i>
+          </div>
+        </div>
+        <div class="dq-x" aria-hidden="true"><span>0%</span><span>Interest rate</span><span class="dq-max">40%</span></div>
+      </div>
+      <ul class="rows">
+        <li><span class="words"><span class="head"><b class="t">1 · Small &amp; costly</b><span class="amt" data-debt="card"><span class="dq-bal">₱18,000</span><small class="dq-rate">36% APR</small></span></span><span class="g">Costs most while it lasts. Start here.</span></span></li>
+        <li><span class="words"><span class="head"><b class="t">2 · Small &amp; cheap</b><span class="amt" data-debt="family"><span class="dq-bal">₱12,000</span><small class="dq-rate">0% APR</small></span></span><span class="g">Frees a payment, so size beats rate.</span></span></li>
+        <li><span class="words"><span class="head"><b class="t">3 · Big &amp; costly</b><span class="amt" data-debt="personal"><span class="dq-bal">₱240,000</span><small class="dq-rate">24% APR</small></span></span><span class="g">Expensive, but too big for momentum.</span></span></li>
+        <li><span class="words"><span class="head"><b class="t">4 · Big &amp; cheap</b><span class="amt" data-debt="car"><span class="dq-bal">₱820,000</span><small class="dq-rate">7% APR</small></span></span><span class="g">Costs little, so it can wait until last.</span></span></li>
+      </ul>
+    </figure>
+  </section>
+
+  <section class="step" id="step-2">
+    <h2 tabindex="-1">1 · Small &amp; costly</h2>
+    <p>Costs most while it lasts. Start here.</p>
+    <figure class="figure" data-noscale>
+      <div class="dq" role="img" aria-label="Store card ₱18,000, 36% APR: 1 · Small &amp; costly. Family loan ₱12,000, 0% APR: 2 · Small &amp; cheap. Personal loan ₱240,000, 24% APR: 3 · Big &amp; costly. Car loan ₱820,000, 7% APR: 4 · Big &amp; cheap." data-debt-plot>
+        <p class="dq-name" aria-hidden="true">Amount</p>
+        <div class="dq-body" aria-hidden="true">
+          <div class="dq-y"><span><span data-sym>₱</span>1M</span><span><span data-sym>₱</span>1K</span></div>
+          <div class="dq-plot">
+            <div class="dq-zone z-tl r4 off"><span>4 · Big &amp; cheap</span></div>
+            <div class="dq-zone z-tr r3 off"><span>3 · Big &amp; costly</span></div>
+            <div class="dq-zone z-bl r2 off"><span>2 · Small &amp; cheap</span></div>
+            <div class="dq-zone z-br r1"><span>1 · Small &amp; costly</span></div>
+            <i class="dq-mark" data-debt="card" style="--x: 0.9; --y: 0.4184"></i>
+            <i class="dq-mark off" data-debt="family" style="--x: 0; --y: 0.3597"></i>
+            <i class="dq-mark off" data-debt="personal" style="--x: 0.6; --y: 0.7934"></i>
+            <i class="dq-mark off" data-debt="car" style="--x: 0.175; --y: 0.9713"></i>
+          </div>
+        </div>
+        <div class="dq-x" aria-hidden="true"><span>0%</span><span>Interest rate</span><span class="dq-max">40%</span></div>
+      </div>
+      <ul class="rows">
+        <li><span class="words"><b class="t">Store card</b></span><span class="amt" data-debt="card"><span class="dq-bal">₱18,000</span><small class="dq-rate">36% APR</small></span></li>
+      </ul>
+    </figure>
+  </section>
+
+  <section class="step" id="step-3">
+    <h2 tabindex="-1">2 · Small &amp; cheap</h2>
+    <p>Frees a payment, so size beats rate.</p>
+    <figure class="figure" data-noscale>
+      <div class="dq" role="img" aria-label="Store card ₱18,000, 36% APR: 1 · Small &amp; costly. Family loan ₱12,000, 0% APR: 2 · Small &amp; cheap. Personal loan ₱240,000, 24% APR: 3 · Big &amp; costly. Car loan ₱820,000, 7% APR: 4 · Big &amp; cheap." data-debt-plot>
+        <p class="dq-name" aria-hidden="true">Amount</p>
+        <div class="dq-body" aria-hidden="true">
+          <div class="dq-y"><span><span data-sym>₱</span>1M</span><span><span data-sym>₱</span>1K</span></div>
+          <div class="dq-plot">
+            <div class="dq-zone z-tl r4 off"><span>4 · Big &amp; cheap</span></div>
+            <div class="dq-zone z-tr r3 off"><span>3 · Big &amp; costly</span></div>
+            <div class="dq-zone z-bl r2"><span>2 · Small &amp; cheap</span></div>
+            <div class="dq-zone z-br r1 off"><span>1 · Small &amp; costly</span></div>
+            <i class="dq-mark off" data-debt="card" style="--x: 0.9; --y: 0.4184"></i>
+            <i class="dq-mark" data-debt="family" style="--x: 0; --y: 0.3597"></i>
+            <i class="dq-mark off" data-debt="personal" style="--x: 0.6; --y: 0.7934"></i>
+            <i class="dq-mark off" data-debt="car" style="--x: 0.175; --y: 0.9713"></i>
+          </div>
+        </div>
+        <div class="dq-x" aria-hidden="true"><span>0%</span><span>Interest rate</span><span class="dq-max">40%</span></div>
+      </div>
+      <ul class="rows">
+        <li><span class="words"><b class="t">Family loan</b></span><span class="amt" data-debt="family"><span class="dq-bal">₱12,000</span><small class="dq-rate">0% APR</small></span></li>
+      </ul>
+    </figure>
+    <p class="source">In data from a debt settlement firm, closing debt accounts predicted debt elimination, regardless of the balance of the accounts closed. <a href="https://doi.org/10.1509/jmr.11.0272">Gal, D. &amp; McShane, B. B. (2012). Can Small Victories Help Win the War? Evidence from Consumer Debt Management. <i>Journal of Marketing Research</i>, 49(4), 487–501.</a></p>
+  </section>
+
+  <section class="step" id="step-4">
+    <h2 tabindex="-1">3 · Big &amp; costly</h2>
+    <p>Expensive, but too big for momentum.</p>
+    <figure class="figure" data-noscale>
+      <div class="dq" role="img" aria-label="Store card ₱18,000, 36% APR: 1 · Small &amp; costly. Family loan ₱12,000, 0% APR: 2 · Small &amp; cheap. Personal loan ₱240,000, 24% APR: 3 · Big &amp; costly. Car loan ₱820,000, 7% APR: 4 · Big &amp; cheap." data-debt-plot>
+        <p class="dq-name" aria-hidden="true">Amount</p>
+        <div class="dq-body" aria-hidden="true">
+          <div class="dq-y"><span><span data-sym>₱</span>1M</span><span><span data-sym>₱</span>1K</span></div>
+          <div class="dq-plot">
+            <div class="dq-zone z-tl r4 off"><span>4 · Big &amp; cheap</span></div>
+            <div class="dq-zone z-tr r3"><span>3 · Big &amp; costly</span></div>
+            <div class="dq-zone z-bl r2 off"><span>2 · Small &amp; cheap</span></div>
+            <div class="dq-zone z-br r1 off"><span>1 · Small &amp; costly</span></div>
+            <i class="dq-mark off" data-debt="card" style="--x: 0.9; --y: 0.4184"></i>
+            <i class="dq-mark off" data-debt="family" style="--x: 0; --y: 0.3597"></i>
+            <i class="dq-mark" data-debt="personal" style="--x: 0.6; --y: 0.7934"></i>
+            <i class="dq-mark off" data-debt="car" style="--x: 0.175; --y: 0.9713"></i>
+          </div>
+        </div>
+        <div class="dq-x" aria-hidden="true"><span>0%</span><span>Interest rate</span><span class="dq-max">40%</span></div>
+      </div>
+      <ul class="rows">
+        <li><span class="words"><b class="t">Personal loan</b></span><span class="amt" data-debt="personal"><span class="dq-bal">₱240,000</span><small class="dq-rate">24% APR</small></span></li>
+      </ul>
+    </figure>
+  </section>
+
+  <section class="step" id="step-5">
+    <h2 tabindex="-1">4 · Big &amp; cheap</h2>
+    <p>Costs little, so it can wait until last.</p>
+    <figure class="figure" data-noscale>
+      <div class="dq" role="img" aria-label="Store card ₱18,000, 36% APR: 1 · Small &amp; costly. Family loan ₱12,000, 0% APR: 2 · Small &amp; cheap. Personal loan ₱240,000, 24% APR: 3 · Big &amp; costly. Car loan ₱820,000, 7% APR: 4 · Big &amp; cheap." data-debt-plot>
+        <p class="dq-name" aria-hidden="true">Amount</p>
+        <div class="dq-body" aria-hidden="true">
+          <div class="dq-y"><span><span data-sym>₱</span>1M</span><span><span data-sym>₱</span>1K</span></div>
+          <div class="dq-plot">
+            <div class="dq-zone z-tl r4"><span>4 · Big &amp; cheap</span></div>
+            <div class="dq-zone z-tr r3 off"><span>3 · Big &amp; costly</span></div>
+            <div class="dq-zone z-bl r2 off"><span>2 · Small &amp; cheap</span></div>
+            <div class="dq-zone z-br r1 off"><span>1 · Small &amp; costly</span></div>
+            <i class="dq-mark off" data-debt="card" style="--x: 0.9; --y: 0.4184"></i>
+            <i class="dq-mark off" data-debt="family" style="--x: 0; --y: 0.3597"></i>
+            <i class="dq-mark off" data-debt="personal" style="--x: 0.6; --y: 0.7934"></i>
+            <i class="dq-mark" data-debt="car" style="--x: 0.175; --y: 0.9713"></i>
+          </div>
+        </div>
+        <div class="dq-x" aria-hidden="true"><span>0%</span><span>Interest rate</span><span class="dq-max">40%</span></div>
+      </div>
+      <ul class="rows">
+        <li><span class="words"><b class="t">Car loan</b></span><span class="amt" data-debt="car"><span class="dq-bal">₱820,000</span><small class="dq-rate">7% APR</small></span></li>
+      </ul>
+    </figure>
+  </section>
+</div>
+<script defer src="{{ '/assets/js/calc-math.js' | relative_url }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  // The four sample debts in the visitor's own currency (ghost_debt_samples.dart). Each currency
+  // has its own debts, never pesos scaled: the quadrant's cut-offs are home-currency numbers.
+  var money = window.ClaryoMoney;
+  var calc = window.ClaryoCalc;
+  if (!money || !calc || money.code === 'PHP') return;
+  var views = calc.debtSampleViews(money.code);
+  var worst = 0;
+  var byId = {};
+  views.forEach(function (v) {
+    byId[v.id] = v;
+    if (v.apr > worst) worst = v.apr;
+  });
+  var axisMax = worst * 1.1 > 40 ? worst * 1.1 : 40;
+  var label = views.map(function (v) {
+    return v.name + ' ' + money.money(v.balance) + ', ' + calc.debtRateLabel(v.apr) + ': ' + v.zone.rankedLabel + '.';
+  }).join(' ');
+  function frac(b) {
+    var l = (Math.log(b) / Math.LN10 - 3) / 3;
+    return l < 0 ? 0 : l > 1 ? 1 : l;
+  }
+  function each(list, fn) { Array.prototype.forEach.call(list, fn); }
+  each(document.querySelectorAll('[data-debt-plot]'), function (plot) {
+    plot.setAttribute('aria-label', label);
+    plot.querySelector('.dq-plot').style.setProperty('--sx', String(20 / axisMax));
+    plot.querySelector('.dq-max').textContent = Math.round(axisMax) + '%';
+    each(plot.querySelectorAll('.dq-mark'), function (mark) {
+      var v = byId[mark.getAttribute('data-debt')];
+      mark.style.setProperty('--x', String(Math.min(1, v.apr / axisMax)));
+      mark.style.setProperty('--y', String(frac(v.balance)));
+    });
+  });
+  each(document.querySelectorAll('.amt[data-debt]'), function (amt) {
+    var v = byId[amt.getAttribute('data-debt')];
+    amt.querySelector('.dq-bal').textContent = money.money(v.balance);
+    amt.querySelector('.dq-rate').textContent = calc.debtRateLabel(v.apr);
+  });
+});
+</script>

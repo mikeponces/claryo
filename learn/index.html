@@ -1,0 +1,31 @@
+---
+layout: default
+title: Learn
+description: Short guides to the questions a household's money raises, from cash reserves and debt to life cover and investing.
+doc: false
+feed: true
+style: |
+  /* The door, as in _includes/steps-style.html (which this page does not load): the whole panel
+     is the link, its caret beside the title (good-job-18 rule 2). Change both together. */
+  .doors { list-style: none; margin: 0; padding: 0; display: grid; gap: 16px; }
+  .door { position: relative; display: block; padding: 20px 56px 22px 24px; background: var(--card); border: 1px solid var(--edge); border-radius: 26px; box-shadow: 0 3px 12px rgba(0, 0, 0, 0.11), 0 10px 33px rgba(0, 0, 0, 0.055); color: var(--ink); text-decoration: none; overflow-wrap: break-word; }
+  .door::after { content: ""; position: absolute; right: 26px; top: 30px; width: 8px; height: 8px; border-top: 2px solid var(--muted); border-right: 2px solid var(--muted); transform: rotate(45deg); }
+  .door .t { display: block; font-weight: 700; font-size: 1.25rem; line-height: 1.3; letter-spacing: -0.015em; }
+  .door .g { display: block; margin-top: 4px; font-size: 0.9375rem; line-height: 1.45; color: var(--muted); text-wrap: pretty; }
+  .door:hover { border-color: rgba(122, 117, 127, 0.75); }
+  a.door:focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; border-radius: 26px; }
+  .follow { margin: 32px 0 0; font-size: 0.9375rem; color: var(--muted); }
+  .follow a { color: var(--ink); font-weight: 600; text-underline-offset: 3px; }
+  @media (prefers-reduced-motion: no-preference) { .door { transition: border-color 150ms cubic-bezier(0.215, 0.61, 0.355, 1); } }
+---
+<h1>Learn</h1>
+<p class="lead">Short guides to the questions a household's money raises, taken from the app's own lessons.</p>
+
+{%- assign guides = site.pages | where: "layout", "guide" | sort: "date" %}
+<ul class="doors">
+  {%- for g in guides %}
+  <li><a class="door" href="{{ g.url | relative_url }}"><span class="t">{{ g.title | escape }}</span><span class="g">{{ g.description | escape }}</span></a></li>
+  {%- endfor %}
+</ul>
+
+<p class="follow"><a href="{{ '/learn/feed.xml' | relative_url }}">Follow new guides</a> with a feed reader.</p>

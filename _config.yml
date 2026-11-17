@@ -1,6 +1,14 @@
 # Every page but the hand-written landing page (index.html, no front matter, served as is)
 # renders through _layouts/default.html. The legal texts carry no front matter because they
 # are byte-for-byte copies of the app's assets/legal/*.md, so their titles live here.
+#
+# No `exclude:` (a custom list replaces Jekyll's defaults; `_` folders are unpublished anyway),
+# no `plugins:`, and no site-wide `layout` default (it would wrap sitemap.xml and the feed in HTML).
+url: "https://claryoapp.com"
+baseurl: ""
+title: "Claryo"
+description: "Plan your paycheck. Secure your financial future — in the right order."
+
 defaults:
   - scope:
       path: "privacy"

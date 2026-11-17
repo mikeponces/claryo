@@ -1,0 +1,24 @@
+---
+layout: null
+sitemap: false
+---
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>{{ '/' | absolute_url }}</loc>
+  </url>
+{%- comment %}index.html has no front matter, so it is a static file and never in site.pages.
+Only URLs ending in "/" are pages a visitor reads: that drops the theme's style.css, the feed,
+robots.txt, the 404 and this file.{% endcomment %}
+{%- for p in site.pages %}
+  {%- assign last = p.url | slice: -1 %}
+  {%- if last == '/' and p.url != '/' and p.sitemap != false %}
+  <url>
+    <loc>{{ p.url | absolute_url }}</loc>
+    {%- if p.date %}
+    <lastmod>{{ p.date | date_to_xmlschema }}</lastmod>
+    {%- endif %}
+  </url>
+  {%- endif %}
+{%- endfor %}
+</urlset>

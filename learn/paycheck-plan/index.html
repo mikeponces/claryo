@@ -1,0 +1,72 @@
+---
+layout: guide
+title: One paycheck, five actions
+description: Why a paycheck has only five exits
+date: 2026-11-18 09:00:00 +0800
+pillar: budget
+doc: false
+feed: true
+tool_url: /tools/investment-rate/
+tool_title: Investment rate calculator
+style: |
+  /* Ported from the Budget tutorial and two onboarding beats; every word is the app's own.
+     paycheck_actions_beat.dart (the five actions, equal shares, BudgetChoice order),
+     one_paycheck_beat.dart (the three steps, their dots in the Budget purple with white ink),
+     paycheck_system_beat.dart (the logo's four blocks, laid bottom first). */
+  .phases .dot { flex: none; width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--purple); color: #fff; font-size: 0.75rem; font-weight: 700; line-height: 1; font-variant-numeric: tabular-nums; }
+  /* The logo: Plan at the bottom, Growth on top (AppLogoGeometry.bottomToTop). The list reads
+     bottom first, as the app's rows speak. */
+  .stack { display: flex; flex-direction: column-reverse; }
+  .stack .blk { flex: none; width: 44px; height: 12px; border-radius: 3px; background: var(--c); }
+---
+<div class="steps" data-steps="guide">
+  <ol class="chapters" aria-label="In this guide">
+    <li><a href="#step-1">Five paycheck actions</a></li>
+    <li><a href="#step-2">Every paycheck has three steps</a></li>
+    <li><a href="#step-3">This is a paycheck system</a></li>
+  </ol>
+
+  <section class="step" id="step-1">
+    <h2 tabindex="-1">Five paycheck actions</h2>
+    <p>Plan it, move it, check it off.</p>
+    <figure class="figure">
+      <div class="bar" aria-hidden="true">
+        <i class="seg" style="--c: #4DB6AC"></i>
+        <i class="seg" style="--c: #E07B54"></i>
+        <i class="seg" style="--c: #E57373"></i>
+        <i class="seg" style="--c: #81C784"></i>
+        <i class="seg" style="--c: #7986CB"></i>
+      </div>
+      <ul class="rows">
+        <li style="--c: #4DB6AC"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-save"/></svg></span><span class="words"><b class="t">Save</b><span class="g">Cash you keep for emergencies</span></span></li>
+        <li style="--c: #E07B54"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-repay"/></svg></span><span class="words"><b class="t">Repay</b><span class="g">Credit cards and loans you pay down</span></span></li>
+        <li style="--c: #E57373"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-spend"/></svg></span><span class="words"><b class="t">Spend</b><span class="g">Rent, food and everyday bills</span></span></li>
+        <li style="--c: #81C784"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-earmark"/></svg></span><span class="words"><b class="t">Earmark</b><span class="g">For recurring and one-time costs</span></span></li>
+        <li style="--c: #7986CB"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-invest"/></svg></span><span class="words"><b class="t">Invest</b><span class="g">Assets that build future income</span></span></li>
+      </ul>
+    </figure>
+  </section>
+
+  <section class="step" id="step-2">
+    <h2 tabindex="-1">Every paycheck has three steps</h2>
+    <figure class="figure">
+      <ol class="rows phases">
+        <li><span class="dot" aria-hidden="true">1</span><span class="words"><b class="t">Planned</b><span class="g">You assign every <span data-unit>peso</span> before payday.</span></span></li>
+        <li><span class="dot" aria-hidden="true">2</span><span class="words"><b class="t">Payday</b><span class="g">The paycheck lands, and you move the money.</span></span></li>
+        <li><span class="dot" aria-hidden="true">3</span><span class="words"><b class="t">Done</b><span class="g">Each line is checked off as you move money.</span></span></li>
+      </ol>
+    </figure>
+  </section>
+
+  <section class="step" id="step-3">
+    <h2 tabindex="-1">This is a paycheck system</h2>
+    <figure class="figure">
+      <ol class="rows stack">
+        <li style="--c: var(--purple)"><span class="blk" aria-hidden="true"></span><span class="words"><b class="t">Plan your paycheck</b><span class="g">Assign each paycheck before payday.</span></span></li>
+        <li style="--c: var(--teal)"><span class="blk" aria-hidden="true"></span><span class="words"><b class="t">Build your cash</b><span class="g">Give your cash accounts a purpose.</span></span></li>
+        <li style="--c: var(--peri)"><span class="blk" aria-hidden="true"></span><span class="words"><b class="t">Protect your household</b><span class="g">Life, health and medical coverage.</span></span></li>
+        <li style="--c: var(--amber)"><span class="blk" aria-hidden="true"></span><span class="words"><b class="t">Then grow</b><span class="g">Turn income into assets that pay you.</span></span></li>
+      </ol>
+    </figure>
+  </section>
+</div>

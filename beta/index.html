@@ -1,0 +1,58 @@
+---
+layout: default
+title: The December beta
+description: Plan your real December paydays in Claryo before it launches. Free on TestFlight and Google Play’s internal test.
+doc: false
+style: |
+  /* The missions: hairline-divided rows, the planned dates leading on wider screens. */
+  .missions { list-style: none; margin: 16px 0 0; padding: 0; }
+  .missions li { display: grid; gap: 2px 24px; padding: 12px 0; border-top: 1px solid var(--hair); }
+  .missions li:last-child { padding-bottom: 0; }
+  @media (min-width: 640px) { .missions li { grid-template-columns: 7.5em minmax(0, 1fr); } }
+  .missions .when { font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .missions .what { color: var(--muted); text-wrap: pretty; }
+  .card .address + p { margin-top: 20px; }
+---
+<h1>The December beta</h1>
+<p class="lead">Plan your real December paydays in Claryo before it launches, and tell us where you got stuck.</p>
+
+<div class="card">
+  <section aria-labelledby="who">
+    <h2 id="who">Who it’s for</h2>
+    <p>Households that run on a payday, in the Philippines or abroad, and hold at least two of these: a savings account, MP2 or investments, insurance, and a loan or credit card. With two or more, the Cash Flow, Protection and Growth tabs have something of yours to show.</p>
+    <p>You can test on an iPhone, through TestFlight, or on an Android phone, through Google Play’s internal test.</p>
+  </section>
+
+  <section aria-labelledby="do">
+    <h2 id="do">What you’ll do</h2>
+    <p>Four missions, one for each stretch of the holidays. These are planned dates, from 1 December to 5 January.</p>
+    <ol class="missions">
+      <li><span class="when">1–7 Dec</span> <span class="what">Install Claryo, set it up, and plan your 15 December payday.</span></li>
+      <li><span class="when">8–15 Dec</span> <span class="what">Carry out your 15 December plan: mark each line done as the money moves.</span></li>
+      <li><span class="when">16–24 Dec</span> <span class="what">Plan your 13th month pay.</span></li>
+      <li><span class="when">25 Dec–5 Jan</span> <span class="what">Plan your 30 December payday, then copy December’s plan into January.</span></li>
+    </ol>
+  </section>
+
+  <section aria-labelledby="ask">
+    <h2 id="ask">What we ask</h2>
+    <p>Post what you find on the feedback board, in Settings › Support › Feedback board. On iPhone, TestFlight’s screenshot feedback reaches us too.</p>
+    <p>Answer two short surveys, on day 7 and on 5 January. Each one has four questions.</p>
+    <p>We’ll ask five testers for a 20-minute call in the first week. On the call you turn on Hide Amounts and share your screen while you plan a payday, so the founder sees where you hesitate and never sees a figure.</p>
+    <p>There is no group chat to keep up with over the holidays.</p>
+  </section>
+
+  <section aria-labelledby="cost">
+    <h2 id="cost">What it costs</h2>
+    <p>The beta is free, on TestFlight or Google Play’s internal test.</p>
+    <p>Claryo is a paid download when it launches. Testers pay the same price as everyone else, and there are no promo codes.</p>
+  </section>
+
+  <section aria-labelledby="apply">
+    <h2 id="apply">How to apply</h2>
+    <p>Email us with three things: your phone (iPhone or Android), how you’re paid (monthly, twice a month or irregularly), and which of savings, MP2 or investments, insurance, and a loan or card you hold. The beta takes 15 to 20 testers.</p>
+    <a class="address" href="mailto:hello@claryoapp.com?subject=Claryo%20beta">hello@claryoapp.com</a>
+    <p>Would you rather wait for the launch?</p>
+    <p class="more"><a href="mailto:hello@claryoapp.com?subject=Tell%20me%20when%20Claryo%20launches">Email me when Claryo launches</a></p>
+  </section>
+</div>

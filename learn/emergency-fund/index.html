@@ -1,0 +1,117 @@
+---
+layout: guide
+title: Four purposes for your cash
+description: Why money in the bank is not all savings
+date: 2026-11-18 09:01:00 +0800
+pillar: cash
+doc: false
+feed: true
+tool_url: /tools/emergency-fund/
+tool_title: Emergency fund calculator
+style: |
+  /* Ported from the Cash Flow tutorial's first walk (cash_purpose_beats.dart: the sample household,
+     its shares closing on 100, the glosses) and the Emergency Fund's reserve scale
+     (reserve_scale_track.dart: 0 to 12 months, the 3 to 6 band, the milestone names). The months are
+     the sample household's own (kSampleFundMonths, 4.0), so its fund of 180,000 sits on 45,000 a month.
+     A step's bar lights its purpose and steps the others back to 0.45, as the walk's selection does. */
+  .bar .seg.off { opacity: 0.45; }
+  /* A row's amount rides its title line, so the gloss keeps the row's width at 320. */
+  .rows .head { display: flex; align-items: baseline; gap: 12px; }
+  .rows .head .t { min-width: 0; }
+---
+<div class="steps" data-steps="guide">
+  <ol class="chapters" aria-label="In this guide">
+    <li><a href="#step-1">Cash by purpose</a></li>
+    <li><a href="#step-2">Emergency Fund</a></li>
+    <li><a href="#step-3">Recurring Expenses</a></li>
+    <li><a href="#step-4">One-time Expenses</a></li>
+    <li><a href="#step-5">Unassigned</a></li>
+  </ol>
+
+  <section class="step" id="step-1">
+    <h2 tabindex="-1">Cash by purpose</h2>
+    <figure class="figure">
+      <div class="bar" style="--h: 14px" aria-hidden="true">
+        <i class="seg" style="--w: 36; --c: #4DB6AC"></i>
+        <i class="seg" style="--w: 24; --c: #4FB553"></i>
+        <i class="seg" style="--w: 30; --c: #81C784"></i>
+        <i class="seg" style="--w: 10; --c: #B0BEC5"></i>
+      </div>
+      <ul class="rows">
+        <li style="--c: #4DB6AC"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-umbrella"/></svg></span><span class="words"><span class="head"><b class="t">Emergency Fund</b><b class="amt">₱180,000</b></span><span class="g">Kept for emergencies. It is the only savings here.</span></span></li>
+        <li style="--c: #4FB553"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-cycle"/></svg></span><span class="words"><span class="head"><b class="t">Recurring Expenses</b><b class="amt">₱120,000</b></span><span class="g">Bills you know are coming. That money is already spent.</span></span></li>
+        <li style="--c: #81C784"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-target"/></svg></span><span class="words"><span class="head"><b class="t">One-time Expenses</b><b class="amt">₱150,000</b></span><span class="g">A purchase you have decided on. That money is spent too.</span></span></li>
+        <li style="--c: #B0BEC5"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-wallet"/></svg></span><span class="words"><span class="head"><b class="t">Unassigned</b><b class="amt">₱50,000</b></span><span class="g">It is not a buffer. Give it a purpose.</span></span></li>
+      </ul>
+    </figure>
+  </section>
+
+  <section class="step" id="step-2">
+    <h2 tabindex="-1">Emergency Fund</h2>
+    <p>Kept for emergencies. It is the only savings here.</p>
+    <figure class="figure">
+      <figcaption>Cash reserves</figcaption>
+      <p class="hero-num"><span class="fig">4<span class="dec">.0</span></span><span class="unit">months</span></p>
+      <p>of expenses your cash would cover if income stopped.</p>
+      <p class="basis">₱180,000 reserved · avg ₱45,000/mo</p>
+      <div class="track" style="--v: 4; --max: 12; --lo: 3; --hi: 6" aria-hidden="true">
+        <div class="groove"><i class="band"></i><i class="track-fill"></i><i class="tick" style="--m: 3"></i><i class="tick" style="--m: 6"></i><i class="tick" style="--m: 9"></i></div>
+        <div class="marks"><span style="--m: 3">3 mo</span><span style="--m: 6">6 mo</span><span style="--m: 9">9 mo</span><span style="--m: 12">12 mo</span></div>
+      </div>
+      <dl class="facts">
+        <div><dt>3-month minimum</dt><dd>₱45,000 above</dd></div>
+        <div><dt>6-month target</dt><dd>₱90,000 remaining</dd></div>
+        <div><dt>9-month buffer</dt><dd>₱225,000 remaining</dd></div>
+        <div><dt>12-month buffer</dt><dd>₱360,000 remaining</dd></div>
+      </dl>
+    </figure>
+  </section>
+
+  <section class="step" id="step-3">
+    <h2 tabindex="-1">Recurring Expenses</h2>
+    <p>Bills you know are coming. That money is already spent.</p>
+    <figure class="figure">
+      <div class="bar" style="--h: 14px" aria-hidden="true">
+        <i class="seg off" style="--w: 36; --c: #4DB6AC"></i>
+        <i class="seg" style="--w: 24; --c: #4FB553"></i>
+        <i class="seg off" style="--w: 30; --c: #81C784"></i>
+        <i class="seg off" style="--w: 10; --c: #B0BEC5"></i>
+      </div>
+      <ul class="rows">
+        <li style="--c: #4FB553"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-cycle"/></svg></span><span class="words"><b class="t">Recurring Expenses</b></span><b class="amt">₱120,000</b></li>
+      </ul>
+    </figure>
+  </section>
+
+  <section class="step" id="step-4">
+    <h2 tabindex="-1">One-time Expenses</h2>
+    <p>A purchase you have decided on. That money is spent too.</p>
+    <figure class="figure">
+      <div class="bar" style="--h: 14px" aria-hidden="true">
+        <i class="seg off" style="--w: 36; --c: #4DB6AC"></i>
+        <i class="seg off" style="--w: 24; --c: #4FB553"></i>
+        <i class="seg" style="--w: 30; --c: #81C784"></i>
+        <i class="seg off" style="--w: 10; --c: #B0BEC5"></i>
+      </div>
+      <ul class="rows">
+        <li style="--c: #81C784"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-target"/></svg></span><span class="words"><b class="t">One-time Expenses</b></span><b class="amt">₱150,000</b></li>
+      </ul>
+    </figure>
+  </section>
+
+  <section class="step" id="step-5">
+    <h2 tabindex="-1">Unassigned</h2>
+    <p>It is not a buffer. Give it a purpose.</p>
+    <figure class="figure">
+      <div class="bar" style="--h: 14px" aria-hidden="true">
+        <i class="seg off" style="--w: 36; --c: #4DB6AC"></i>
+        <i class="seg off" style="--w: 24; --c: #4FB553"></i>
+        <i class="seg off" style="--w: 30; --c: #81C784"></i>
+        <i class="seg" style="--w: 10; --c: #B0BEC5"></i>
+      </div>
+      <ul class="rows">
+        <li style="--c: #B0BEC5"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-wallet"/></svg></span><span class="words"><b class="t">Unassigned</b></span><b class="amt">₱50,000</b></li>
+      </ul>
+    </figure>
+  </section>
+</div>

@@ -1,0 +1,389 @@
+---
+layout: tool
+title: Debt payoff calculator
+description: Enter your debts to see the order they are paid in, the month each one is paid off and the interest along the way.
+order: 2
+pillar: cash
+doc: false
+guide_url: /learn/paying-debt-down/
+guide_title: Four kinds of debt, paid in order
+style: |
+  .result .panel-label + .rows { margin-top: 10px; }
+  .result > .rows > li + li { border-top: 1px solid var(--hair); }
+  .result > .rows + .facts, .result > .rows + p { margin-top: 4px; }
+  .result > .rows + .facts { padding-top: 4px; border-top: 1px solid var(--hair); }
+  .result .basis + p { margin-top: 4px; }
+  .rows .g + .g { margin-top: 0; }
+  .rows .chip { color: var(--on-mark); }
+  /* The debts: one answer band per debt, its own small head with Remove, then Add a debt. */
+  .debts { display: grid; gap: 16px; margin-top: 20px; }
+  .debts > .q { margin: 0; }
+  .debt-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 24px 0; }
+  .kit .debt-title { margin: 0; font-size: 1rem; font-weight: 700; line-height: 1.4; letter-spacing: -0.01em; }
+  .debt .field .opts { margin-top: 8px; }
+  .debt .field .opts label > span { min-height: 40px; min-width: 72px; }
+  .debt .field .num input.name { font-size: 1.125rem; font-weight: 600; letter-spacing: -0.01em; }
+  .num .sym.after { font-size: 1.125rem; }
+  .row-remove, .add-row {
+    -webkit-appearance: none; appearance: none; font: inherit; font-size: 0.9375rem; font-weight: 600; line-height: 1.2;
+    min-height: 44px; padding: 0 8px; border: 0; border-radius: 10px; background: none; color: var(--muted); cursor: pointer;
+  }
+  .row-remove { margin-right: -8px; }
+  .row-remove:hover, .add-row:hover { color: var(--ink); }
+  .add-row { display: inline-flex; align-items: center; gap: 10px; margin: 16px 0 0 -8px; color: var(--ink); }
+  .add-row .plus { flex: none; display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; border: 1px solid var(--edge); background: var(--card); }
+  .add-row .plus svg { width: 14px; height: 14px; }
+  .row-remove:focus-visible, .add-row:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+---
+<section class="sect">
+  <h2>How it works</h2>
+  <p>Each debt keeps its own monthly payment. Every month, interest is added at the debt's yearly rate divided by 12, and then each payment is taken off.</p>
+  <ul>
+    <li>When any debt has a rate, the order is <b>highest rate first</b>. With no rates at all, it is <b>smallest balance first</b>.</li>
+    <li>When a debt is paid off, its payment moves to the first card in that order that still has a balance. A loan keeps its fixed payment and never takes extra.</li>
+    <li>A debt with no monthly payment is left out and named. A debt whose payment never clears it, within 50 years, is never paid off at that payment.</li>
+  </ul>
+  <p>Each debt also falls into one of four kinds, by rate and size. A rate of 20% or more is costly, and a balance of <span data-noscale><span data-sym>₱</span>31,623</span> or more is big. Those lines are the same in every currency.</p>
+</section>
+
+<section class="sect">
+  <h2>A worked example</h2>
+  <p>A household carries the four debts from the app's own walkthrough: a store card, a family loan, a personal loan and a car loan. Each payment is set to clear its debt over a typical term: a year for the card and the family loan, three years for the personal loan and five for the car.</p>
+  <div class="result" data-noscale>
+    <p class="panel-label">The four debts, in the order they are paid</p>
+    <ul class="rows" id="dp-ex-rows">
+      <li style="--c:#E07B54"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-wallet"/></svg></span><span class="words"><b class="t">Store card</b><span class="g">Card · 36% APR · ₱1,900 a month</span><span class="g">Paid off in month 12 · 1 · Small &amp; costly</span></span><span class="amt">₱18,000</span></li>
+      <li style="--c:#E07B54"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-repay"/></svg></span><span class="words"><b class="t">Personal loan</b><span class="g">Loan · 24% APR · ₱9,500 a month</span><span class="g">Paid off in month 36 · 3 · Big &amp; costly</span></span><span class="amt">₱240,000</span></li>
+      <li style="--c:#E07B54"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-repay"/></svg></span><span class="words"><b class="t">Car loan</b><span class="g">Loan · 7% APR · ₱17,000 a month</span><span class="g">Paid off in month 57 · 4 · Big &amp; cheap</span></span><span class="amt">₱820,000</span></li>
+      <li style="--c:#E07B54"><span class="chip"><svg class="gl" aria-hidden="true"><use href="#g-repay"/></svg></span><span class="words"><b class="t">Family loan</b><span class="g">Loan · 0% APR · ₱1,000 a month</span><span class="g">Paid off in month 12 · 2 · Small &amp; cheap</span></span><span class="amt">₱12,000</span></li>
+    </ul>
+    <dl class="facts" id="dp-ex-facts">
+      <div><dt>Order</dt><dd>Highest rate first</dd></div>
+      <div><dt>Every debt paid off</dt><dd>Month 57</dd></div>
+      <div><dt>Total interest</dt><dd>₱246,854</dd></div>
+    </dl>
+  </div>
+</section>
+
+<form class="calc" hidden novalidate>
+  <div class="steps" data-steps="tool">
+    <ol class="chapters" aria-label="Steps">
+      <li><a href="#step-1">Your debts</a></li>
+      <li><a href="#step-2">Result</a></li>
+    </ol>
+
+    <section class="step" id="step-1">
+      <h2 tabindex="-1">Your debts</h2>
+      <p class="hint">Add each card and loan, up to 6. Leave a rate empty if you don't know it. Leave a payment empty if you pay nothing toward that debt, and it is left out.</p>
+      <div class="debts" id="dp-debts">
+        <div class="q debt" id="dp-1">
+          <div class="debt-head"><h3 class="debt-title" id="dp-1-h">Debt 1</h3><button type="button" class="row-remove" aria-describedby="dp-1-h" hidden>Remove</button></div>
+          <div class="field"><label for="dp-1-name">Name</label><div class="num"><input id="dp-1-name" class="name" type="text" autocomplete="off" maxlength="40"></div></div>
+          <div class="field"><span class="label" id="dp-1-kind-h">Kind</span><div class="opts" role="radiogroup" aria-labelledby="dp-1-kind-h"><label><input type="radio" name="dp-1-kind" value="card" checked><span>Card</span></label><label><input type="radio" name="dp-1-kind" value="loan"><span>Loan</span></label></div></div>
+          <div class="field"><label for="dp-1-bal">Balance</label><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="dp-1-bal" class="bal" type="text" inputmode="decimal" autocomplete="off" required data-check="positive"></div></div>
+          <div class="field"><label for="dp-1-apr">Interest rate a year (APR)</label><div class="num"><input id="dp-1-apr" class="apr" type="text" inputmode="decimal" autocomplete="off" data-check="rate"><span class="sym after" aria-hidden="true">%</span></div></div>
+          <div class="field"><label for="dp-1-pay">Monthly payment</label><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="dp-1-pay" class="pay" type="text" inputmode="decimal" autocomplete="off"></div></div>
+        </div>
+      </div>
+      <button type="button" class="add-row" id="dp-add"><span class="plus" aria-hidden="true"><svg class="gl"><use href="#g-plus"/></svg></span>Add a debt</button>
+    </section>
+
+    <section class="step" id="step-2">
+      <h2 tabindex="-1">Your result</h2>
+      <div class="result">
+        <p class="status" id="dp-alert" data-tone="risk" hidden></p>
+        <p class="hero-num" id="dp-hero"><span class="fig" id="dp-months">57</span> <span class="unit" id="dp-unit">months until every debt is paid off</span></p>
+        <p class="basis" id="dp-strategy">Highest rate first</p>
+        <p id="dp-explain">When a debt is paid off, its payment moves to the card with the highest rate still owing. A loan keeps its fixed payment.</p>
+        <ul class="rows" id="dp-rows"></ul>
+        <dl class="facts" id="dp-facts"></dl>
+        <p id="dp-note" hidden></p>
+      </div>
+    </section>
+  </div>
+</form>
+
+<section class="sect">
+  <h2>How to use your results</h2>
+  <p>Pay every debt its monthly payment. When one is paid off, move its payment to the next card in the order instead of spending it. That is what clears the later debts sooner.</p>
+  <p>A debt that is never paid off needs a larger payment. At its current payment the interest keeps pace with it, or it would take more than 50 years.</p>
+  <p>Each debt's kind, from 1 · Small &amp; costly to 4 · Big &amp; cheap, shows where it sits by rate and size. The guide explains why the kinds are paid in that order.</p>
+</section>
+
+<p class="note">An estimate from the numbers you entered, using the same method as the app. Not financial advice. Nothing you type leaves this page.</p>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var M = window.ClaryoMoney;
+  var C = window.ClaryoCalc;
+  var form = document.querySelector('form.calc');
+  if (!M || !C || !form) return;
+  var root = form.querySelector('.steps');
+  var list = document.getElementById('dp-debts');
+  var add = document.getElementById('dp-add');
+  var MAX = 6;
+  function each(nodes, f) { Array.prototype.forEach.call(nodes, f); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+
+  // The walkthrough's four debts in the visitor's currency (ghost_debt_samples.dart, never scaled),
+  // each with a payment that clears it over a typical term, rounded up to two figures.
+  var TERM = { card: 12, family: 12, personal: 36, car: 60 };
+  function ceil2(x) {
+    if (!(x > 0)) return 0;
+    var unit = Math.pow(10, Math.floor(Math.log(x) / Math.LN10) - 1);
+    return Math.ceil(x / unit - 1e-9) * unit;
+  }
+  function paymentFor(d) {
+    var n = TERM[d.id];
+    var r = d.apr / 1200;
+    return ceil2(r === 0 ? d.balance / n : d.balance * r / (1 - Math.pow(1 + r, -n)));
+  }
+  var samples = C.debtSampleViews(M.code).map(function (d) {
+    return { id: d.id, name: d.name, kind: d.kind, balance: d.balance, apr: d.apr, payment: paymentFor(d) };
+  });
+
+  // ── One debt as a row: the kind's glyph on coral, name, terms, outcome and zone, balance ──
+  var SVGNS = 'http://www.w3.org/2000/svg';
+  function outcomeLine(d) {
+    if (d.outcome === 'noPaymentData') return 'No monthly payment, so it is left out';
+    if (d.outcome === 'neverAmortizes') return 'Never paid off at this payment';
+    return d.clearMonth === null ? 'Already paid off' : 'Paid off in month ' + d.clearMonth;
+  }
+  function row(d) {
+    var li = document.createElement('li');
+    li.style.setProperty('--c', '#E07B54');
+    var chip = document.createElement('span');
+    chip.className = 'chip';
+    var svg = document.createElementNS(SVGNS, 'svg');
+    svg.setAttribute('class', 'gl');
+    svg.setAttribute('aria-hidden', 'true');
+    var use = document.createElementNS(SVGNS, 'use');
+    use.setAttribute('href', d.kind === 'card' ? '#g-wallet' : '#g-repay');
+    svg.appendChild(use);
+    chip.appendChild(svg);
+    var words = document.createElement('span');
+    words.className = 'words';
+    var t = document.createElement('b');
+    t.className = 't';
+    t.textContent = d.name;
+    var terms = document.createElement('span');
+    terms.className = 'g';
+    terms.textContent = (d.kind === 'card' ? 'Card' : 'Loan') + ' · ' +
+      (d.apr === null ? 'No rate' : C.debtRateLabel(d.apr)) + ' · ' +
+      (d.payment > 0 ? M.money(d.payment) + ' a month' : 'No payment');
+    var result = document.createElement('span');
+    result.className = 'g';
+    result.textContent = outcomeLine(d) + (d.zone ? ' · ' + d.zone.rankedLabel : '');
+    words.appendChild(t);
+    words.appendChild(terms);
+    words.appendChild(result);
+    var amt = document.createElement('span');
+    amt.className = 'amt';
+    amt.textContent = M.money(d.balance);
+    li.appendChild(chip);
+    li.appendChild(words);
+    li.appendChild(amt);
+    return li;
+  }
+  function fact(dl, label, value) {
+    var div = document.createElement('div');
+    var dt = document.createElement('dt');
+    var dd = document.createElement('dd');
+    dt.textContent = label;
+    dd.textContent = value;
+    div.appendChild(dt);
+    div.appendChild(dd);
+    dl.appendChild(div);
+  }
+  var STRATEGY = { avalanche: 'Highest rate first', snowball: 'Smallest balance first' };
+
+  // The worked example, rebuilt in the visitor's own currency from the same run the tool makes.
+  (function () {
+    var plan = C.debtPayoff(samples);
+    var rows = document.getElementById('dp-ex-rows');
+    var facts = document.getElementById('dp-ex-facts');
+    clear(rows);
+    plan.debts.forEach(function (d) { rows.appendChild(row(d)); });
+    clear(facts);
+    fact(facts, 'Order', STRATEGY[plan.strategy]);
+    fact(facts, 'Every debt paid off', 'Month ' + plan.months);
+    fact(facts, 'Total interest', M.money(plan.totalInterest));
+  })();
+
+  // ── Fields ──
+  function num(input) {
+    var s = input.value.replace(/[,\s]/g, '');
+    return s === '' ? null : Number(s);
+  }
+  function check(input) {
+    var v = num(input);
+    var kind = input.getAttribute('data-check');
+    var like = input.placeholder ? ', like ' + input.placeholder : '';
+    var msg = '';
+    if (v === null) msg = input.required ? 'Enter the balance you owe.' : '';
+    else if (!isFinite(v)) msg = 'Enter a number' + like + '.';
+    else if (v < 0) msg = kind === 'rate' ? 'Enter a rate of 0 or more.' : 'Enter an amount of 0 or more.';
+    else if (kind === 'positive' && v === 0) msg = 'Enter a balance above 0.';
+    else if (kind === 'rate' && v > 1000) msg = 'Enter a yearly rate below 1,000%.';
+    input.setCustomValidity(msg);
+  }
+  function wire(card) {
+    each(card.querySelectorAll('input[inputmode="decimal"]'), function (input) {
+      input.addEventListener('input', function () { check(input); });
+      input.addEventListener('blur', function () {
+        var v = num(input);
+        if (v !== null && isFinite(v) && v >= 0 && !input.classList.contains('apr')) input.value = v.toLocaleString('en-US', { maximumFractionDigits: 2 });
+        check(input);
+      });
+      check(input);
+    });
+    card.querySelector('.row-remove').addEventListener('click', function () { remove(card); });
+  }
+  function cards() { return list.querySelectorAll('.debt'); }
+
+  // Each row's number, placeholders (the walkthrough's debt at that place) and controls.
+  function renumber() {
+    var all = cards();
+    each(all, function (card, k) {
+      var s = samples[k];
+      card.querySelector('.debt-title').textContent = 'Debt ' + (k + 1);
+      card.querySelector('.name').placeholder = s ? s.name : 'Debt ' + (k + 1);
+      card.querySelector('.bal').placeholder = s ? M.whole(s.balance) : '';
+      card.querySelector('.apr').placeholder = s ? String(s.apr) : '';
+      card.querySelector('.pay').placeholder = s ? M.whole(s.payment) : '';
+      card.querySelector('.row-remove').hidden = all.length < 2;
+    });
+    add.hidden = all.length >= MAX;
+  }
+
+  var next = 1;
+  function addRow() {
+    var all = cards();
+    if (all.length >= MAX) return null;
+    var card = all[0].cloneNode(true);
+    next += 1;
+    var from = /dp-1-/g;
+    var to = 'dp-' + next + '-';
+    card.id = 'dp-' + next;
+    each(card.querySelectorAll('[id], [for], [name], [aria-labelledby], [aria-describedby]'), function (el) {
+      ['id', 'for', 'name', 'aria-labelledby', 'aria-describedby'].forEach(function (a) {
+        if (el.hasAttribute(a)) el.setAttribute(a, el.getAttribute(a).replace(from, to));
+      });
+    });
+    var s = samples[all.length];
+    var kind = s ? s.kind : 'card';
+    each(card.querySelectorAll('input'), function (input) {
+      if (input.type === 'radio') {
+        input.defaultChecked = input.value === kind;
+        input.checked = input.value === kind;
+      } else {
+        input.defaultValue = '';
+        input.value = '';
+        input.setAttribute('enterkeyhint', 'go');
+      }
+    });
+    list.appendChild(card);
+    wire(card);
+    renumber();
+    return card;
+  }
+  function remove(card) {
+    var all = cards();
+    if (all.length < 2) return;
+    var at = Array.prototype.indexOf.call(all, card);
+    list.removeChild(card);
+    renumber();
+    var rest = cards();
+    rest[Math.min(at, rest.length - 1)].querySelector('.name').focus();
+  }
+  add.addEventListener('click', function () {
+    var card = addRow();
+    if (card) card.querySelector('.name').focus();
+  });
+  wire(cards()[0]);
+  renumber();
+
+  // ── The result ──
+  function fill() {
+    var debts = [];
+    var ok = true;
+    each(cards(), function (card, k) {
+      var bal = num(card.querySelector('.bal'));
+      var apr = num(card.querySelector('.apr'));
+      var pay = num(card.querySelector('.pay'));
+      if (!(bal > 0)) ok = false;
+      var kind = card.querySelector('input[type="radio"]:checked');
+      debts.push({
+        id: 'd' + k,
+        name: card.querySelector('.name').value.trim() || 'Debt ' + (k + 1),
+        kind: kind ? kind.value : 'card',
+        balance: bal,
+        apr: apr,
+        payment: pay === null ? 0 : pay,
+      });
+    });
+    if (!ok || !debts.length) return;
+    var plan = C.debtPayoff(debts);
+
+    var alert = document.getElementById('dp-alert');
+    var hero = document.getElementById('dp-hero');
+    var note = document.getElementById('dp-note');
+    var never = plan.debts.filter(function (d) { return d.outcome === 'neverAmortizes'; });
+    var left = plan.debts.filter(function (d) { return d.outcome === 'noPaymentData'; });
+    alert.hidden = true;
+    hero.hidden = true;
+    note.hidden = true;
+    if (plan.outcome === 'amortizes') {
+      hero.hidden = false;
+      document.getElementById('dp-months').textContent = String(plan.months);
+      document.getElementById('dp-unit').textContent = (plan.months === 1 ? 'month until ' : 'months until ') +
+        (left.length ? 'the debts with a payment are paid off' : 'every debt is paid off');
+    } else if (plan.outcome === 'neverAmortizes') {
+      alert.hidden = false;
+      alert.setAttribute('data-tone', 'risk');
+      alert.textContent = 'Not every debt is paid off';
+    } else {
+      alert.hidden = false;
+      alert.setAttribute('data-tone', 'warn');
+      alert.textContent = 'Add a monthly payment to see when your debts are paid off';
+    }
+
+    var hasCard = debts.some(function (d) { return d.kind === 'card'; });
+    document.getElementById('dp-strategy').textContent = STRATEGY[plan.strategy];
+    var explain = plan.strategy === 'avalanche'
+      ? 'When a debt is paid off, its payment moves to the card with the highest rate still owing.'
+      : 'No rates were entered, so the order is by balance. When a debt is paid off, its payment moves to the card with the smallest balance still owing.';
+    explain = hasCard ? explain + ' A loan keeps its fixed payment.' : 'Each loan is paid by its own payment, and none takes extra.';
+    if (never.length) {
+      explain += ' At these payments, ' + never.map(function (d) { return d.name; }).join(' and ') +
+        (never.length === 1 ? ' is' : ' are') + ' never paid off.';
+    }
+    document.getElementById('dp-explain').textContent = explain;
+
+    var rows = document.getElementById('dp-rows');
+    clear(rows);
+    plan.debts.forEach(function (d) { rows.appendChild(row(d)); });
+
+    var facts = document.getElementById('dp-facts');
+    clear(facts);
+    if (plan.outcome === 'amortizes' && plan.totalInterest !== null) {
+      fact(facts, 'Total interest', M.money(plan.totalInterest));
+    } else if (plan.outcome === 'amortizes') {
+      note.hidden = false;
+      note.textContent = 'Add every rate to see total interest.';
+    }
+    facts.hidden = !facts.firstChild;
+  }
+
+  root.addEventListener('steps:finish', fill);
+  root.addEventListener('steps:restart', function () {
+    // Back to one debt; form.reset() runs after this event and clears it.
+    var all = cards();
+    for (var k = all.length - 1; k > 0; k--) list.removeChild(all[k]);
+    renumber();
+    setTimeout(function () { each(form.querySelectorAll('input[inputmode="decimal"]'), check); }, 0);
+  });
+  form.addEventListener('submit', function (e) { e.preventDefault(); });
+  form.hidden = false;
+});
+</script>

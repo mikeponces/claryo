@@ -1,0 +1,49 @@
+---
+layout: default
+---
+{%- comment -%}
+  A guide (learn/<slug>/index.html). The page writes only its .steps block; this layout writes the
+  head, the door to the paired tool, the line about the app and the other guides. Front matter:
+  title, description, date, pillar, tool_url, tool_title, tool_line, doc: false, feed: true.
+{%- endcomment -%}
+{% include glyphs.html %}
+<article class="kit guide{% if page.pillar %} c-{{ page.pillar }}{% endif %}">
+  <div class="page-head">
+    <p class="eyebrow">A Claryo and Build My Wealth resource</p>
+    <h1>{{ page.title | escape }}</h1>
+    <p class="lead">{{ page.description | escape }}</p>
+  </div>
+
+{{ content }}
+
+  {%- if page.tool_url %}
+  <a class="door" href="{{ page.tool_url | relative_url }}">
+    <span class="k">Try it with your numbers</span>
+    <span class="t">{{ page.tool_title | escape }}</span>
+    {%- if page.tool_line %}
+    <span class="g">{{ page.tool_line | escape }}</span>
+    {%- endif %}
+  </a>
+  {%- endif %}
+
+  <div class="about">
+    <p>Claryo is a paycheck system for breadwinners. You plan each paycheck before it arrives and build cash reserves, protection and growth in order.</p>
+    <p><a href="{{ '/' | relative_url }}">See how Claryo works</a></p>
+  </div>
+
+  {%- assign guides = site.pages | where: "layout", "guide" | sort: "date" %}
+  {%- if guides.size > 1 %}
+  <nav class="more-list" aria-labelledby="more-guides">
+    <h2 id="more-guides">More guides</h2>
+    <ul>
+      {%- for g in guides %}
+      {%- unless g.url == page.url %}
+      <li><a href="{{ g.url | relative_url }}">{{ g.title | escape }}</a></li>
+      {%- endunless %}
+      {%- endfor %}
+    </ul>
+  </nav>
+  {%- endif %}
+</article>
+<script defer src="{{ '/assets/js/money.js' | relative_url }}"></script>
+<script defer src="{{ '/assets/js/steps.js' | relative_url }}"></script>

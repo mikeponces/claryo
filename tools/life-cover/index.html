@@ -1,0 +1,460 @@
+---
+layout: tool
+title: Life cover calculator
+description: How many years your life cover would fund your family, out of the years you want covered.
+order: 3
+pillar: protect
+doc: false
+guide_url: /learn/life-insurance/
+guide_title: How much life cover you need
+style: |
+  .result .panel-label + .facts { margin-top: 0; }
+  .result .facts + .panel-label { margin-top: 20px; }
+  .result .basis + .track { margin-top: 18px; }
+  .result .track + .facts { margin-top: 18px; }
+  .step > .q + .hint, .step > .opts + .opt-line { margin-top: 10px; }
+  .step h3 { margin: 32px 0 4px; }
+  .step h3 + .hint + .opts { margin-top: 12px; }
+  /* The chosen option's line, under its pills: the app's tier sheet subtitle for that row. */
+  .opt-line { margin: 10px 0 0; font-size: 0.875rem; line-height: 1.45; color: var(--muted); max-width: 36em; }
+  /* A one-question step lists every option with its line, as the app's tier sheets do. */
+  .opts.tiles { display: grid; gap: 8px; }
+  .opts.tiles label { display: block; }
+  .opts.tiles label > span { width: 100%; align-items: flex-start; text-align: left; min-height: 56px; padding: 10px 20px; border-radius: 18px; }
+  .opts.tiles label > span small { margin-top: 2px; font-size: 0.875rem; line-height: 1.4; }
+  /* The drawdown chart (annuity_drawdown_chart.dart) and its legend. */
+  .result .chart { margin-top: 22px; }
+  .chart text { font-size: 11px; fill: var(--quiet); font-variant-numeric: tabular-nums; }
+  .legend.keys { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 0.8125rem; }
+  .legend.keys li > i { width: 14px; height: 8px; border-radius: 2px; }
+  .legend.keys .k-need { background: rgba(121, 134, 203, 0.275); box-shadow: inset 0 0 0 1px #7986CB; }
+  .legend.keys .k-held { height: 0; border-radius: 0; background: none; border-top: 2px dashed rgba(27, 24, 48, 0.45); }
+  .legend.keys .k-dry { background: rgba(198, 40, 40, 0.16); }
+  .legend.keys li { align-items: center; }
+  .result > p.rule { margin: 18px 0 0; padding-top: 14px; border-top: 1px solid var(--hair); font-size: 0.9375rem; color: var(--muted); text-wrap: pretty; }
+---
+<section class="sect">
+  <h2>How it works</h2>
+  <p>Your family needs a share of your yearly income for a number of years. The cover that pays for it is drawn down to zero over those years: the family takes a year's income at the start of each year, the rest of the money earns a return, and each year's draw rises with inflation.</p>
+  <p>Before the family draws anything, the payout clears your debts and pays for settling the estate: a funeral, the paperwork and any estate tax. Your savings and investments add to what is left. That total is what funds the family.</p>
+  <p>The cost of settling the estate sits beside the need and is never added to it. The result is how many years the money lasts, out of the years you chose.</p>
+</section>
+
+<section class="sect">
+  <h2>A worked example</h2>
+  <p>A household earns ₱1,200,000 a year and owes ₱200,000. It keeps ₱500,000 in savings and investments and holds ₱8,000,000 of life cover. Every assumption is at the app's default.</p>
+  <div class="result">
+    <p class="panel-label">The household</p>
+    <dl class="facts">
+      <div><dt>Yearly income</dt><dd>₱1,200,000</dd></div>
+      <div><dt>Replace</dt><dd>75% for 20 years</dd></div>
+      <div><dt>Return and inflation</dt><dd>7% and 3%</dd></div>
+      <div><dt>Estate costs</dt><dd>5% of the cover</dd></div>
+      <div><dt>Debts</dt><dd>₱200,000</dd></div>
+      <div><dt>Savings and investments</dt><dd>₱500,000</dd></div>
+      <div><dt>Life cover held</dt><dd>₱8,000,000</dd></div>
+    </dl>
+    <p class="panel-label">The result</p>
+    <dl class="facts">
+      <div><dt>Years funded</dt><dd>10.4 of 20</dd></div>
+      <div><dt>Status</dt><dd>Needs attention</dd></div>
+      <div><dt>What your family needs</dt><dd>₱12,838,392</dd></div>
+      <div><dt>What you hold</dt><dd>₱7,900,000</dd></div>
+      <div><dt>Shortfall</dt><dd>₱4,938,392</dd></div>
+      <div><dt>Debts paid first</dt><dd>₱200,000</dd></div>
+      <div><dt>Settling the estate</dt><dd>₱400,000</dd></div>
+      <div><dt>Ten times income (₱12,000,000) funds</dt><dd>18.1 of 20 years</dd></div>
+    </dl>
+  </div>
+</section>
+
+<form class="calc" hidden novalidate>
+  <div class="steps" data-steps="tool">
+    <ol class="chapters" aria-label="Steps">
+      <li><a href="#step-1">Income</a></li>
+      <li><a href="#step-2">How much to replace</a></li>
+      <li><a href="#step-3">For how long</a></li>
+      <li><a href="#step-4">Assumptions</a></li>
+      <li><a href="#step-5">Debts</a></li>
+      <li><a href="#step-6">Savings and investments</a></li>
+      <li><a href="#step-7">Cover held</a></li>
+      <li><a href="#step-8">Result</a></li>
+    </ol>
+
+    <section class="step" id="step-1">
+      <h2 tabindex="-1"><label for="lc-inc">Yearly income</label></h2>
+      <p class="hint" id="lc-inc-hint">What your household earns in a year.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="lc-inc" type="text" inputmode="decimal" autocomplete="off" required data-check="positive" aria-describedby="lc-inc-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-2">
+      <h2 tabindex="-1" id="lc-rep-h">How much to replace</h2>
+      <p class="hint" id="lc-rep-hint">The share of household income the cover has to produce.</p>
+      <div class="opts tiles" role="radiogroup" aria-labelledby="lc-rep-h" aria-describedby="lc-rep-hint">
+        <label><input type="radio" name="lc-rep" value="100"><span>100%<small>Replaces all of it</small></span></label>
+        <label><input type="radio" name="lc-rep" value="75" checked><span>75%<small>Most of it, with real cuts</small></span></label>
+        <label><input type="radio" name="lc-rep" value="50"><span>50%<small>Half, assuming the household adapts</small></span></label>
+        <label><input type="radio" name="lc-rep" value="30"><span>30%<small>Essentials only</small></span></label>
+      </div>
+    </section>
+
+    <section class="step" id="step-3">
+      <h2 tabindex="-1" id="lc-yrs-h">For how long</h2>
+      <p class="hint" id="lc-yrs-hint">The span the cover has to last. The last year empties it.</p>
+      <div class="opts tiles" role="radiogroup" aria-labelledby="lc-yrs-h" aria-describedby="lc-yrs-hint">
+        <label><input type="radio" name="lc-yrs" value="5"><span>5 years<small data-span="5">A short span to cover</small></span></label>
+        <label><input type="radio" name="lc-yrs" value="10"><span>10 years<small data-span="10">A decade of support</small></span></label>
+        <label><input type="radio" name="lc-yrs" value="15"><span>15 years<small data-span="15">Most of a childhood</small></span></label>
+        <label><input type="radio" name="lc-yrs" value="20" checked><span>20 years<small data-span="20">A long span to cover</small></span></label>
+        <label><input type="radio" name="lc-yrs" value="25"><span>25 years<small data-span="25">Into a spouse's later years</small></span></label>
+      </div>
+    </section>
+
+    <section class="step" id="step-4">
+      <h2 tabindex="-1">Assumptions</h2>
+      <p class="hint">Each one starts at the app's default.</p>
+
+      <h3 id="lc-ret-h">Return on the payout</h3>
+      <p class="hint" id="lc-ret-hint">What the proceeds earns each year while the family draws on it. A higher return means less cover to buy.</p>
+      <div class="opts" role="radiogroup" aria-labelledby="lc-ret-h" aria-describedby="lc-ret-hint">
+        <label><input type="radio" name="lc-ret" value="2" data-line="Held in cash"><span>2%</span></label>
+        <label><input type="radio" name="lc-ret" value="5" data-line="Mostly in bonds"><span>5%</span></label>
+        <label><input type="radio" name="lc-ret" value="7" data-line="A mixture of bonds and equities" checked><span>7%</span></label>
+      </div>
+      <p class="opt-line" data-for="lc-ret" aria-hidden="true">A mixture of bonds and equities</p>
+
+      <h3 id="lc-inf-h">Inflation</h3>
+      <p class="hint" id="lc-inf-hint">How much prices rise each year. The family draws a little more every year to keep up.</p>
+      <div class="opts" role="radiogroup" aria-labelledby="lc-inf-h" aria-describedby="lc-inf-hint">
+        <label><input type="radio" name="lc-inf" value="2" data-line="Low — prices creep up slowly; your money holds its value well"><span>2%</span></label>
+        <label><input type="radio" name="lc-inf" value="3" data-line="Typical — close to what most years look like" checked><span>3%</span></label>
+        <label><input type="radio" name="lc-inf" value="4" data-line="Elevated — prices climb faster than usual"><span>4%</span></label>
+        <label><input type="radio" name="lc-inf" value="6" data-line="High — prices rise fast and buying power erodes quickly"><span>6%</span></label>
+      </div>
+      <p class="opt-line" data-for="lc-inf" aria-hidden="true">Typical — close to what most years look like</p>
+
+      <h3 id="lc-set-h">Settling the estate</h3>
+      <p class="hint" id="lc-set-hint">A funeral, the paperwork and any estate tax come out of the payout before the family can invest the rest.</p>
+      <div class="opts" role="radiogroup" aria-labelledby="lc-set-h" aria-describedby="lc-set-hint">
+        <label><input type="radio" name="lc-set" value="0" data-line="No allowance"><span>0%</span></label>
+        <label><input type="radio" name="lc-set" value="3" data-line="A simple funeral"><span>3%</span></label>
+        <label><input type="radio" name="lc-set" value="5" data-line="A funeral and the paperwork" checked><span>5%</span></label>
+        <label><input type="radio" name="lc-set" value="10" data-line="Estate tax plus the cost of settling"><span>10%</span></label>
+        <label><input type="radio" name="lc-set" value="15" data-line="A longer, costlier settlement"><span>15%</span></label>
+      </div>
+      <p class="opt-line" data-for="lc-set" aria-hidden="true">A funeral and the paperwork</p>
+    </section>
+
+    <section class="step" id="step-5">
+      <h2 tabindex="-1"><label for="lc-debt">Debts to pay off</label></h2>
+      <p class="hint" id="lc-debt-hint">What the payout would clear first: a mortgage, loans and card balances. Enter 0 if you owe nothing.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="lc-debt" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="lc-debt-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-6">
+      <h2 tabindex="-1"><label for="lc-liq">Savings and investments</label></h2>
+      <p class="hint" id="lc-liq-hint">Cash and investments your family could draw on. Leave out retirement accounts.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="lc-liq" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="lc-liq-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-7">
+      <h2 tabindex="-1"><label for="lc-held">Life cover you hold</label></h2>
+      <p class="hint" id="lc-held-hint">What your life policies would pay out in total. Enter 0 if you have none.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="lc-held" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="lc-held-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-8">
+      <h2 tabindex="-1">Your result</h2>
+      <div class="result">
+        <p class="status" id="lc-status" data-tone="warn">Needs attention</p>
+        <p class="hero-num" id="lc-hero"><span class="fig" id="lc-fig">10<span class="dec">.4</span></span> <span class="unit" id="lc-unit">of 20 years funded</span></p>
+        <p class="basis" id="lc-basis">9.6 years left to fund</p>
+        <div class="track" id="lc-track" style="--v:10.44;--max:20" role="img" aria-label="10.4 of 20 years funded">
+          <div class="groove" id="lc-groove"><i class="track-fill"></i></div>
+          <div class="marks" id="lc-marks" aria-hidden="true"></div>
+        </div>
+        <dl class="facts" id="lc-facts"></dl>
+        <svg class="chart" id="lc-chart" role="img" aria-label="" focusable="false"></svg>
+        <ul class="legend keys" aria-hidden="true">
+          <li><i class="k-need"></i><span>What it takes</span></li>
+          <li><i class="k-held"></i><span>What you hold</span></li>
+          <li id="lc-key-dry"><i class="k-dry"></i><span>Not funded</span></li>
+        </ul>
+        <p class="rule" id="lc-rule">A cover of 10 times income (₱12,000,000) would fund 18.1 of your 20 years.</p>
+      </div>
+    </section>
+  </div>
+</form>
+
+<section class="sect">
+  <h2>How to use your results</h2>
+  <p>The shortfall is how much more your family would need today to fund every year you chose. More cover, more savings or fewer debts each close part of it.</p>
+  <p>On the chart, the red years are the ones your family would go without. A cover that funds every year leaves no red.</p>
+  <p>Ten times income is a common rule of thumb. The last line shows how far it would go for your household, with your own numbers.</p>
+</section>
+
+<p class="note">An estimate from the numbers you entered, using the same method as the app. Not financial advice. Nothing you type leaves this page.</p>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var M = window.ClaryoMoney;
+  var C = window.ClaryoCalc;
+  var form = document.querySelector('form.calc');
+  if (!M || !C || !form) return;
+  var root = form.querySelector('.steps');
+  function $(id) { return document.getElementById(id); }
+  function each(list, f) { Array.prototype.forEach.call(list, f); }
+
+  // ── Fields: commas stripped, nothing negative, every message the browser shows on Next ──
+  function num(input) {
+    var s = input.value.replace(/[,\s]/g, '');
+    return s === '' ? null : Number(s);
+  }
+  function check(input) {
+    var v = num(input);
+    var msg = '';
+    if (v === null) msg = input.required ? 'Enter an amount, or 0.' : '';
+    else if (!isFinite(v)) msg = 'Enter a number, like ' + input.placeholder + '.';
+    else if (v < 0) msg = 'Enter an amount of 0 or more.';
+    else if (input.getAttribute('data-check') === 'positive' && v === 0) msg = 'Enter an amount above 0.';
+    input.setCustomValidity(msg);
+  }
+  var fields = form.querySelectorAll('input[inputmode="decimal"]');
+  each(fields, function (input) {
+    input.addEventListener('input', function () { check(input); });
+    input.addEventListener('blur', function () {
+      var v = num(input);
+      if (v !== null && isFinite(v) && v >= 0) input.value = v.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      check(input);
+    });
+    check(input);
+  });
+  function picked(name) {
+    var r = form.querySelector('input[name="' + name + '"]:checked');
+    return r ? Number(r.value) : null;
+  }
+  function syncLines() {
+    each(form.querySelectorAll('.opt-line[data-for]'), function (p) {
+      var r = form.querySelector('input[name="' + p.getAttribute('data-for') + '"]:checked');
+      if (r) p.textContent = r.getAttribute('data-line');
+    });
+  }
+  form.addEventListener('change', function (e) { if (e.target.type === 'radio') syncLines(); });
+  // A pill shows its value; its line is read with it, and shown under the group once chosen.
+  each(form.querySelectorAll('input[data-line]'), function (r) {
+    var sr = document.createElement('span');
+    sr.className = 'sr';
+    sr.textContent = ', ' + r.getAttribute('data-line');
+    r.nextElementSibling.appendChild(sr);
+  });
+
+  // Placeholders: the worked example's household, in the visitor's currency.
+  var EXAMPLE = { 'lc-inc': 1200000, 'lc-debt': 200000, 'lc-liq': 500000, 'lc-held': 8000000 };
+  Object.keys(EXAMPLE).forEach(function (id) { $(id).placeholder = M.whole(EXAMPLE[id] / M.factor); });
+
+  function inputs() {
+    return {
+      annualBasis: num($('lc-inc')),
+      replacementPct: picked('lc-rep'),
+      years: picked('lc-yrs'),
+      investmentRatePct: picked('lc-ret'),
+      incomeGrowthPct: picked('lc-inf'),
+      settlementPct: picked('lc-set'),
+      debtPayoff: num($('lc-debt')),
+      liquidAssets: num($('lc-liq')),
+      heldCoverage: num($('lc-held')),
+    };
+  }
+
+  // "For how long" prices each span at the answers so far, as the app's horizon sheet does.
+  function priceSpans() {
+    var i = inputs();
+    if (!(i.annualBasis > 0)) return;
+    C.coverageHorizonTiers(i).forEach(function (t) {
+      var small = form.querySelector('small[data-span="' + t.value + '"]');
+      if (small) small.textContent = M.money(t.need) + ' ' + t.line;
+    });
+  }
+
+  // One decimal, half away from zero (toStringAsFixed), split for the hero.
+  function oneDp(v) { return (C.roundHalfAway(v * 10) / 10).toFixed(1); }
+
+  // ── The drawdown chart: annuity_drawdown_chart.dart over StackedAreaPainter ──
+  var NS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  // chart_utils.dart niceAxisStep: about four rules, on 1, 2, 2.5 or 5 of a power of ten.
+  function ticks(max) {
+    if (!(max > 0)) return [];
+    var raw = max / 4;
+    var p = Math.pow(10, Math.floor(Math.log(raw) / Math.LN10));
+    var steps = [1, 2, 2.5, 5, 10];
+    var step = 10 * p;
+    for (var k = 0; k < steps.length; k++) { if (steps[k] * p >= raw) { step = steps[k] * p; break; } }
+    var out = [];
+    for (var v = step; v <= max * 1.0001; v += step) out.push(v);
+    return out;
+  }
+  // SpanLabels.marksFor: five marks at quarters of the span.
+  function marksFor(span) {
+    var out = [];
+    if (span <= 4) { for (var i = 0; i <= span; i++) out.push(i); return out; }
+    for (var j = 0; j < 5; j++) out.push(C.roundHalfAway(span * j / 4));
+    return out;
+  }
+  var last = null;
+  function drawChart() {
+    var svg = $('lc-chart');
+    if (!last || !svg.getBoundingClientRect().width) return;
+    var needed = last.needed, held = last.held, dry = last.dry;
+    while (svg.firstChild) svg.removeChild(svg.firstChild);
+    var W = Math.round(svg.getBoundingClientRect().width);
+    var top = 12, floor = 162, H = 182, gutter = 46;
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
+    var span = needed.length - 1;
+    var yMax = Math.max.apply(null, needed.concat(held));
+    if (!(yMax > 0)) yMax = 1;
+    function x(i) { return gutter + i / span * (W - gutter); }
+    function y(v) { return floor - v / yMax * (floor - top); }
+    ticks(yMax).forEach(function (t) {
+      svgEl('line', { x1: gutter, x2: W, y1: y(t), y2: y(t), stroke: 'rgba(27,24,48,0.11)', 'stroke-width': 0.8 }, svg);
+      var label = svgEl('text', { x: gutter - 6, y: y(t), 'text-anchor': 'end', 'dominant-baseline': 'middle' }, svg);
+      label.textContent = M.compactMoney(t);
+    });
+    svgEl('line', { x1: gutter, x2: W, y1: floor, y2: floor, stroke: 'rgba(27,24,48,0.11)', 'stroke-width': 0.8 }, svg);
+    if (dry >= 0) svgEl('rect', { x: x(dry), y: 0, width: Math.max(0, W - x(dry)), height: floor, fill: 'rgba(198,40,40,0.10)' }, svg);
+    var area = 'M' + x(0) + ' ' + floor;
+    var edge = '';
+    needed.forEach(function (v, i) { area += ' L' + x(i) + ' ' + y(v); edge += (i ? ' L' : 'M') + x(i) + ' ' + y(v); });
+    area += ' L' + x(span) + ' ' + floor + ' Z';
+    svgEl('path', { d: area, fill: 'rgba(121,134,203,0.275)' }, svg);
+    svgEl('path', { d: edge, fill: 'none', stroke: '#7986CB', 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, svg);
+    var dash = '';
+    held.forEach(function (v, i) { dash += (i ? ' L' : 'M') + x(i) + ' ' + y(v); });
+    svgEl('path', { d: dash, fill: 'none', stroke: 'rgba(27,24,48,0.45)', 'stroke-width': 1.5, 'stroke-dasharray': '4 3' }, svg);
+    for (var d = 0; d <= span; d += 10) {
+      svgEl('circle', { cx: x(d), cy: y(needed[d]), r: 2.5, fill: '#FFFFFF', stroke: '#7986CB', 'stroke-width': 1.2 }, svg);
+    }
+    var marks = marksFor(span);
+    marks.forEach(function (m, k) {
+      var anchor = k === 0 ? 'start' : (k === marks.length - 1 ? 'end' : 'middle');
+      var t = svgEl('text', { x: k === 0 ? gutter : (k === marks.length - 1 ? W : x(m)), y: floor + 15, 'text-anchor': anchor }, svg);
+      t.textContent = m === 0 ? 'Now' : 'Yr ' + m;
+    });
+  }
+  var resizeTimer = 0;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(drawChart, 150);
+  });
+
+  function fact(list, label, value) {
+    var row = document.createElement('div');
+    var dt = document.createElement('dt');
+    var dd = document.createElement('dd');
+    dt.textContent = label;
+    dd.textContent = value;
+    row.appendChild(dt);
+    row.appendChild(dd);
+    list.appendChild(row);
+  }
+
+  // ── The result ──
+  function fill() {
+    var i = inputs();
+    if (!(i.annualBasis > 0) || i.debtPayoff === null || i.liquidAssets === null || i.heldCoverage === null) return;
+    var life = C.lifeNeed(i);
+    var years = i.years;
+    var yc = life.yearsCovered;
+
+    var status = $('lc-status');
+    status.textContent = life.covered ? C.tiers.status.healthy : C.tiers.status.attention;
+    status.setAttribute('data-tone', life.covered ? 'ok' : 'warn');
+
+    var fig = $('lc-fig');
+    while (fig.firstChild) fig.removeChild(fig.firstChild);
+    if (yc === null) {
+      fig.textContent = 'Never runs out';
+      $('lc-unit').textContent = '';
+    } else {
+      var parts = oneDp(yc).split('.');
+      fig.appendChild(document.createTextNode(parts[0]));
+      var dec = document.createElement('span');
+      dec.className = 'dec';
+      dec.textContent = '.' + parts[1];
+      fig.appendChild(dec);
+      $('lc-unit').textContent = life.covered ? 'years funded' : 'of ' + years + ' years funded';
+    }
+    var basis;
+    if (life.covered) basis = 'Goal ' + years + ' years, to ' + (new Date().getFullYear() + years);
+    else if (!life.settlementCovered) basis = 'Settling the estate takes all of it.';
+    else basis = oneDp(Math.max(0, years - (yc || 0))) + ' years left to fund';
+    $('lc-basis').textContent = basis;
+
+    // The goal as a scale: every five years marked, the fill the years funded.
+    var track = $('lc-track');
+    var funded = life.covered ? years : Math.min(yc || 0, years);
+    track.style.setProperty('--max', String(years));
+    track.style.setProperty('--v', String(funded));
+    track.setAttribute('aria-label', (yc === null ? 'Never runs out' : oneDp(yc) + ' years funded') + ', against a goal of ' + years + ' years');
+    var groove = $('lc-groove');
+    var marks = $('lc-marks');
+    each(groove.querySelectorAll('.tick'), function (t) { groove.removeChild(t); });
+    while (marks.firstChild) marks.removeChild(marks.firstChild);
+    var step = years <= 5 ? 1 : 5;
+    for (var m = step; m <= years; m += step) {
+      if (m < years) {
+        var tick = document.createElement('i');
+        tick.className = 'tick';
+        tick.style.setProperty('--m', String(m));
+        groove.appendChild(tick);
+      }
+      var label = document.createElement('span');
+      label.style.setProperty('--m', String(m));
+      label.textContent = m + (m === 1 ? ' yr' : ' yrs');
+      marks.appendChild(label);
+    }
+
+    var facts = $('lc-facts');
+    while (facts.firstChild) facts.removeChild(facts.firstChild);
+    fact(facts, 'What your family needs', M.money(life.incomeNeeded));
+    fact(facts, 'What you hold', M.money(life.fundsFamily));
+    fact(facts, 'Shortfall', M.money(life.incomeShortfall));
+    if (life.debtPayoff > 0) fact(facts, 'Debts paid first', M.money(life.debtPayoff));
+    fact(facts, 'Settling the estate', M.money(life.settlementShare));
+
+    var dd = C.lifeDrawdown(life);
+    last = {
+      needed: dd.needed.map(function (r) { return r.balance; }),
+      held: dd.held.map(function (r) { return r.balance; }),
+      dry: dd.firstDry,
+    };
+    $('lc-key-dry').hidden = dd.firstDry < 0;
+    $('lc-chart').setAttribute('aria-label', 'What it takes falls from ' + M.money(life.incomeNeeded) + ' to nothing over ' + years +
+      ' years. What you hold starts at ' + M.money(life.fundsFamily) +
+      (dd.firstDry >= 0 ? ' and runs short in year ' + (dd.firstDry + 1) + '.' : ' and funds every year.'));
+    drawChart();
+
+    var rule = C.ruleOfThumb(i.annualBasis, { annualDraw: life.annualDraw, investmentRatePct: i.investmentRatePct, incomeGrowthPct: i.incomeGrowthPct, years: years });
+    var reach = rule.yearsFunded === null ? 'would never run out over your ' + years + ' years.'
+      : rule.yearsFunded >= years ? 'would fund all ' + years + ' of your years.'
+        : 'would fund ' + oneDp(rule.yearsFunded) + ' of your ' + years + ' years.';
+    $('lc-rule').textContent = 'A cover of 10 times income (' + M.money(rule.cover) + ') ' + reach;
+  }
+
+  root.addEventListener('steps:change', function (e) { if (e.detail && e.detail.index === 2) priceSpans(); });
+  root.addEventListener('steps:finish', fill);
+  root.addEventListener('steps:restart', function () {
+    // form.reset() runs after this event; the fields' messages and option lines follow it.
+    setTimeout(function () { each(fields, check); syncLines(); }, 0);
+  });
+  form.addEventListener('submit', function (e) { e.preventDefault(); });
+  form.hidden = false;
+});
+</script>

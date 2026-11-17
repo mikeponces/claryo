@@ -1,0 +1,253 @@
+<style>
+  /* Guides and tools (Story L.9). The stepper (assets/js/steps.js) and the figure kit both page
+     kinds share; a page adds its own CSS through `style:` in its front matter. Every figure is
+     ported from the app (design-refs/good-job-18.png, -12, -13): white panels on the grey ground,
+     heroes in ink, the accent only on instruments (fills, pills, dots, chips), never on words. */
+  :root {
+    --teal: #4DB6AC;
+    --peri: #7986CB;
+    --amber: #FFB74D;
+    --quiet: #6B6779;                    /* chart furniture, still AA on white */
+    --on-mark: #1A1A1A;                  /* kOnInstitutionMark: a glyph on its chip */
+    --soft: #EFEDF5;                     /* a chosen option's ground */
+    --out: cubic-bezier(0.215, 0.61, 0.355, 1);   /* Curves.easeOutCubic */
+    --lift: 0 3px 12px rgba(0, 0, 0, 0.11), 0 10px 33px rgba(0, 0, 0, 0.055);
+  }
+  /* The page's pillar hue, set once by the layout from `pillar:` and read by every instrument. */
+  .kit { --c: var(--purple); overflow-wrap: break-word; }
+  .c-cash { --c: var(--teal); }
+  .c-protect { --c: var(--peri); }
+  .c-growth { --c: var(--amber); }
+  .c-budget { --c: var(--purple); }
+
+  /* ── Page head and prose ── */
+  .eyebrow { margin: 0 0 12px; font-weight: 600; font-size: 0.9375rem; color: var(--muted); }
+  .kit h2 { margin: 0 0 12px; font-weight: 800; font-size: clamp(1.5rem, 1.25rem + 1.1vw, 1.875rem); line-height: 1.15; letter-spacing: -0.025em; text-wrap: balance; }
+  .kit h3 { margin: 28px 0 8px; font-weight: 700; font-size: 1.125rem; line-height: 1.35; letter-spacing: -0.01em; }
+  .kit a { text-underline-offset: 3px; }
+  .step > p, .step > ul, .step > ol, .sect > p, .sect > ul, .sect > ol { margin: 0 0 16px; max-width: 36em; text-wrap: pretty; }
+  .step > ul, .step > ol, .sect > ul, .sect > ol { padding-left: 1.25em; }
+  .step li + li, .sect li + li { margin-top: 6px; }
+  .hint { margin: 0 0 4px; font-size: 0.9375rem; color: var(--muted); max-width: 36em; text-wrap: pretty; }
+  /* A page section ("How it works", the worked example, "How to use your results"), and the tool's
+     form, which sits between them like one. */
+  .sect, .calc { margin-top: 56px; padding-top: 48px; border-top: 1px solid var(--line); }
+  .page-head + .sect, .page-head + .calc { margin-top: 0; padding-top: 0; border-top: 0; }
+  svg.gl { width: 1em; height: 1em; fill: currentColor; flex: none; vertical-align: -0.125em; }
+
+  /* ── The steps, without script: one reading order, the chapters a table of contents ── */
+  .chapters { list-style: none; margin: 0 0 40px; padding: 0; counter-reset: ch; border-top: 1px solid var(--line); }
+  .chapters li { counter-increment: ch; border-bottom: 1px solid var(--line); }
+  .chapters a { display: flex; align-items: baseline; gap: 12px; min-height: 44px; padding: 10px 0; font-weight: 600; text-decoration: none; }
+  .chapters a::before { content: counter(ch); flex: none; min-width: 1.25em; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .chapters a:hover { text-decoration: underline; }
+  .step + .step { margin-top: 56px; padding-top: 48px; border-top: 1px solid var(--line); }
+
+  /* ── With script: one step at a time ── */
+  .js-steps > .step { display: none; margin: 0; padding: 0; border: 0; }
+  .js-steps > .step.is-current { display: block; }
+  .step > h2[tabindex="-1"]:focus { outline: none; }
+  /* The chapter bar (walk_timeline_bar.dart): a wordless pill per step in the page's hue, no track,
+     contiguous 44px targets. The step on screen is the full pill at full hue; the rest are 4 of its
+     6 at alpha 130. A menu, not a meter: nothing greys out behind or ahead. */
+  .js-steps > .chapters { display: flex; margin: 0 0 2px; border: 0; }
+  .js-steps > .chapters li { flex: 1 1 0; min-width: 0; border: 0; }
+  .js-steps > .chapters a { position: relative; display: block; height: 44px; min-height: 0; padding: 0; }
+  .js-steps > .chapters a::before { content: none; }
+  .js-steps > .chapters a::after {
+    content: ""; position: absolute; left: 1px; right: 1px; top: 19px; height: 6px;
+    border-radius: 3px; background: var(--c); opacity: 0.51; transform: scaleY(0.6667);
+    forced-color-adjust: none;
+  }
+  .js-steps > .chapters a[aria-current]::after { opacity: 1; transform: none; }
+  .js-steps > .chapters a:not([aria-current]):hover::after { opacity: 0.8; }
+  .js-steps > .chapters a:focus-visible { outline: 2px solid var(--purple); outline-offset: -2px; border-radius: 8px; }
+  .ch-t { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+  @media (forced-colors: active) {
+    .js-steps > .chapters a::after { background: CanvasText; }
+    .js-steps > .chapters a[aria-current]::after { background: Highlight; }
+  }
+  .steps-count { margin: 0 0 6px; font-size: 0.875rem; font-weight: 600; line-height: 1.4; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  /* Back is a text action; Next is a quiet pill, never a filled button (house-rules: a filled
+     button belongs in a form's sticky footer). Both are 44px targets. */
+  .step-nav { display: flex; align-items: center; gap: 16px; margin-top: 32px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .step-nav button {
+    -webkit-appearance: none; appearance: none; font: inherit; font-size: 1rem; font-weight: 600;
+    line-height: 1.2; cursor: pointer; -webkit-tap-highlight-color: transparent;
+  }
+  .step-back, .step-restart {
+    display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 8px; margin: 0 0 0 -8px;
+    border: 0; border-radius: 10px; background: none; color: var(--muted);
+  }
+  .step-back::before { content: ""; flex: none; width: 7px; height: 7px; margin-left: 3px; border-left: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); }
+  .step-back:hover, .step-restart:hover { color: var(--ink); }
+  .step-restart { margin: 0 -8px 0 auto; }
+  .step-next {
+    display: inline-flex; align-items: center; gap: 10px; min-height: 44px; margin: 0 0 0 auto; padding: 0 20px 0 22px;
+    border: 1px solid var(--edge); border-radius: 999px; background: var(--card); color: var(--ink);
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06), 0 4px 14px rgba(0, 0, 0, 0.05);
+  }
+  .step-next::after { content: ""; flex: none; width: 7px; height: 7px; margin-right: 3px; border-top: 2px solid currentColor; border-right: 2px solid currentColor; transform: rotate(45deg); }
+  .step-next:hover { border-color: rgba(27, 24, 48, 0.4); }
+  .step-next:active { background: var(--ground); }
+  .step-nav button:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; }
+
+  /* ── Panels: elevatedPanelDecoration, one recipe. Content zones inside are rows, never boxes. ── */
+  .figure, .result, .q, .door { background: var(--card); border: 1px solid var(--edge); box-shadow: var(--lift); }
+  .figure, .result { --px: 24px; --py: 18px; display: block; margin: 24px 0; padding: var(--py) var(--px); border-radius: 26px; overflow: hidden; }
+  @media (min-width: 640px) { .figure, .result { --px: 28px; --py: 22px; } }
+  /* The card names itself quietly, small and grey, never an eyebrow in caps. */
+  .figure > figcaption, .panel-label { margin: 0 0 10px; font-size: 0.875rem; font-weight: 500; line-height: 1.4; color: var(--muted); }
+  .figure > p:not([class]), .result > p:not([class]) { margin: 8px 0 0; font-size: 0.9375rem; color: var(--muted); text-wrap: pretty; }
+  .chart { display: block; width: 100%; height: auto; overflow: visible; }
+
+  /* ConceptRow: the glyph in its hue on a chip, the word in ink, one line of gloss. In a panel the
+     rows run full-bleed under a hairline (ConceptCard). */
+  .rows { list-style: none; margin: 0; padding: 0; }
+  .rows > li { display: flex; align-items: center; gap: 16px; padding: 14px 0; }
+  .figure > .rows, .result > .rows { margin: var(--py) calc(-1 * var(--px)) 0; padding-bottom: 8px; border-top: 1px solid var(--hair); }
+  .figure > .rows > li, .result > .rows > li { padding: 14px var(--px); }
+  .figure > .rows:last-child, .result > .rows:last-child { margin-bottom: calc(-1 * var(--py)); }
+  .figure > .rows:first-child, .result > .rows:first-child { margin-top: calc(-1 * var(--py)); padding-top: 8px; border-top: 0; }
+  .chip { flex: none; width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: var(--c); color: var(--on-mark); }
+  .chip svg { width: 18px; height: 18px; fill: currentColor; }
+  .rows .words { flex: 1; min-width: 0; }
+  .rows .t { display: block; font-weight: 700; font-size: 1rem; line-height: 1.25; }
+  .rows .g { display: block; margin-top: 2px; font-size: 0.875rem; line-height: 1.4; color: var(--muted); text-wrap: pretty; }
+  .rows .amt { flex: none; margin-left: auto; font-weight: 700; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  /* MonthsHero (months_report.dart): the whole number heavier than its decimal, the unit a phrase
+     on the figure's baseline. The figure's recipe: w700, tracking -1.3 at 32; the decimal at 0.62
+     in w500; the magnitude at 0.72; the unit at 0.44 in w500, ink at 180/255, 0.19 of air. */
+  .hero-num { display: flex; flex-wrap: wrap; align-items: baseline; margin: 0; font-size: clamp(2rem, 1.7rem + 1.2vw, 2.5rem); font-weight: 700; line-height: 1.05; letter-spacing: -0.04em; font-variant-numeric: tabular-nums; color: var(--ink); }
+  .hero-num .fig { margin-right: 0.19em; white-space: nowrap; }
+  .hero-num .dec { font-size: 0.62em; font-weight: 500; letter-spacing: -0.02em; }
+  .hero-num .mag { font-size: 0.72em; }
+  .hero-num .unit { font-size: max(0.44em, 0.75rem); font-weight: 500; line-height: 1.3; letter-spacing: 0; color: rgba(27, 24, 48, 0.706); }
+  /* The basis line under a hero: the amount the ratio is of, and what it was divided by. */
+  .basis { margin: 8px 0 0; font-size: 0.875rem; line-height: 1.45; color: var(--muted); font-variant-numeric: tabular-nums; text-wrap: pretty; }
+  /* The word in ink; the accent is the dot beside it (signalHealthy / signalCaution / signalDanger). */
+  .status { display: inline-flex; align-items: center; gap: 8px; margin: 0; font-size: 0.9375rem; font-weight: 600; line-height: 1.4; color: var(--ink); }
+  .status::before { content: ""; flex: none; width: 8px; height: 8px; border-radius: 50%; background: var(--tone, var(--c)); }
+  .status[data-tone="ok"] { --tone: #43A047; }
+  .status[data-tone="warn"] { --tone: #F57C00; }
+  .status[data-tone="risk"] { --tone: #C62828; }
+  .status + .hero-num { margin-top: 10px; }
+
+  /* The milestone scale (milestone_scale_track.dart, reserve_scale_track.dart): a 20px groove
+     carved into the panel, the band a deeper cut of the groove (never the accent), the fill in the
+     page's hue, a 2px card-coloured tick at each milestone short of the top, and every milestone
+     labelled under it, centred and kept inside the track. Set --v, --max (and --lo, --hi for a
+     band) on .track; --m on each tick and label. */
+  .track { --v: 0; --max: 12; position: relative; margin: 20px 0 0; }
+  .groove { position: relative; height: 20px; border-radius: 10px; overflow: hidden; background: rgba(0, 0, 0, 0.176); }
+  .groove .band { position: absolute; top: 0; bottom: 0; left: calc(var(--lo) / var(--max) * 100%); width: calc((var(--hi) - var(--lo)) / var(--max) * 100%); background: rgba(0, 0, 0, 0.314); }
+  .track-fill { position: absolute; top: 0; bottom: 0; left: 0; width: 100%; border-radius: 10px; background: var(--c); clip-path: inset(0 calc(100% - min(var(--v), var(--max)) / var(--max) * 100%) 0 0 round 10px); }
+  .groove .tick { position: absolute; top: 0; bottom: 0; width: 2px; margin-left: -1px; left: calc(var(--m) / var(--max) * 100%); background: var(--card); }
+  .marks { position: relative; height: 18px; margin-top: 6px; }
+  .marks > span { position: absolute; top: 0; width: 48px; left: clamp(0px, calc(var(--m) / var(--max) * 100% - 24px), calc(100% - 48px)); text-align: center; font-size: 0.75rem; line-height: 18px; color: var(--quiet); white-space: nowrap; font-variant-numeric: tabular-nums; }
+
+  /* ShareBar: one bar of pill segments with 2px seams and no track; each segment's share is --w,
+     its hue --c. Leave out a zero segment rather than drawing it. */
+  .bar { display: flex; gap: 2px; height: var(--h, 12px); margin: 16px 0 0; }
+  .bar .seg { flex: var(--w, 1) 1 0px; min-width: 0; border-radius: calc(var(--h, 12px) / 2); background: var(--c); }
+
+  /* A legend under its chart (good-job-18 rule 4): dot, label, full-digit amount, one line each;
+     two columns from 480px (.legend.one keeps one). */
+  .legend { list-style: none; margin: 16px 0 0; padding: 0; display: grid; gap: 8px 24px; font-size: 0.875rem; line-height: 1.4; }
+  @media (min-width: 480px) { .legend { grid-template-columns: repeat(2, minmax(0, 1fr)); } .legend.one { grid-template-columns: minmax(0, 1fr); } }
+  .legend li { display: flex; align-items: baseline; gap: 8px; min-width: 0; }
+  .legend li > i { flex: none; align-self: center; width: 8px; height: 8px; border-radius: 50%; background: var(--c); }
+  .legend li > span { min-width: 0; color: var(--muted); }
+  .legend li > b { margin-left: auto; padding-left: 8px; font-weight: 600; color: var(--ink); font-variant-numeric: tabular-nums; white-space: nowrap; }
+  /* Label and value on hairline-divided rows: a worked example's inputs, a result's details. */
+  .facts { margin: 12px 0 0; font-size: 0.9375rem; }
+  .facts > div { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; padding: 10px 0; border-top: 1px solid var(--hair); }
+  .facts > div:first-child { border-top: 0; }
+  .facts dt { min-width: 0; color: var(--muted); }
+  .facts dd { margin: 0; font-weight: 600; text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+  .figure > :first-child, .result > :first-child, .figure > p:first-child, .result > p:first-child { margin-top: 0; }
+
+  /* ── A tool's questions ── */
+  /* The answer panel: a FormGroup band, rounded as on a tablet's readable column (house-rules §14).
+     A field never gets a box of its own; weight is the affordance (a value w700 ink, a placeholder
+     w400 grey). */
+  .q { margin: 20px 0 0; border-radius: 20px; }
+  .q > .money, .q > .num { margin: 8px 24px; }
+  .field { padding: 14px 24px 16px; }
+  .field + .field { border-top: 1px solid var(--hair); }
+  .field > label, .field > .label { display: block; font-weight: 600; font-size: 0.9375rem; line-height: 1.4; }
+  .field > .hint { margin: 2px 0 0; font-size: 0.875rem; }
+  .money, .num { display: flex; align-items: center; gap: 6px; border-radius: 12px; }
+  .money .sym, .num .sym { flex: none; font-size: 1.25rem; font-weight: 500; color: var(--muted); }
+  .money input, .num input {
+    flex: 1 1 auto; width: 100%; min-width: 0; height: 64px; margin: 0; padding: 0; border: 0; border-radius: 0;
+    background: transparent; -webkit-appearance: none; appearance: none; font: inherit; font-size: 1.75rem;
+    font-weight: 700; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; color: var(--ink);
+  }
+  .money input::placeholder, .num input::placeholder { color: var(--quiet); font-weight: 400; opacity: 1; }
+  .money input:focus, .num input:focus { outline: none; }
+  .money input[type="number"], .num input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+  .money input::-webkit-inner-spin-button, .money input::-webkit-outer-spin-button,
+  .num input::-webkit-inner-spin-button, .num input::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+  .money:focus-within, .num:focus-within { outline: 2px solid var(--purple); outline-offset: 4px; }
+  .field .money input, .field .num input { height: 48px; font-size: 1.375rem; }
+  /* Options sit on the ground above the band, as the app's option tiles do: a row of pills, the
+     chosen one ringed in ink on a soft ground. Never accent text. */
+  .opts { display: flex; flex-wrap: wrap; gap: 8px; min-width: 0; margin: 20px 0 0; padding: 0; border: 0; }
+  .field .opts { margin-top: 10px; }
+  .opts label { position: relative; display: inline-flex; }
+  .opts input { position: absolute; top: 0; left: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: pointer; }
+  .opts label > span {
+    display: inline-flex; flex-direction: column; align-items: center; justify-content: center; min-width: 60px; min-height: 44px;
+    padding: 6px 16px; border: 1px solid var(--edge); border-radius: 999px; background: var(--card);
+    font-weight: 600; font-size: 1rem; line-height: 1.2; color: var(--ink); text-align: center; font-variant-numeric: tabular-nums;
+  }
+  .opts label > span small { display: block; margin-top: 1px; font-size: 0.8125rem; font-weight: 500; color: var(--muted); }
+  .opts label:hover > span { border-color: rgba(27, 24, 48, 0.45); }
+  .opts input:checked + span { border-color: var(--ink); box-shadow: inset 0 0 0 1px var(--ink); background: var(--soft); }
+  .opts input:focus-visible + span { outline: 2px solid var(--purple); outline-offset: 2px; }
+
+  /* ── Notes ── */
+  .note { margin: 24px 0 0; font-size: 0.875rem; line-height: 1.5; color: var(--muted); max-width: 40em; text-wrap: pretty; }
+  .source { margin: 16px 0 0; font-size: 0.8125rem; line-height: 1.5; color: var(--muted); max-width: 40em; }
+  .note a, .source a { color: inherit; }
+
+  /* ── After the steps ── */
+  /* A door (good-job-18 rule 2): the whole panel is the link, its caret in the label row. */
+  .door { position: relative; display: block; margin: 48px 0 0; padding: 20px 56px 22px 24px; border-radius: 26px; color: var(--ink); text-decoration: none; }
+  .door::after { content: ""; position: absolute; right: 26px; top: 27px; width: 8px; height: 8px; border-top: 2px solid var(--muted); border-right: 2px solid var(--muted); transform: rotate(45deg); }
+  .door .k { display: block; margin-bottom: 4px; font-size: 0.875rem; font-weight: 500; line-height: 1.4; color: var(--muted); }
+  .door .t { display: block; font-weight: 700; font-size: 1.25rem; line-height: 1.3; letter-spacing: -0.015em; }
+  .door .g { display: block; margin-top: 4px; font-size: 0.9375rem; line-height: 1.45; color: var(--muted); text-wrap: pretty; }
+  .door:hover { border-color: rgba(122, 117, 127, 0.75); }
+  a.door:focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; border-radius: 26px; }
+  .about { margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--line); max-width: 36em; color: var(--muted); }
+  .about p { margin: 0; }
+  .about p + p { margin-top: 8px; }
+  .about a { color: var(--ink); font-weight: 600; }
+  .more-list { margin-top: 40px; }
+  .kit .more-list h2 { margin: 0 0 8px; font-size: 1.125rem; font-weight: 700; letter-spacing: -0.01em; }
+  .more-list ul { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+  .more-list li { border-bottom: 1px solid var(--line); }
+  .more-list a { display: block; min-height: 44px; padding: 11px 0; font-weight: 600; text-decoration: none; }
+  .more-list a:hover { text-decoration: underline; }
+
+  @keyframes steps-in { from { opacity: 0; } to { opacity: 1; } }
+  @media (prefers-reduced-motion: no-preference) {
+    .js-steps > .step.step-in { animation: steps-in 250ms var(--out); }
+    .js-steps > .chapters a::after { transition: transform 280ms var(--out), opacity 280ms var(--out); }
+    .track-fill { transition: clip-path 500ms var(--out); }
+    .door, .step-next, .opts label > span { transition: border-color 150ms var(--out), background-color 150ms var(--out); }
+  }
+
+  @media print {
+    .js-steps > .step { display: block !important; }
+    .js-steps > .step + .step { margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--line); }
+    .step-nav, .steps-count, .js-steps > .chapters { display: none !important; }
+    .figure, .result, .q, .door { box-shadow: none; break-inside: avoid; }
+    .about, .more-list { display: none; }
+  }
+</style>
