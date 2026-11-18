@@ -126,9 +126,20 @@
   }
   .lead { font-size: 1.1875rem; color: var(--muted); max-width: 36em; }
   /* The launch list: a quiet text link, never a filled button (house-rules: no filled button outside a form). */
-  .notify { margin-top: 28px; font-size: 1.0625rem; font-weight: 600; }
-  .notify a { color: var(--ink); text-decoration: underline; text-underline-offset: 4px; }
-  @media (max-width: 879px) { .notify a { display: inline-block; padding: 9px 0; margin: -9px 0; } }
+  /* The launch list (Story L.9, idea 20): a door, not a button. The card recipe at a 72px pill's radius
+     (panelCornerRadius caps at 30% of its height), a Budget-purple glyph chip (purple takes white ink),
+     what you get in muted, a caret. design-refs/good-job-18.png: a door carries its caret. */
+  .notify { display: inline-flex; align-items: center; gap: 14px; max-width: 100%; margin-top: 32px; padding: 14px 20px 14px 14px;
+            background: var(--card); border: 1px solid var(--edge); border-radius: 22px; color: var(--ink); text-decoration: none;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.11), 0 10px 33px rgba(0, 0, 0, 0.055); transition: box-shadow 150ms var(--out); }
+  .notify:hover { box-shadow: 0 4px 16px rgba(0, 0, 0, 0.14), 0 14px 40px rgba(0, 0, 0, 0.08); }
+  .notify:focus-visible { outline: 2px solid var(--purple); outline-offset: 3px; }
+  .notify .nchip { flex: none; width: 44px; height: 44px; border-radius: 13.6px; background: var(--purple); color: #fff; display: grid; place-items: center; }
+  .notify .nchip svg { width: 22px; height: 22px; fill: currentColor; }
+  .notify .nw { display: grid; gap: 2px; min-width: 0; }
+  .notify .nw b { font-weight: 700; font-size: 1.0625rem; line-height: 1.3; letter-spacing: -0.01em; }
+  .notify .nw span { font-size: 0.9375rem; line-height: 1.35; color: var(--muted); }
+  .notify .ncar { flex: none; width: 18px; height: 18px; margin-left: 4px; fill: var(--muted); }
   /* The stores' official badges, unmodified, at 40 tall; Google's PNG carries 41 of transparent
      padding round a 564x168 badge, so it draws at 59.5 and the padding is pulled back. */
   .stores { display: flex; flex-wrap: wrap; align-items: center; gap: 16px 22px; margin-top: 28px; }
@@ -268,6 +279,15 @@
   .side li .nm small { font-size: 0.75rem; font-weight: 400; color: var(--muted); }
   .side li b { flex: none; font-weight: 600; font-size: 0.875rem; font-variant-numeric: tabular-nums; }
   .past li .nm, .past li b { color: var(--muted); }   /* onSurfaceVariant: the past reads muted */
+  /* The beat's motion (tracker_contrast_beat.dart on the concept clock, arrival_clock.dart: 160 lead-in, 300 pitch,
+     440 span): each part a fade and a 6pt settle, the tracker and its spends, then "vs" with Claryo, then its jobs.
+     Then the tracker dims once Claryo's last job lands (founder, 2026-11-18): a ground veil, 800ms in place.
+     Without motion the veil is simply there: reduce motion shows the final state. */
+  .vs-pair .side { position: relative; }
+  .past .dimmer { position: absolute; inset: -1px; border-radius: 27px; background: var(--ground); opacity: 0.55; pointer-events: none; z-index: 1; }
+  .motion .vs-pair [data-at].in { animation-name: rise; }
+  .motion .past .dimmer[data-at].in { animation: dim 800ms cubic-bezier(0.645, 0.045, 0.355, 1) both; }   /* easeInOutCubic */
+  @keyframes dim { from { opacity: 0; } to { opacity: 0.55; } }
   .vs { justify-self: center; align-self: center; width: 32px; height: 32px; border-radius: 50%; display: grid; place-items: center; background: var(--card); border: 1px solid #CAC4D0; font-size: 0.75rem; font-weight: 700; line-height: 1; color: var(--muted); }
   @media (min-width: 560px) { .vs-pair { grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); } }
 
@@ -913,7 +933,7 @@
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
 <!-- Phosphor glyphs (MIT), the outlines the app draws; a duotone layer at 0.2, as PhosphorIcon draws it. -->
-<symbol id="g-receipt" viewBox="0 0 1024 1024"><path d="M288 416Q288 403 297.5 393.5Q307 384 320 384H704Q717 384 726.5 393.5Q736 403 736 416Q736 429 726.5 438.5Q717 448 704 448H320Q307 448 297.5 438.5Q288 429 288 416ZM320 576H704Q717 576 726.5 566.5Q736 557 736 544Q736 531 726.5 521.5Q717 512 704 512H320Q307 512 297.5 521.5Q288 531 288 544Q288 557 297.5 566.5Q307 576 320 576ZM928 224V832Q928 845 918.5 854.5Q909 864 896 864Q892 864 888.5 863Q885 862 881 861H882L768 804L654 861Q651 862 647.5 863Q644 864 640 864Q636 864 632.5 863Q629 862 625 861H626L512 804L398 861Q395 862 391.5 863Q388 864 384 864Q380 864 376.5 863Q373 862 369 861H370L256 804L142 861Q139 862 135.5 863Q132 864 128 864Q115 864 105.5 854.5Q96 845 96 832V224Q96 197 114.5 178.5Q133 160 160 160H864Q891 160 909.5 178.5Q928 197 928 224ZM864 224H160V780L242 739Q245 738 248.5 737Q252 736 256 736Q260 736 263.5 737Q267 738 271 739H270L384 796L498 739Q501 738 504.5 737Q508 736 512 736Q516 736 519.5 737Q523 738 527 739H526L640 796L754 739Q757 738 760.5 737Q764 736 768 736Q772 736 775.5 737Q779 738 783 739H782L864 780Z"/></symbol><symbol id="g-save" viewBox="0 0 1024 1024"><path opacity=".2" d="M960 448L960 576Q960 603 941.5 621.5Q923 640 896 640L896 640L864 640L792 843Q788 852 780 858Q772 864 761 864Q761 864 761 864Q761 864 761 864L711 864Q711 864 711 864Q711 864 711 864Q700 864 692 858Q684 852 680 843L680 843L665 800L391 800L376 843Q372 852 364 858Q356 864 345 864Q345 864 345 864Q345 864 345 864L295 864Q295 864 295 864Q295 864 295 864Q284 864 276 858Q268 852 264 843L264 843L212 696Q173 654 150.5 598.5Q128 543 128 480Q128 480 128 480Q128 480 128 480L128 480Q128 414 153 355Q178 297 221.5 253.5Q265 210 323 185Q382 160 448 160L448 160L576 160Q576 160 576 160Q576 160 576 160Q625 160 670 174Q715 188 753 213.5Q791 239 821 274Q850 309 869 351L870 353Q872 359 875 366.5Q878 374 881 382L881 384L896 384Q923 384 941.5 402.5Q960 421 960 448L960 448L960 448Z"/><path d="M768 464Q768 484 754 498Q740 512 720 512Q700 512 686 498Q672 484 672 464Q672 444 686 430Q700 416 720 416L720 416Q740 416 754 430Q768 444 768 464L768 464ZM608 256L448 256Q435 256 425.5 265.5Q416 275 416 288Q416 301 425.5 310.5Q435 320 448 320L448 320L608 320Q621 320 630.5 310.5Q640 301 640 288Q640 275 630.5 265.5Q621 256 608 256L608 256ZM992 448L992 576Q992 616 964 644Q936 672 896 672L896 672L887 672L822 854Q815 872 798.5 884Q782 896 761 896Q761 896 761 896Q761 896 761 896L711 896Q711 896 711 896Q711 896 711 896Q690 896 673.5 884Q657 872 650 854L650 854L643 832L413 832L406 854Q399 872 382.5 884Q366 896 345 896Q345 896 345 896Q345 896 345 896L295 896Q295 896 295 896Q295 896 295 896Q274 896 257.5 884Q241 872 234 854L234 854L184 713Q149 674 127 625Q105 576 98 521L98 519Q83 528 73.5 543Q64 558 64 576L64 576Q64 589 54.5 598.5Q45 608 32 608Q19 608 9.5 598.5Q0 589 0 576L0 576Q0 531 27.5 497Q55 463 96 452L97 452Q103 384 132 325Q162 266 209 222Q256 178 317 153Q379 128 448 128L864 128Q877 128 886.5 137.5Q896 147 896 160Q896 173 886.5 182.5Q877 192 864 192L864 192L778 192Q818 220 848.5 257Q879 294 898 338L899 340Q900 343 901.5 346Q903 349 904 352Q941 355 966.5 382.5Q992 410 992 448Q992 448 992 448Q992 448 992 448L992 448ZM928 448Q928 435 918.5 425.5Q909 416 896 416L896 416L881 416Q881 416 881 416Q881 416 881 416Q871 416 862.5 409.5Q854 403 851 394L851 394Q837 349 810 312Q783 275 747.5 248.5Q712 222 668 207Q624 192 576 192Q576 192 576 192Q576 192 576 192L448 192Q448 192 448 192Q448 192 448 192Q388 192 336 215Q283 237 244 276Q205 315 183 368Q160 420 160 480Q160 536 180.5 586Q201 636 236 675L236 675Q238 677 239.5 679.5Q241 682 242 685L242 685L295 832L345 832L361 789Q364 780 372 774Q380 768 391 768L665 768Q676 768 684 774Q692 780 695 789L695 789L711 832L761 832L834 629Q837 620 845.5 614Q854 608 864 608L896 608Q909 608 918.5 598.5Q928 589 928 576L928 576L928 448Z"/></symbol>
+<symbol id="g-receipt" viewBox="0 0 1024 1024"><path d="M288 416Q288 403 297.5 393.5Q307 384 320 384H704Q717 384 726.5 393.5Q736 403 736 416Q736 429 726.5 438.5Q717 448 704 448H320Q307 448 297.5 438.5Q288 429 288 416ZM320 576H704Q717 576 726.5 566.5Q736 557 736 544Q736 531 726.5 521.5Q717 512 704 512H320Q307 512 297.5 521.5Q288 531 288 544Q288 557 297.5 566.5Q307 576 320 576ZM928 224V832Q928 845 918.5 854.5Q909 864 896 864Q892 864 888.5 863Q885 862 881 861H882L768 804L654 861Q651 862 647.5 863Q644 864 640 864Q636 864 632.5 863Q629 862 625 861H626L512 804L398 861Q395 862 391.5 863Q388 864 384 864Q380 864 376.5 863Q373 862 369 861H370L256 804L142 861Q139 862 135.5 863Q132 864 128 864Q115 864 105.5 854.5Q96 845 96 832V224Q96 197 114.5 178.5Q133 160 160 160H864Q891 160 909.5 178.5Q928 197 928 224ZM864 224H160V780L242 739Q245 738 248.5 737Q252 736 256 736Q260 736 263.5 737Q267 738 271 739H270L384 796L498 739Q501 738 504.5 737Q508 736 512 736Q516 736 519.5 737Q523 738 527 739H526L640 796L754 739Q757 738 760.5 737Q764 736 768 736Q772 736 775.5 737Q779 738 783 739H782L864 780Z"/></symbol><symbol id="g-envelope" viewBox="0 0 1024 1024"><path d="M896 192H128Q115 192 105.5 201.5Q96 211 96 224V768Q96 795 114.5 813.5Q133 832 160 832H864Q891 832 909.5 813.5Q928 795 928 768V224Q928 211 918.5 201.5Q909 192 896 192ZM814 256 512 533 210 256ZM864 768H160V297L490 600Q495 604 500.5 606Q506 608 512 608Q518 608 523.5 606Q529 604 534 600L864 297Z"/></symbol><symbol id="g-save" viewBox="0 0 1024 1024"><path opacity=".2" d="M960 448L960 576Q960 603 941.5 621.5Q923 640 896 640L896 640L864 640L792 843Q788 852 780 858Q772 864 761 864Q761 864 761 864Q761 864 761 864L711 864Q711 864 711 864Q711 864 711 864Q700 864 692 858Q684 852 680 843L680 843L665 800L391 800L376 843Q372 852 364 858Q356 864 345 864Q345 864 345 864Q345 864 345 864L295 864Q295 864 295 864Q295 864 295 864Q284 864 276 858Q268 852 264 843L264 843L212 696Q173 654 150.5 598.5Q128 543 128 480Q128 480 128 480Q128 480 128 480L128 480Q128 414 153 355Q178 297 221.5 253.5Q265 210 323 185Q382 160 448 160L448 160L576 160Q576 160 576 160Q576 160 576 160Q625 160 670 174Q715 188 753 213.5Q791 239 821 274Q850 309 869 351L870 353Q872 359 875 366.5Q878 374 881 382L881 384L896 384Q923 384 941.5 402.5Q960 421 960 448L960 448L960 448Z"/><path d="M768 464Q768 484 754 498Q740 512 720 512Q700 512 686 498Q672 484 672 464Q672 444 686 430Q700 416 720 416L720 416Q740 416 754 430Q768 444 768 464L768 464ZM608 256L448 256Q435 256 425.5 265.5Q416 275 416 288Q416 301 425.5 310.5Q435 320 448 320L448 320L608 320Q621 320 630.5 310.5Q640 301 640 288Q640 275 630.5 265.5Q621 256 608 256L608 256ZM992 448L992 576Q992 616 964 644Q936 672 896 672L896 672L887 672L822 854Q815 872 798.5 884Q782 896 761 896Q761 896 761 896Q761 896 761 896L711 896Q711 896 711 896Q711 896 711 896Q690 896 673.5 884Q657 872 650 854L650 854L643 832L413 832L406 854Q399 872 382.5 884Q366 896 345 896Q345 896 345 896Q345 896 345 896L295 896Q295 896 295 896Q295 896 295 896Q274 896 257.5 884Q241 872 234 854L234 854L184 713Q149 674 127 625Q105 576 98 521L98 519Q83 528 73.5 543Q64 558 64 576L64 576Q64 589 54.5 598.5Q45 608 32 608Q19 608 9.5 598.5Q0 589 0 576L0 576Q0 531 27.5 497Q55 463 96 452L97 452Q103 384 132 325Q162 266 209 222Q256 178 317 153Q379 128 448 128L864 128Q877 128 886.5 137.5Q896 147 896 160Q896 173 886.5 182.5Q877 192 864 192L864 192L778 192Q818 220 848.5 257Q879 294 898 338L899 340Q900 343 901.5 346Q903 349 904 352Q941 355 966.5 382.5Q992 410 992 448Q992 448 992 448Q992 448 992 448L992 448ZM928 448Q928 435 918.5 425.5Q909 416 896 416L896 416L881 416Q881 416 881 416Q881 416 881 416Q871 416 862.5 409.5Q854 403 851 394L851 394Q837 349 810 312Q783 275 747.5 248.5Q712 222 668 207Q624 192 576 192Q576 192 576 192Q576 192 576 192L448 192Q448 192 448 192Q448 192 448 192Q388 192 336 215Q283 237 244 276Q205 315 183 368Q160 420 160 480Q160 536 180.5 586Q201 636 236 675L236 675Q238 677 239.5 679.5Q241 682 242 685L242 685L295 832L345 832L361 789Q364 780 372 774Q380 768 391 768L665 768Q676 768 684 774Q692 780 695 789L695 789L711 832L761 832L834 629Q837 620 845.5 614Q854 608 864 608L896 608Q909 608 918.5 598.5Q928 589 928 576L928 576L928 448Z"/></symbol>
 <symbol id="g-repay" viewBox="0 0 1024 1024"><path opacity=".2" d="M928 384L928 768Q928 781 918.5 790.5Q909 800 896 800L896 800L128 800Q115 800 105.5 790.5Q96 781 96 768L96 768L96 384L928 384Z"/><path d="M896 192L128 192Q101 192 82.5 210.5Q64 229 64 256L64 256L64 768Q64 795 82.5 813.5Q101 832 128 832L128 832L896 832Q923 832 941.5 813.5Q960 795 960 768L960 768L960 256Q960 229 941.5 210.5Q923 192 896 192L896 192ZM896 256L896 352L128 352L128 256L896 256ZM896 768L128 768L128 416L896 416L896 768ZM832 672Q832 685 822.5 694.5Q813 704 800 704L800 704L672 704Q659 704 649.5 694.5Q640 685 640 672Q640 659 649.5 649.5Q659 640 672 640L672 640L800 640Q813 640 822.5 649.5Q832 659 832 672L832 672ZM576 672Q576 685 566.5 694.5Q557 704 544 704L544 704L480 704Q467 704 457.5 694.5Q448 685 448 672Q448 659 457.5 649.5Q467 640 480 640L480 640L544 640Q557 640 566.5 649.5Q576 659 576 672L576 672Z"/></symbol>
 <symbol id="g-spend" viewBox="0 0 1024 1024"><path opacity=".2" d="M896 224L896 832L768 768L640 832L512 768L384 832L256 768L128 832L128 224Q128 211 137.5 201.5Q147 192 160 192L160 192L864 192Q877 192 886.5 201.5Q896 211 896 224L896 224Z"/><path d="M288 416Q288 403 297.5 393.5Q307 384 320 384L320 384L704 384Q717 384 726.5 393.5Q736 403 736 416Q736 429 726.5 438.5Q717 448 704 448L704 448L320 448Q307 448 297.5 438.5Q288 429 288 416L288 416ZM320 576L704 576Q717 576 726.5 566.5Q736 557 736 544Q736 531 726.5 521.5Q717 512 704 512L704 512L320 512Q307 512 297.5 521.5Q288 531 288 544Q288 557 297.5 566.5Q307 576 320 576L320 576ZM928 224L928 832Q928 845 918.5 854.5Q909 864 896 864Q892 864 888.5 863Q885 862 881 861L882 861L768 804L654 861Q651 862 647.5 863Q644 864 640 864Q636 864 632.5 863Q629 862 625 861L626 861L512 804L398 861Q395 862 391.5 863Q388 864 384 864Q380 864 376.5 863Q373 862 369 861L370 861L256 804L142 861Q139 862 135.5 863Q132 864 128 864Q115 864 105.5 854.5Q96 845 96 832L96 224Q96 197 114.5 178.5Q133 160 160 160L160 160L864 160Q891 160 909.5 178.5Q928 197 928 224L928 224ZM864 224L160 224L160 780L242 739Q245 738 248.5 737Q252 736 256 736Q260 736 263.5 737Q267 738 271 739L270 739L384 796L498 739Q501 738 504.5 737Q508 736 512 736Q516 736 519.5 737Q523 738 527 739L526 739L640 796L754 739Q757 738 760.5 737Q764 736 768 736Q772 736 775.5 737Q779 738 783 739L782 739L864 780L864 224Z"/></symbol>
 <symbol id="g-earmark" viewBox="0 0 1024 1024"><path opacity=".2" d="M768 192L768 896L512 736L256 896L256 192Q256 179 265.5 169.5Q275 160 288 160L288 160L736 160Q749 160 758.5 169.5Q768 179 768 192L768 192Z"/><path d="M736 128L288 128Q261 128 242.5 146.5Q224 165 224 192L224 192L224 896Q224 909 233.5 918.5Q243 928 256 928Q261 928 265 926.5Q269 925 273 923L273 923L512 774L751 923Q755 925 759 926.5Q763 928 768 928Q781 928 790.5 918.5Q800 909 800 896L800 192Q800 165 781.5 146.5Q763 128 736 128L736 128L736 128ZM736 838L529 709Q525 707 521 705.5Q517 704 512 704Q507 704 503 705.5Q499 707 495 709L495 709L288 838L288 192L736 192L736 838Z"/></symbol>
@@ -984,10 +1004,10 @@
   <main>
     <div class="hero">
       <div>
-        <p class="eyebrow">For Filipino breadwinners, at home and abroad</p>
+        <p class="eyebrow">The breadwinner's paycheck system</p>
         <h1>Plan your paycheck. Secure your future.</h1>
         <p class="lead">Have a plan before payday arrives. Then build these pillars in order:<br /> cash reserves, protection, growth.</p>
-        <p class="notify"><a href="mailto:hello@claryoapp.com?subject=Tell%20me%20when%20Claryo%20launches">Email me when Claryo launches</a></p>
+        <a class="notify" href="mailto:hello@claryoapp.com?subject=Tell%20me%20when%20Claryo%20launches"><span class="nchip"><svg aria-hidden="true"><use href="#g-envelope"/></svg></span><span class="nw"><b>Email me when Claryo launches</b><span>One email on launch day, nothing else.</span></span><svg class="ncar" aria-hidden="true"><use href="#g-right"/></svg></a>
         <!-- Store badges hidden until both listings are in production (founder, 2026-11-15).
              Uncomment to restore; each badge becomes an <a> once its listing is live.
         <div class="stores">
@@ -1101,29 +1121,30 @@
 
     <section class="interlude" aria-labelledby="who" data-clock>
       <h2 id="who" data-at="0">Built for breadwinners</h2>
-      <p class="intro" data-at="80">You carry financial responsibility for a household, on one income or two. Claryo is for people who are ready to take hold of their financial future.</p>
+      <p class="intro" data-at="80">You carry financial responsibility for a household, on one income or two. People depend on that income, and it is limited, so none of it can be left to chance. You decide where each paycheck goes before it arrives.</p>
       <!-- The onboarding contrast (tracker_contrast_beat.dart): the tracker's card and its three spends, then "vs"
            and Claryo's card with three jobs. The PHP sample household (ghost_plan_samples.dart: income ₱50,000,
            each spend a share of it rounded to 10), scaled like every figure on the page. -->
       <div class="contrast">
         <div class="vs-pair">
           <div class="side past" data-at="160">
-            <p class="who">Spending tracker</p>
+            <i class="dimmer" data-at="3000" aria-hidden="true"></i>
+            <p class="who">Expense tracker</p>
             <p class="q">Where did it go?</p>
             <ul>
-              <li><span class="chip" style="--hue: #D1D5DB"><svg aria-hidden="true"><use href="#g-receipt"/></svg></span><span class="nm">Ride app<small>2 days ago</small></span><b>−₱250</b></li>
-              <li><span class="chip" style="--hue: #D1D5DB"><svg aria-hidden="true"><use href="#g-receipt"/></svg></span><span class="nm">Grocery store<small>5 days ago</small></span><b>−₱2,450</b></li>
-              <li><span class="chip" style="--hue: #D1D5DB"><svg aria-hidden="true"><use href="#g-receipt"/></svg></span><span class="nm">Streaming service<small>9 days ago</small></span><b>−₱550</b></li>
+              <li data-at="460"><span class="chip" style="--hue: #D1D5DB"><svg aria-hidden="true"><use href="#g-receipt"/></svg></span><span class="nm">Ride app<small>2 days ago</small></span><b>−₱250</b></li>
+              <li data-at="760"><span class="chip" style="--hue: #D1D5DB"><svg aria-hidden="true"><use href="#g-receipt"/></svg></span><span class="nm">Grocery store<small>5 days ago</small></span><b>−₱2,450</b></li>
+              <li data-at="1060"><span class="chip" style="--hue: #D1D5DB"><svg aria-hidden="true"><use href="#g-receipt"/></svg></span><span class="nm">Streaming service<small>9 days ago</small></span><b>−₱550</b></li>
             </ul>
           </div>
-          <span class="vs" data-at="240">vs</span>
-          <div class="side card" data-at="240">
+          <span class="vs" data-at="1360">vs</span>
+          <div class="side card" data-at="1360">
             <p class="who">Claryo</p>
             <p class="q">Where will it go?</p>
             <ul>
-              <li><span class="chip" style="--hue: #4DB6AC"><svg aria-hidden="true"><use href="#g-save"/></svg></span><span class="nm">Emergency Fund<small>Save</small></span><b>₱8,000</b></li>
-              <li><span class="chip" style="--hue: #E57373"><svg aria-hidden="true"><use href="#g-spend"/></svg></span><span class="nm">Rent<small>Spend</small></span><b>₱12,000</b></li>
-              <li><span class="chip" style="--hue: #E57373"><svg aria-hidden="true"><use href="#g-spend"/></svg></span><span class="nm">Groceries<small>Spend</small></span><b>₱13,000</b></li>
+              <li data-at="1660"><span class="chip" style="--hue: #4DB6AC"><svg aria-hidden="true"><use href="#g-save"/></svg></span><span class="nm">Emergency Fund<small>Save</small></span><b>₱8,000</b></li>
+              <li data-at="1960"><span class="chip" style="--hue: #E57373"><svg aria-hidden="true"><use href="#g-spend"/></svg></span><span class="nm">Rent<small>Spend</small></span><b>₱12,000</b></li>
+              <li data-at="2260"><span class="chip" style="--hue: #E57373"><svg aria-hidden="true"><use href="#g-spend"/></svg></span><span class="nm">Groceries<small>Spend</small></span><b>₱13,000</b></li>
             </ul>
           </div>
         </div>
