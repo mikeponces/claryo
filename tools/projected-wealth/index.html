@@ -1,0 +1,602 @@
+---
+layout: tool
+title: Projected wealth calculator
+description: What your investments could grow to by any year, from what you hold today and the share of your income you invest.
+order: 6
+pillar: growth
+doc: false
+style: |
+  .result .panel-label + .facts { margin-top: 0; }
+  .result .facts + .panel-label { margin-top: 20px; }
+  .result + .result { margin-top: 16px; }
+  .step h3 { margin: 32px 0 4px; }
+  .step h3 + .hint + .opts { margin-top: 12px; }
+  .opt-line { margin: 10px 0 0; font-size: 0.875rem; line-height: 1.45; color: var(--muted); max-width: 36em; }
+  .opts.tiles { display: grid; gap: 8px; }
+  .opts.tiles label { display: block; }
+  .opts.tiles label > span { width: 100%; align-items: flex-start; text-align: left; min-height: 56px; padding: 10px 20px; border-radius: 18px; }
+  .opts.tiles label > span small { margin-top: 2px; font-size: 0.875rem; line-height: 1.4; }
+  /* The Assumptions sentence (trajectory_projection_page.dart _buildSentence): each figure in
+     ink w700 over a dotted amber line, and a tap opens the step that sets it. */
+  .sentence { margin: 0; font-size: 1.0625rem; line-height: 1.6; color: var(--ink); text-wrap: pretty; }
+  /* No padding: a button is inline-block, and padding would open the sentence's lines. The
+     44px target comes from ::after. */
+  .fig-btn {
+    position: relative; -webkit-appearance: none; appearance: none; margin: 0; padding: 0; border: 0; background: none;
+    font: inherit; font-weight: 700; line-height: inherit; color: var(--ink); cursor: pointer; font-variant-numeric: tabular-nums;
+    text-decoration-line: underline; text-decoration-style: dotted; text-decoration-color: var(--amber);
+    text-decoration-thickness: 2px; text-underline-offset: 4px; -webkit-tap-highlight-color: transparent;
+  }
+  .fig-btn::after { content: ""; position: absolute; top: 50%; left: -4px; right: -4px; height: 44px; margin-top: -22px; }
+  .fig-btn:hover { text-decoration-style: solid; }
+  .fig-btn:focus-visible { outline: 2px solid var(--purple); outline-offset: 2px; border-radius: 4px; }
+  .basis b { font-weight: 700; color: var(--ink); }
+  .gone { visibility: hidden; }
+  #pw-total { font-size: clamp(1.75rem, 1.35rem + 2vw, 2.5rem); }
+  /* The band under the hero: a label over a figure over its assumption. */
+  .derived { display: grid; gap: 14px 20px; margin: 16px 0 0; }
+  @media (min-width: 480px) { .derived { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  .derived p { margin: 0; }
+  .derived .k { display: flex; align-items: center; gap: 6px; font-size: 0.8125rem; font-weight: 500; line-height: 1.4; color: var(--muted); }
+  .derived .v { margin-top: 2px; font-size: 1.375rem; font-weight: 700; line-height: 1.15; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .derived .v .u { margin-left: 1px; font-size: 0.6em; font-weight: 500; letter-spacing: 0; color: rgba(27, 24, 48, 0.706); }
+  .derived .b { margin-top: 2px; font-size: 0.8125rem; line-height: 1.4; color: var(--muted); }
+  .dash { flex: none; width: 13px; height: 2px; background: repeating-linear-gradient(90deg, rgba(27, 24, 48, 0.45) 0 3px, transparent 3px 5px); }
+  /* The plot (StackedAreaPainter): nest egg, contributions and returns stacked, today's money
+     dashed, the year marked. A tap or a sideways drag on it picks a year, as in the app. */
+  .result .chart { margin-top: 22px; touch-action: pan-y; cursor: pointer; -webkit-user-select: none; user-select: none; }
+  .chart text { font-size: 11px; font-weight: 500; fill: var(--quiet); font-variant-numeric: tabular-nums; }
+  /* The year slider runs under the plot: its thumb is centred on the plot's x for each year
+     (label 34px + half the 24px thumb = the 46px axis gutter; the input runs 12px past the
+     plot's right edge so year 40 lands on it). */
+  .scrub { display: flex; align-items: center; margin: 2px 0 0; }
+  .scrub label { flex: none; width: 34px; font-size: 0.75rem; font-weight: 600; line-height: 1; color: var(--muted); }
+  .scrub input { flex: 1 1 auto; min-width: 0; height: 44px; margin: 0 -12px 0 0; padding: 0; background: transparent; -webkit-appearance: none; appearance: none; cursor: pointer; -webkit-tap-highlight-color: transparent; }
+  .scrub input:focus { outline: none; }
+  .scrub input::-webkit-slider-runnable-track { height: 4px; border-radius: 2px; background: rgba(0, 0, 0, 0.14); }
+  .scrub input::-moz-range-track { height: 4px; border-radius: 2px; background: rgba(0, 0, 0, 0.14); }
+  .scrub input::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; box-sizing: border-box; width: 24px; height: 24px; margin-top: -10px; border: 1px solid var(--edge); border-radius: 50%; background: var(--card); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), 0 3px 10px rgba(0, 0, 0, 0.08); }
+  .scrub input::-moz-range-thumb { box-sizing: border-box; width: 24px; height: 24px; border: 1px solid var(--edge); border-radius: 50%; background: var(--card); box-shadow: 0 1px 3px rgba(0, 0, 0, 0.18), 0 3px 10px rgba(0, 0, 0, 0.08); }
+  .scrub input:focus-visible::-webkit-slider-thumb { box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--purple); }
+  .scrub input:focus-visible::-moz-range-thumb { box-shadow: 0 0 0 2px var(--card), 0 0 0 4px var(--purple); }
+  .result .scrub + .legend { margin-top: 10px; }
+  .legend li > b { font-weight: 600; }
+---
+<section class="sect">
+  <h2>How it works</h2>
+  <p>Your monthly contribution is your monthly income times your investment rate. Each month, what you hold grows by the annual return divided by 12, and that month's contribution is added at the end of the month.</p>
+  <p>You contribute for the years you choose. After that no new money goes in, and the balance keeps growing at the same return.</p>
+  <p>Projected wealth is three parts: what you hold today, everything you put in, and the returns on both. The multiple compares that total with what you put in, the starting balance included.</p>
+  <p>In today's money divides the total by one plus inflation, once for every year. The monthly income is that figure times your withdrawal rate, divided by 12, so it is income in what money buys now, not in future prices.</p>
+</section>
+
+<section class="sect">
+  <h2>A worked example</h2>
+  <p>A household earns ₱50,000 a month, holds ₱600,000 in investments and invests 10% of its income, ₱5,000 a month. Every assumption is at the app's default. It is the sample household the app shows before you add your own figures.</p>
+  <div class="result">
+    <p class="panel-label">The household</p>
+    <dl class="facts">
+      <div><dt>Current investments</dt><dd>₱600,000</dd></div>
+      <div><dt>Monthly income</dt><dd>₱50,000</dd></div>
+      <div><dt>Investment rate</dt><dd>10%</dd></div>
+      <div><dt>Invested each month</dt><dd>₱5,000</dd></div>
+      <div><dt>Annual return</dt><dd>7%</dd></div>
+      <div><dt>Contributing for</dt><dd>30 years</dd></div>
+      <div><dt>Inflation and withdrawal rate</dt><dd>3% and 4%</dd></div>
+    </dl>
+    <p class="panel-label">The result, 30 years from now</p>
+    <dl class="facts">
+      <div><dt>Projected wealth</dt><dd>₱10,969,753</dd></div>
+      <div><dt>Nest egg</dt><dd>₱600,000</dd></div>
+      <div><dt>Contributions</dt><dd>₱1,800,000</dd></div>
+      <div><dt>Returns</dt><dd>₱8,569,753</dd></div>
+      <div><dt>Against what you put in</dt><dd>4.6×</dd></div>
+      <div><dt>In today's money, at 3% inflation</dt><dd>₱4,519,393</dd></div>
+      <div><dt>Monthly income, at 4% withdrawal</dt><dd>₱15,065/mo</dd></div>
+    </dl>
+    <p class="panel-label">Year by year</p>
+    <dl class="facts">
+      <div><dt>In 10 years</dt><dd>₱2,071,221</dd></div>
+      <div><dt>In 20 years</dt><dd>₱5,027,877</dd></div>
+      <div><dt>In 30 years</dt><dd>₱10,969,753</dd></div>
+      <div><dt>In 40 years</dt><dd>₱22,045,490</dd></div>
+    </dl>
+  </div>
+  <p>Contributions stop after year 30. From year 30 to year 40 the total grows by ₱11,075,737 on returns alone.</p>
+</section>
+
+<form class="calc" hidden novalidate>
+  <div class="steps" data-steps="tool">
+    <ol class="chapters" aria-label="Steps">
+      <li><a href="#step-1">Investments</a></li>
+      <li><a href="#step-2">Income</a></li>
+      <li><a href="#step-3">Investment rate</a></li>
+      <li><a href="#step-4">Assumptions</a></li>
+      <li><a href="#step-5">Result</a></li>
+    </ol>
+
+    <section class="step" id="step-1">
+      <h2 tabindex="-1"><label for="pw-egg">Current investments</label></h2>
+      <p class="hint" id="pw-egg-hint">What your investments are worth today: index funds, stocks, bonds, time deposits, crypto and retirement accounts. Leave out property, a business and cash. Enter 0 if you are starting out.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="pw-egg" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="pw-egg-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-2">
+      <h2 tabindex="-1"><label for="pw-inc">Monthly income</label></h2>
+      <p class="hint" id="pw-inc-hint">What your household earns in an average month.</p>
+      <div class="q"><div class="money"><span class="sym" data-sym aria-hidden="true">₱</span><input id="pw-inc" type="text" inputmode="decimal" autocomplete="off" required aria-describedby="pw-inc-hint"></div></div>
+    </section>
+
+    <section class="step" id="step-3">
+      <h2 tabindex="-1" id="pw-rate-h">Investment rate</h2>
+      <p class="hint" id="pw-rate-hint">The share of your monthly income you invest. It sets your monthly contribution.</p>
+      <div class="opts tiles" role="radiogroup" aria-labelledby="pw-rate-h" aria-describedby="pw-rate-hint">
+        <label><input type="radio" name="pw-rate" value="10" checked><span>10%<small>A starting point: builds the habit, won't move your timeline</small></span></label>
+        <label><input type="radio" name="pw-rate" value="15"><span>15%<small>The standard floor for long-term retirement security</small></span></label>
+        <label><input type="radio" name="pw-rate" value="25"><span>25%<small>Meaningfully shortens the timeline to financial independence</small></span></label>
+        <label><input type="radio" name="pw-rate" value="40"><span>40%+<small>Aggressive — requires household sacrifice, accelerates exit from earned income</small></span></label>
+      </div>
+      <p class="opt-line" id="pw-contrib" aria-live="polite"></p>
+    </section>
+
+    <section class="step" id="step-4">
+      <h2 tabindex="-1">Assumptions</h2>
+      <p class="hint">Each one starts at the app's default.</p>
+
+      <h3 id="pw-ret-h">Annual Return</h3>
+      <p class="hint" id="pw-ret-hint">How much your investments grow each year, on average.</p>
+      <div class="opts" role="radiogroup" aria-labelledby="pw-ret-h" aria-describedby="pw-ret-hint">
+        <label><input type="radio" name="pw-ret" value="5" data-line="Conservative — bond-heavy or low-risk portfolio"><span>5%</span></label>
+        <label><input type="radio" name="pw-ret" value="7" data-line="Balanced — diversified index fund assumption" checked><span>7%</span></label>
+        <label><input type="radio" name="pw-ret" value="10" data-line="Equity-heavy — historical S&amp;P 500 average"><span>10%</span></label>
+        <label><input type="radio" name="pw-ret" value="12" data-line="Optimistic — aggressive growth estimate"><span>12%</span></label>
+      </div>
+      <p class="opt-line" data-for="pw-ret" aria-hidden="true">Balanced — diversified index fund assumption</p>
+
+      <h3 id="pw-hor-h">Contribution Horizon</h3>
+      <p class="hint" id="pw-hor-hint">How many years will you keep investing?</p>
+      <div class="opts" role="radiogroup" aria-labelledby="pw-hor-h" aria-describedby="pw-hor-hint">
+        <label><input type="radio" name="pw-hor" value="10" data-line="10 years from now"><span>Until 2036</span></label>
+        <label><input type="radio" name="pw-hor" value="20" data-line="20 years from now"><span>Until 2046</span></label>
+        <label><input type="radio" name="pw-hor" value="25" data-line="25 years from now"><span>Until 2051</span></label>
+        <label><input type="radio" name="pw-hor" value="30" data-line="30 years from now" checked><span>Until 2056</span></label>
+        <label><input type="radio" name="pw-hor" value="40" data-line="40 years from now"><span>Until 2066</span></label>
+      </div>
+      <p class="opt-line" data-for="pw-hor" aria-hidden="true">30 years from now</p>
+
+      <h3 id="pw-inf-h">Inflation</h3>
+      <p class="hint" id="pw-inf-hint">How much prices rise each year. The higher it is, the faster your future balance loses buying power.</p>
+      <div class="opts" role="radiogroup" aria-labelledby="pw-inf-h" aria-describedby="pw-inf-hint">
+        <label><input type="radio" name="pw-inf" value="2" data-line="Low — prices creep up slowly; your money holds its value well"><span>2%</span></label>
+        <label><input type="radio" name="pw-inf" value="3" data-line="Typical — close to what most years look like" checked><span>3%</span></label>
+        <label><input type="radio" name="pw-inf" value="4" data-line="Elevated — prices climb faster than usual"><span>4%</span></label>
+        <label><input type="radio" name="pw-inf" value="6" data-line="High — prices rise fast and buying power erodes quickly"><span>6%</span></label>
+      </div>
+      <p class="opt-line" data-for="pw-inf" aria-hidden="true">Typical — close to what most years look like</p>
+
+      <h3 id="pw-wd-h">Withdrawal Rate</h3>
+      <p class="hint" id="pw-wd-hint">The share of your nest egg you would draw each year. The lower it is, the longer the money lasts.</p>
+      <div class="opts" role="radiogroup" aria-labelledby="pw-wd-h" aria-describedby="pw-wd-hint">
+        <label><input type="radio" name="pw-wd" value="2.5" data-line="Cautious — built to outlast long retirements and bad decades"><span>2.5%</span></label>
+        <label><input type="radio" name="pw-wd" value="3" data-line="Conservative — a common rate for a retirement with no end date"><span>3%</span></label>
+        <label><input type="radio" name="pw-wd" value="4" data-line="The classic rule — the 30-year rate from the Trinity study" checked><span>4%</span></label>
+        <label><input type="radio" name="pw-wd" value="5" data-line="Aggressive — assumes a shorter horizon or room to cut back"><span>5%</span></label>
+      </div>
+      <p class="opt-line" data-for="pw-wd" aria-hidden="true">The classic rule — the 30-year rate from the Trinity study</p>
+      <p class="source">Source: the 4% rate traces to William P. Bengen, <a href="https://www.financialplanningassociation.org/sites/default/files/2021-04/MAR04%20Determining%20Withdrawal%20Rates%20Using%20Historical%20Data.pdf">Determining Withdrawal Rates Using Historical Data</a>, Journal of Financial Planning, October 1994, and to the Trinity study by Philip L. Cooley, Carl M. Hubbard and Daniel T. Walz, <a href="https://www.aaii.com/journal/article/retirement-savings-choosing-a-withdrawal-rate-that-is-sustainable">Retirement Savings: Choosing a Withdrawal Rate That Is Sustainable</a>, AAII Journal, February 1998.</p>
+    </section>
+
+    <section class="step" id="step-5">
+      <h2 tabindex="-1">Your result</h2>
+      <div class="result">
+        <p class="panel-label">Assumptions</p>
+        <p class="sentence">Starting from <button type="button" class="fig-btn" id="pw-s-egg" data-go="0" data-field="pw-egg" data-name="Current investments">₱600K</button>, growing <button type="button" class="fig-btn" id="pw-s-ret" data-go="3" data-field="pw-ret" data-name="Annual return">7%</button> a year, while investing <button type="button" class="fig-btn" id="pw-s-rate" data-go="2" data-field="pw-rate" data-name="Investment rate">10%</button> of your <button type="button" class="fig-btn" id="pw-s-inc" data-go="1" data-field="pw-inc" data-name="Monthly income">₱50K</button> monthly income until <button type="button" class="fig-btn" id="pw-s-until" data-go="3" data-field="pw-hor" data-name="Contribution horizon">2056</button>.</p>
+      </div>
+      <div class="result">
+        <p class="panel-label" id="pw-when">In 2056, 30 years from now</p>
+        <p class="hero-num"><span class="fig" id="pw-total">₱10,969,753</span></p>
+        <p class="basis" id="pw-multiple"><b id="pw-mult">4.6×</b> what you put in</p>
+        <div class="derived">
+          <div id="pw-real-cell">
+            <p class="k"><i class="dash" aria-hidden="true"></i>In today's money</p>
+            <p class="v" id="pw-real">₱4,519,393</p>
+            <p class="b">at <button type="button" class="fig-btn" id="pw-b-inf" data-go="3" data-field="pw-inf" data-name="Inflation">3%/yr</button> inflation</p>
+          </div>
+          <div>
+            <p class="k">Monthly income</p>
+            <p class="v"><span id="pw-mi">₱15,065</span><span class="u">/mo</span></p>
+            <p class="b">at <button type="button" class="fig-btn" id="pw-b-wd" data-go="3" data-field="pw-wd" data-name="Withdrawal rate">4% withdrawal</button></p>
+          </div>
+        </div>
+        <svg class="chart" id="pw-chart" role="img" aria-label="" focusable="false"></svg>
+        <div class="scrub"><label for="pw-year">Year</label><input id="pw-year" type="range" min="0" max="40" step="1" value="30" aria-valuetext="Year 30, 2056"></div>
+        <ul class="legend one">
+          <li style="--c:#D4C4A8"><i></i><span>Nest egg</span><b id="pw-l-egg">₱600,000</b></li>
+          <li style="--c:#FFB74D"><i></i><span>Contributions</span><b id="pw-l-contrib">+₱1,800,000</b></li>
+          <li style="--c:#10B981"><i></i><span>Returns</span><b id="pw-l-gains">+₱8,569,753</b></li>
+        </ul>
+      </div>
+    </section>
+  </div>
+</form>
+
+<section class="sect">
+  <h2>How to use your results</h2>
+  <p>The projection assumes the same return and the same inflation every year. Real markets move up and down, so read the total as an estimate of where this path leads, not a promise.</p>
+  <p>Your investment rate and the years you keep investing are the two parts you set. Try a higher rate or a longer horizon to see how far each one moves the total.</p>
+  <p>Compare the monthly income, in today's money, with what your household spends now. Move the year to follow the path: the gap between the total and the dashed line is what inflation takes from it.</p>
+</section>
+
+<p class="note">An estimate from the numbers you entered, using the same method as the app. Not financial advice. Nothing you type leaves this page.</p>
+
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+  var M = window.ClaryoMoney;
+  var C = window.ClaryoCalc;
+  var form = document.querySelector('form.calc');
+  if (!M || !C || !form) return;
+  var root = form.querySelector('.steps');
+  var P = C.tiers.projection;
+  var NOW = new Date().getFullYear();
+  function $(id) { return document.getElementById(id); }
+  function each(list, f) { Array.prototype.forEach.call(list, f); }
+  function clear(node) { while (node.firstChild) node.removeChild(node.firstChild); }
+
+  // ── Fields: commas stripped, nothing negative, every message the browser shows on Next ──
+  function num(input) {
+    var s = input.value.replace(/[,\s]/g, '');
+    return s === '' ? null : Number(s);
+  }
+  function check(input) {
+    var v = num(input);
+    var msg = '';
+    if (v === null) msg = 'Enter an amount, or 0.';
+    else if (!isFinite(v)) msg = 'Enter a number, like ' + input.placeholder + '.';
+    else if (v < 0) msg = 'Enter an amount of 0 or more.';
+    input.setCustomValidity(msg);
+  }
+  var fields = form.querySelectorAll('input[inputmode="decimal"]');
+  each(fields, function (input) {
+    input.addEventListener('input', function () { check(input); });
+    input.addEventListener('blur', function () {
+      var v = num(input);
+      if (v !== null && isFinite(v) && v >= 0) input.value = v.toLocaleString('en-US', { maximumFractionDigits: 2 });
+      check(input);
+    });
+    check(input);
+  });
+
+  // Placeholders: the app's sample household, in the visitor's currency.
+  var EXAMPLE = { 'pw-egg': 600000, 'pw-inc': 50000 };
+  Object.keys(EXAMPLE).forEach(function (id) { $(id).placeholder = M.whole(EXAMPLE[id] / M.factor); });
+
+  // Defaults from the app's tiers. With no rate of its own the projection assumes
+  // kAssumedInvestmentRate (10), never the 15% target (investment_tiers.dart:87).
+  function setDefault(name, value) {
+    each(form.querySelectorAll('input[name="' + name + '"]'), function (r) {
+      r.defaultChecked = Number(r.value) === value;
+      r.checked = r.defaultChecked;
+    });
+  }
+  setDefault('pw-rate', C.tiers.investment.assumedRate);
+  setDefault('pw-ret', P.returnRate.default);
+  setDefault('pw-hor', P.contributionYears.default);
+  setDefault('pw-inf', P.inflation.default);
+  setDefault('pw-wd', P.withdrawal.default);
+  var slider = $('pw-year');
+  slider.max = String(P.viewYear.max);
+  slider.defaultValue = String(P.viewYear.default);
+
+  // The horizon reads "Until <this year + N>" over "N years from now", as the app's rows do.
+  each(form.querySelectorAll('input[name="pw-hor"]'), function (r) {
+    r.nextElementSibling.textContent = 'Until ' + (NOW + Number(r.value));
+  });
+  each(form.querySelectorAll('input[data-line]'), function (r) {
+    var sr = document.createElement('span');
+    sr.className = 'sr';
+    sr.textContent = ', ' + r.getAttribute('data-line');
+    r.nextElementSibling.appendChild(sr);
+  });
+
+  function picked(name) {
+    var r = form.querySelector('input[name="' + name + '"]:checked');
+    return r ? Number(r.value) : null;
+  }
+  function syncContribution() {
+    var p = $('pw-contrib');
+    var income = num($('pw-inc'));
+    var rate = picked('pw-rate');
+    if (income === null || !(income >= 0) || rate === null) { p.textContent = ''; return; }
+    p.textContent = M.money(C.monthlyContributionAt(income, rate)) + ' invested each month, ' +
+      M.percent(rate) + ' of ' + M.money(income) + '.';
+  }
+  function syncLines() {
+    each(form.querySelectorAll('.opt-line[data-for]'), function (p) {
+      var r = form.querySelector('input[name="' + p.getAttribute('data-for') + '"]:checked');
+      if (r) p.textContent = r.getAttribute('data-line');
+    });
+    syncContribution();
+  }
+  form.addEventListener('change', function (e) { if (e.target.type === 'radio') syncLines(); });
+  root.addEventListener('steps:change', function (e) { if (e.detail && e.detail.index === 2) syncContribution(); });
+
+  // A figure in the result opens the step that sets it, as the app's tappable figures open
+  // their sheets.
+  each(form.querySelectorAll('[data-go]'), function (btn) {
+    btn.addEventListener('click', function () {
+      var S = window.ClaryoSteps;
+      if (!S) return;
+      S.go(root, Number(btn.getAttribute('data-go')));
+      var f = btn.getAttribute('data-field');
+      var target = $(f) || form.querySelector('input[name="' + f + '"]:checked');
+      if (target) target.focus();
+    });
+  });
+
+  // ── The plot: StackedAreaPainter ──
+  // AppColors.projectionNestEgg, projectionContributions (the Growth amber), projectionGains.
+  var HUE = { egg: '#D4C4A8', contrib: '#FFB74D', gains: '#10B981' };
+  var INK = '27,24,48';
+  var GUTTER = 46;
+  var NS = 'http://www.w3.org/2000/svg';
+  function svgEl(tag, attrs, parent) {
+    var e = document.createElementNS(NS, tag);
+    Object.keys(attrs).forEach(function (k) { e.setAttribute(k, attrs[k]); });
+    if (parent) parent.appendChild(e);
+    return e;
+  }
+  // lib/core/axis_ticks.dart:8 — niceAxisStep, four ticks, 1.02 overshoot.
+  function niceTicks(max) {
+    if (!(max > 0)) return [];
+    var raw = max / 4;
+    var mag = Math.pow(10, Math.floor(Math.log(raw) / Math.log(10)));
+    var n = raw / mag;
+    var step = (n < 1.5 ? 1 : n < 3.5 ? 2 : n < 7.5 ? 5 : 10) * mag;
+    var out = [];
+    for (var i = 1; i * step <= max * 1.02; i++) out.push(i * step);
+    return out;
+  }
+  // lib/widgets/chart_utils.dart:81 — compactAmountLabel ('#,##0.#').
+  function axisLabel(v) {
+    function f(x) { return x.toLocaleString('en-US', { maximumFractionDigits: 1 }); }
+    if (v >= 1e9) return M.symbol + f(v / 1e9) + 'B';
+    if (v >= 1e6) return M.symbol + f(v / 1e6) + 'M';
+    if (v >= 1e3) return M.symbol + f(v / 1e3) + 'K';
+    return M.symbol + f(v);
+  }
+
+  var state = null;
+  var reveal = 1;
+  var clipRect = null;
+  var plotW = 0;
+  function drawChart() {
+    var svg = $('pw-chart');
+    if (!state) return;
+    var W = Math.round(svg.getBoundingClientRect().width);
+    if (!W) return;
+    var s = state.series, real = state.real, at = state.year, span = s.length - 1;
+    var top = 12;
+    var plotH = Math.round(Math.min(240, Math.max(160, W * 0.55)));
+    var floor = top + plotH;
+    var H = floor + 20;
+    plotW = W - GUTTER;
+    clear(svg);
+    clipRect = null;
+    svg.setAttribute('viewBox', '0 0 ' + W + ' ' + H);
+    svg.setAttribute('width', W);
+    svg.setAttribute('height', H);
+    var max = 0;
+    s.forEach(function (m) { if (m.total > max) max = m.total; });
+    function x(i) { return GUTTER + i / span * plotW; }
+    function y(v) { return floor - v / max * plotH; }
+    var rule = { stroke: 'rgba(' + INK + ',0.11)', 'stroke-width': 0.8 };
+    function hair(yy) {
+      svgEl('line', { x1: GUTTER, x2: W, y1: yy, y2: yy, stroke: rule.stroke, 'stroke-width': rule['stroke-width'] }, svg);
+    }
+
+    if (max > 0) {
+      niceTicks(max).forEach(function (t) {
+        var ty = y(t);
+        if (ty < top - 0.5) return;
+        hair(ty);
+        var label = svgEl('text', { x: GUTTER - 6, y: ty, 'text-anchor': 'end', 'dominant-baseline': 'middle' }, svg);
+        label.textContent = axisLabel(t);
+      });
+      var clip = svgEl('clipPath', { id: 'pw-clip' }, svgEl('defs', {}, svg));
+      clipRect = svgEl('rect', { x: GUTTER, y: 0, width: plotW * reveal, height: H }, clip);
+      var g = svgEl('g', { 'clip-path': 'url(#pw-clip)' }, svg);
+      var lower = s.map(function () { return 0; });
+      [['nestEgg', HUE.egg], ['contributions', HUE.contrib], ['gains', HUE.gains]].forEach(function (b) {
+        var upper = s.map(function (m, i) { return lower[i] + m[b[0]]; });
+        var d = 'M' + x(0) + ' ' + y(lower[0]);
+        for (var i = 0; i <= span; i++) d += ' L' + x(i) + ' ' + y(upper[i]);
+        for (var j = span; j >= 0; j--) d += ' L' + x(j) + ' ' + y(lower[j]);
+        svgEl('path', { d: d + ' Z', fill: b[1] }, g);
+        lower = upper;
+      });
+      var edge = '';
+      lower.forEach(function (v, i) { edge += (i ? ' L' : 'M') + x(i) + ' ' + y(v); });
+      svgEl('path', { d: edge, fill: 'none', stroke: HUE.gains, 'stroke-width': 2, 'stroke-linejoin': 'round', 'stroke-linecap': 'round' }, g);
+      var dash = '';
+      real.forEach(function (v, i) { dash += (i ? ' L' : 'M') + x(i) + ' ' + y(v); });
+      svgEl('path', { d: dash, fill: 'none', stroke: 'rgba(' + INK + ',0.35)', 'stroke-width': 1.2, 'stroke-dasharray': '5 4', 'stroke-linecap': 'round' }, g);
+      for (var dec = 0; dec <= span; dec += 10) {
+        svgEl('circle', { cx: x(dec), cy: y(lower[dec]), r: 2.5, fill: '#FFFFFF', stroke: HUE.gains, 'stroke-width': 1.2 }, g);
+      }
+      var px = x(at), py = y(lower[at]);
+      svgEl('line', { x1: px, x2: px, y1: floor, y2: py, stroke: 'rgba(' + INK + ',0.24)', 'stroke-width': 1 }, g);
+      if (at > 0) {
+        svgEl('circle', { cx: px, cy: y(real[at]), r: 3.5, fill: '#FFFFFF', stroke: 'rgba(' + INK + ',0.5)', 'stroke-width': 1.2 }, g);
+      }
+      svgEl('circle', { cx: px, cy: py, r: 5, fill: '#FFFFFF', stroke: HUE.gains, 'stroke-width': 1.5 }, g);
+    } else {
+      // A zero projection draws the frame and no scale (paintEmptyAxisGrid).
+      for (var k = 1; k <= 4; k++) hair(floor - k / 4 * plotH);
+    }
+
+    [0, 10, 20, 30, 40].forEach(function (m) {
+      if (m > span) return;
+      var anchor = m === 0 ? 'start' : (m === span ? 'end' : 'middle');
+      var t = svgEl('text', { x: m === 0 ? GUTTER : (m === span ? W : x(m)), y: floor + 15, 'text-anchor': anchor }, svg);
+      t.textContent = m === 0 ? 'Now' : 'Yr ' + m;
+    });
+  }
+
+  // The area sweeps in left to right when the result opens (900ms, easeOutCubic); never under
+  // reduce motion, and never on a year change.
+  var sweepId = 0;
+  function sweep() {
+    var id = ++sweepId;
+    var can = window.matchMedia && window.requestAnimationFrame &&
+      window.matchMedia('(prefers-reduced-motion: no-preference)').matches;
+    if (!can) { reveal = 1; return; }
+    var t0 = null;
+    reveal = 0;
+    if (clipRect) clipRect.setAttribute('width', 0);
+    function frame(ts) {
+      if (id !== sweepId) return;
+      if (t0 === null) t0 = ts;
+      var p = Math.min(1, (ts - t0) / 900);
+      reveal = 1 - Math.pow(1 - p, 3);
+      if (clipRect) clipRect.setAttribute('width', plotW * reveal);
+      if (p < 1) window.requestAnimationFrame(frame);
+    }
+    window.requestAnimationFrame(frame);
+    setTimeout(function () {
+      if (id === sweepId && reveal < 1) { reveal = 1; if (clipRect) clipRect.setAttribute('width', plotW); }
+    }, 1400);
+  }
+
+  // lib/core/apportion.dart — round the whole once, apportion the parts, so the legend adds up
+  // to the hero on screen.
+  function apportion(parts, whole) {
+    var floors = parts.map(function (p) { return Math.floor(p); });
+    var left = whole - floors.reduce(function (a, b) { return a + b; }, 0);
+    var order = parts.map(function (p, i) { return i; }).sort(function (a, b) {
+      return (parts[b] - floors[b]) - (parts[a] - floors[a]) || Math.abs(parts[b]) - Math.abs(parts[a]) || a - b;
+    });
+    for (var k = 0; k < Math.abs(left); k++) floors[order[k % order.length]] += left > 0 ? 1 : -1;
+    return floors;
+  }
+
+  function render() {
+    if (!state) return;
+    var year = Math.max(0, Math.min(state.series.length - 1, Number(slider.value) || 0));
+    state.year = year;
+    var m = state.series[year];
+    var when = year === 0 ? 'Today' : 'In ' + (NOW + year) + ', ' + year + (year === 1 ? ' year' : ' years') + ' from now';
+    $('pw-when').textContent = when;
+    $('pw-total').textContent = M.money(m.total);
+
+    // Null at year 0 and when nothing has compounded; never 1× (projected_wealth_panel.dart).
+    var showMultiple = year !== 0 && m.gains > 0 && m.multiple !== null;
+    $('pw-mult').textContent = showMultiple ? M.multiple(m.multiple) : '';
+    $('pw-multiple').classList.toggle('gone', !showMultiple);
+    $('pw-multiple').setAttribute('aria-hidden', showMultiple ? 'false' : 'true');
+
+    // Year 0 has no future to discount: the band holds the income cell alone.
+    var real = state.real[year];
+    $('pw-real-cell').classList.toggle('gone', year === 0);
+    $('pw-real-cell').setAttribute('aria-hidden', year === 0 ? 'true' : 'false');
+    $('pw-real').textContent = M.money(real);
+    $('pw-mi').textContent = M.money(C.monthlyIncome(real, state.withdrawal));
+
+    var parts = apportion([m.nestEgg, m.contributions, m.gains], Math.round(m.total));
+    $('pw-l-egg').textContent = M.money(parts[0]);
+    $('pw-l-contrib').textContent = parts[1] > 0 ? '+' + M.money(parts[1]) : '—';
+    $('pw-l-gains').textContent = parts[2] > 0 ? '+' + M.money(parts[2]) : '—';
+
+    slider.setAttribute('aria-valuetext', 'Year ' + year + ', ' + (NOW + year) + ', ' + M.money(m.total));
+    var last = state.series[state.series.length - 1];
+    $('pw-chart').setAttribute('aria-label', 'Projected wealth from ' + M.money(state.series[0].total) + ' now to ' +
+      M.money(last.total) + ' in ' + last.year + ' years, with year ' + year + ' marked at ' + M.money(m.total) +
+      '. A dashed line shows the same total in today\'s money.');
+    drawChart();
+  }
+
+  function fill() {
+    var egg = num($('pw-egg'));
+    var income = num($('pw-inc'));
+    if (egg === null || income === null || !(egg >= 0) || !(income >= 0)) return;
+    var rate = picked('pw-rate');
+    var years = picked('pw-hor');
+    var returnRate = picked('pw-ret');
+    var inflation = picked('pw-inf');
+    var withdrawal = picked('pw-wd');
+    var series = C.yearSeries(egg, C.monthlyContributionAt(income, rate), { returnRate: returnRate, contributionYears: years });
+    state = {
+      series: series,
+      real: series.map(function (s) { return C.todaysMoney(s.total, inflation, s.year); }),
+      withdrawal: withdrawal,
+      year: 0,
+    };
+
+    // The sentence, as the app writes it: compact money, the rate as a percent, the last year
+    // of contributing.
+    function abbrev(v) { return M.symbol + M.compact(v); }
+    var words = {
+      'pw-s-egg': abbrev(egg),
+      'pw-s-ret': M.percent(returnRate),
+      'pw-s-rate': M.percent(rate),
+      'pw-s-inc': income > 0 ? abbrev(income) : '—',
+      'pw-s-until': String(NOW + years),
+      'pw-b-inf': M.percent(inflation) + '/yr',
+      'pw-b-wd': M.percent(withdrawal) + ' withdrawal',
+    };
+    Object.keys(words).forEach(function (id) {
+      var b = $(id);
+      b.textContent = words[id];
+      b.setAttribute('aria-label', b.getAttribute('data-name') + ', ' + words[id] + '. Change');
+    });
+    render();
+    sweep();
+  }
+
+  slider.addEventListener('input', render);
+
+  // A tap or a sideways drag on the plot picks the year under it (yearAtX), as the app's does.
+  (function () {
+    var svg = $('pw-chart');
+    var down = null;
+    function pick(e) {
+      if (!state || !plotW) return;
+      var r = svg.getBoundingClientRect();
+      var span = state.series.length - 1;
+      var yr = Math.round((e.clientX - r.left - GUTTER) / plotW * span);
+      yr = Math.max(0, Math.min(span, yr));
+      if (yr !== state.year) {
+        slider.value = String(yr);
+        render();
+      }
+    }
+    svg.addEventListener('pointerdown', function (e) {
+      if (e.button !== 0) return;
+      down = e.clientX;
+      try { svg.setPointerCapture(e.pointerId); } catch (err) { /* not capturable */ }
+    });
+    svg.addEventListener('pointermove', function (e) {
+      if (down !== null && Math.abs(e.clientX - down) > 4) pick(e);
+    });
+    svg.addEventListener('pointerup', function (e) {
+      if (down !== null) pick(e);
+      down = null;
+    });
+    svg.addEventListener('pointercancel', function () { down = null; });
+  })();
+
+  var resizeTimer = 0;
+  window.addEventListener('resize', function () {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(drawChart, 150);
+  });
+
+  root.addEventListener('steps:finish', fill);
+  root.addEventListener('steps:restart', function () {
+    // form.reset() runs after this event; the fields' messages and option lines follow it.
+    setTimeout(function () { each(fields, check); syncLines(); }, 0);
+  });
+  syncLines();
+  form.addEventListener('submit', function (e) { e.preventDefault(); });
+  form.hidden = false;
+});
+</script>
