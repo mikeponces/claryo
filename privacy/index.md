@@ -2,7 +2,7 @@
 
 # Privacy Policy
 
-Effective 10 November 2026
+Effective 18 November 2026
 
 Claryo is operated by Michael Lorenzo Ponce Sanchez, an individual developer. This policy states what Claryo stores, where, who receives it, and how deletion works.
 
@@ -28,7 +28,7 @@ You can create an account with email and password, Sign in with Apple, or Sign i
 
 Our servers run on Supabase (database, login and hosting). The servers are in Seoul, South Korea (Supabase's ap-northeast-2 region).
 
-- **Profile settings.** Home currency, time zone, and onboarding progress dates. The profile holds no name and no email.
+- **Profile settings.** Home currency, time zone, onboarding progress dates, and your answers to the first-run questions: how you're paid, how long your savings would last, the kinds of debt you pay, who depends on your income, and whether you invest. These are ranges and categories, never amounts. The profile holds no name and no email.
 - **What you enter to plan money.** Income plans and their allocations (amounts, categories, due dates, and any names you type). Tracked accounts (provider name, optional account name, type, values and value history). Debts (name, balance, rate). Earmarks (names and targets). Insurance policies (insurer, cover amounts, premium, billing date). Coverage goals. The colours and initials you pick for providers.
 - **Reminders.** Your notification preferences and a log of which reminders fired.
 - **Portfolio check-ins.** The dates of your check-ins. No amounts.
